@@ -1,0 +1,258 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: ndselect 5.8.1\n"
+"Report-Msgid-Bugs-To: ivprimi@libero.it\n"
+"POT-Creation-Date: 2013-08-07 15:35+0200\n"
+"PO-Revision-Date: 2013-09-15 17:42+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: getopt.c:551 getopt.c:570
+#, c-format
+msgid "%s: option `%s' is ambiguous\n"
+msgstr ""
+
+#: getopt.c:603 getopt.c:607
+#, c-format
+msgid "%s: option `--%s' doesn't allow an argument\n"
+msgstr ""
+
+#: getopt.c:616 getopt.c:621
+#, c-format
+msgid "%s: option `%c%s' doesn't allow an argument\n"
+msgstr ""
+
+#: getopt.c:667 getopt.c:689 getopt.c:1020 getopt.c:1042
+#, c-format
+msgid "%s: option `%s' requires an argument\n"
+msgstr ""
+
+#: getopt.c:727 getopt.c:730
+#, c-format
+msgid "%s: unrecognized option `--%s'\n"
+msgstr ""
+
+#: getopt.c:738 getopt.c:741
+#, c-format
+msgid "%s: unrecognized option `%c%s'\n"
+msgstr ""
+
+#: getopt.c:796 getopt.c:799
+#, c-format
+msgid "%s: illegal option -- %c\n"
+msgstr ""
+
+#: getopt.c:805 getopt.c:808
+#, c-format
+msgid "%s: invalid option -- %c\n"
+msgstr ""
+
+#: getopt.c:863 getopt.c:882 getopt.c:1095 getopt.c:1116
+#, c-format
+msgid "%s: option requires an argument -- %c\n"
+msgstr ""
+
+#: getopt.c:935 getopt.c:954
+#, c-format
+msgid "%s: option `-W %s' is ambiguous\n"
+msgstr ""
+
+#: getopt.c:978 getopt.c:999
+#, c-format
+msgid "%s: option `-W %s' doesn't allow an argument\n"
+msgstr ""
+
+#: ndselect.c:168
+msgid "Ivano Primi"
+msgstr ""
+
+#: ndselect.c:169
+#, c-format
+msgid ""
+"License GPLv3+: GNU GPL version 3 or later,\n"
+"see <http://gnu.org/licenses/gpl.html>.\n"
+"This is free software: you are free to change and redistribute it.\n"
+"There is NO WARRANTY, to the extent permitted by law.\n"
+msgstr ""
+
+#: ndselect.c:179
+msgid "Usage:"
+msgstr ""
+
+#: ndselect.c:180
+msgid "or"
+msgstr ""
+
+#: ndselect.c:183
+#, c-format
+msgid ""
+"\n"
+"Print to standard output a subset of lines and fields from a given file.\n"
+msgstr ""
+
+#: ndselect.c:185
+msgid "The argument after the options is the name of the file to read from."
+msgstr ""
+
+#: ndselect.c:186
+msgid ""
+"The complete path of the file should be given,\n"
+"a directory name is not accepted."
+msgstr ""
+
+#: ndselect.c:187
+msgid ""
+"If no input file is specified, the program reads from the standard input."
+msgstr ""
+
+#: ndselect.c:188
+msgid "Exit status: 0 in case of normal termination, -1 (255) in case of error"
+msgstr ""
+
+#: ndselect.c:190
+msgid "Set to N the number of the first line to print"
+msgstr ""
+
+#: ndselect.c:191
+msgid "(The default behavior is to start with line number 1)"
+msgstr ""
+
+#: ndselect.c:193
+msgid "Set to N the number of the last line that can be printed"
+msgstr ""
+
+#: ndselect.c:194
+msgid "(The default behavior is to arrive till to the end of the file)"
+msgstr ""
+
+#: ndselect.c:196
+msgid "Set to N the increment to use when selecting the lines to print"
+msgstr ""
+
+#: ndselect.c:197 ndselect.c:206
+msgid "(The default value for the increment is 1)"
+msgstr ""
+
+#: ndselect.c:199
+msgid "Set to N the number of the first field to print"
+msgstr ""
+
+#: ndselect.c:200
+msgid "(The default behavior is to start with field number 1)"
+msgstr ""
+
+#: ndselect.c:202
+msgid "Set to N the number of the last field that can be printed"
+msgstr ""
+
+#: ndselect.c:203
+msgid "(The default behavior is to arrive till to the end of every line)"
+msgstr ""
+
+#: ndselect.c:205
+msgid "Set to N the increment to use when selecting the fields to print"
+msgstr ""
+
+#: ndselect.c:208
+msgid ""
+"Specify the set of characters to use as delimiters\n"
+"    while splitting the input lines into fields"
+msgstr ""
+
+#: ndselect.c:209 ndselect.c:212
+msgid "(The default set of delimiters is space, tab and newline)"
+msgstr ""
+
+#: ndselect.c:211
+msgid ""
+"Specify the set of strings to use as delimiters\n"
+"    while splitting the input lines into fields"
+msgstr ""
+
+#: ndselect.c:214
+msgid ""
+"Specify the string to use as separator\n"
+"    while writing the selected fields to the standard output"
+msgstr ""
+
+#: ndselect.c:215
+msgid ""
+"(The default behavior consists in reusing\n"
+"     the delimiters found in the input lines)"
+msgstr ""
+
+#: ndselect.c:217
+msgid "Do not print empty lines"
+msgstr ""
+
+#: ndselect.c:219
+msgid "Redirect warning and error messages from stderr to the indicated file"
+msgstr ""
+
+#: ndselect.c:221
+msgid "Redirect output from stdout to the indicated file"
+msgstr ""
+
+#: ndselect.c:222
+msgid "Show this help message"
+msgstr ""
+
+#: ndselect.c:223
+msgid "Show version number, Copyright, Distribution Terms and NO-Warranty"
+msgstr ""
+
+#: ndselect.c:287 ndselect.c:301 ndselect.c:315 ndselect.c:329 ndselect.c:343
+#: ndselect.c:357
+#, c-format
+msgid "%s: invalid argument after `-%c' option\n"
+msgstr ""
+
+#: ndselect.c:371 ndselect.c:397 ndselect.c:423 ndselect.c:488
+#, c-format
+msgid "%s: memory exhausted\n"
+msgstr ""
+
+#: ndselect.c:376 ndselect.c:402
+#, c-format
+msgid "%s: invalid argument after `-%c' option:\n"
+msgstr ""
+
+#: ndselect.c:378
+#, c-format
+msgid ""
+"  The list of field delimiters cannot be empty and\n"
+"  must always include the newline character ('\\n')\n"
+msgstr ""
+
+#: ndselect.c:404
+#, c-format
+msgid ""
+"  The list of field delimiters cannot be empty and\n"
+"  must always include the newline string (\"\\n\")\n"
+msgstr ""
+
+#: ndselect.c:435 ndselect.c:444 ndselect.c:515
+#, c-format
+msgid "%s: cannot open file \"%s\":\n"
+msgstr ""
+
+#: ndselect.c:519
+#, c-format
+msgid "%s: cannot close file \"%s\":\n"
+msgstr ""
+
+#: ndselect.c:523
+#, c-format
+msgid ""
+"%s: Error occurred while reading from file \"%s\"\n"
+"\n"
+msgstr ""

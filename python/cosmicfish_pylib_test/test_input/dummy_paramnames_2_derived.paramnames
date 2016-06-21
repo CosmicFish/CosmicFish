@@ -1,0 +1,8 @@
+ #
+ # This file contains the parameter names for a Fisher matrix.
+ #
+ p1    p_1
+ p2    p_2
+ p3    p_3
+ p4*    p_4
+ p5*    p_5

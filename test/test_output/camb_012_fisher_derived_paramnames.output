@@ -1,0 +1,28 @@
+#
+# This file contains the parameter names for a derived Fisher matrix.
+# Derived parameters are indicated with a * at the end of the name.
+#
+omegabh2    \Omega_b h^2       0.2260000000000000E-01
+omegach2    \Omega_c h^2       0.1120000000000000E+00
+omeganuh2    \Omega_\nu h^2       0.6400000000000001E-03
+h    h       0.7000000000000000E+00
+yhe    Y_{He}       0.2400000000000000E+00
+logA    {\rm{ln}}(10^{10} A_s)       0.3044522437723423E+01
+ns    n_s       0.9600000000000000E+00
+nrun    n_{\rm run}       0.0000000000000000E+00
+nt    n_t       0.0000000000000000E+00
+r    r       0.1000000000000000E+01
+tau    \tau       0.9000000000000000E-01
+omegab*    \Omega_b       0.4612244897959184E-01
+omegac*    \Omega_c       0.2285714285714286E+00
+omeganu*    \Omega_{\nu}       0.1306122448979592E-02
+omegav*    \Omega_{\Lambda}       0.7240000000000000E+00
+omegak*    \Omega_{K}      -0.5117434254131581E-16
+omegam*    \Omega_{m}       0.2760000000000000E+00
+theta*    100\theta_{MC}       0.1039531989274800E+01
+mnu*    \Sigma m_\nu       0.5952211691513702E-01
+z_re*    z_{\rm re}       0.1071319580078125E+02
+Neff*    N_{\rm eff}       0.3046000000000000E+01
+sigma8_1*    \sigma_{8}(0.00)       0.7794304201089519E+00
+logHoz_1*    \log_{10}H(0.00)      -0.3631706639301463E+01
+logDAz_1*    \log_{10}D_{\rm A}(0.00)      -0.1600000000000000E+02

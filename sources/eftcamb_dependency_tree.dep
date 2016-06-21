@@ -1,0 +1,51 @@
+
+$(EFTCAMB_OBJ_DIR)/005_init_from_file.o :  \
+	$(EFTCAMB_OBJ_DIR)/004_cosmicfish_types.o
+
+$(EFTCAMB_OBJ_DIR)/001_Matrix_utilities.o : 
+
+$(EFTCAMB_OBJ_DIR)/003_Fisher_manipulation.o :  \
+	$(EFTCAMB_OBJ_DIR)/000_Utilities.o \
+	$(EFTCAMB_OBJ_DIR)/001_Matrix_utilities.o
+
+$(EFTCAMB_OBJ_DIR)/009_Fisher_calculator_SN.o :  \
+	$(EFTCAMB_OBJ_DIR)/006_cosmicfish_camb_interface.o \
+	$(EFTCAMB_OBJ_DIR)/000_Utilities.o \
+	$(EFTCAMB_OBJ_DIR)/004_cosmicfish_types.o \
+	$(EFTCAMB_OBJ_DIR)/002_Random_utilities.o
+
+$(EFTCAMB_OBJ_DIR)/011_Fisher_calculator_RD.o :  \
+	$(EFTCAMB_OBJ_DIR)/006_cosmicfish_camb_interface.o \
+	$(EFTCAMB_OBJ_DIR)/000_Utilities.o \
+	$(EFTCAMB_OBJ_DIR)/004_cosmicfish_types.o \
+	$(EFTCAMB_OBJ_DIR)/007_FUTURCMB_lensnoise.o \
+	$(EFTCAMB_OBJ_DIR)/001_Matrix_utilities.o
+
+$(EFTCAMB_OBJ_DIR)/010_Fisher_calculator_Mpk.o : 
+
+$(EFTCAMB_OBJ_DIR)/008_Fisher_calculator_Cls_windows.o :  \
+	$(EFTCAMB_OBJ_DIR)/004_cosmicfish_types.o
+
+$(EFTCAMB_OBJ_DIR)/000_Utilities.o : 
+
+$(EFTCAMB_OBJ_DIR)/008_Fisher_calculator_Cls.o :  \
+	$(EFTCAMB_OBJ_DIR)/006_cosmicfish_camb_interface.o \
+	$(EFTCAMB_OBJ_DIR)/000_Utilities.o \
+	$(EFTCAMB_OBJ_DIR)/004_cosmicfish_types.o \
+	$(EFTCAMB_OBJ_DIR)/007_FUTURCMB_lensnoise.o \
+	$(EFTCAMB_OBJ_DIR)/008_Fisher_calculator_Cls_windows.o \
+	$(EFTCAMB_OBJ_DIR)/001_Matrix_utilities.o
+
+$(EFTCAMB_OBJ_DIR)/004_cosmicfish_types.o : 
+
+$(EFTCAMB_OBJ_DIR)/006_cosmicfish_camb_interface.o :  \
+	$(EFTCAMB_OBJ_DIR)/004_cosmicfish_types.o
+
+$(EFTCAMB_OBJ_DIR)/007_FUTURCMB_lensnoise.o : 
+
+$(EFTCAMB_OBJ_DIR)/012_Fisher_calculator_derived.o :  \
+	$(EFTCAMB_OBJ_DIR)/006_cosmicfish_camb_interface.o \
+	$(EFTCAMB_OBJ_DIR)/004_cosmicfish_types.o \
+	$(EFTCAMB_OBJ_DIR)/000_Utilities.o
+
+$(EFTCAMB_OBJ_DIR)/002_Random_utilities.o : 

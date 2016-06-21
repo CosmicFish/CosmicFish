@@ -1,0 +1,352 @@
+# !/bin/sh
+#  Numdiff makefile
+#  Copyright (C)  2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013  Ivano Primi  <ivprimi@libero.it>    
+#
+#   Copying and distribution of this file, with or without modification,
+#   are permitted in any medium without royalty provided the copyright
+#   notice and this notice are preserved.
+#
+# @configure_input@
+
+PACKAGE=numdiff
+PACKAGETWO=ndselect
+VERSION=5.8.1
+
+SHELL=/bin/sh
+.SUFFIXES:
+.SUFFIXES: .c .o
+
+prefix          =@prefix@
+exec_prefix     =@exec_prefix@
+bindir          =@bindir@
+docdir		=@docdir@
+localedir	=@localedir@
+infodir		=@infodir@
+mandir          =@mandir@
+srcdir          =@srcdir@
+VPATH           =@srcdir@
+
+BINDIR=$(bindir)
+DOCDIR=$(docdir)/$(PACKAGE)
+INFODIR=$(infodir)
+LOCALEDIR=$(localedir)
+MANDIR=$(mandir)/man1
+
+CC=@CC@
+@SET_MAKE@
+#MAKE=make
+
+MKDIR=$(srcdir)/shtool install -d
+DIST_MKDIR=$(srcdir)/shtool mkdir -f -m 777
+INSTALL=$(srcdir)/shtool install -c
+MOVE=$(srcdir)/shtool move -p
+INSTALL_PROGRAM=$(INSTALL)
+INSTALL_DATA=$(INSTALL) -m 644
+FIND=@FIND@
+INSTINFO=@INSTINFO@
+LS=ls
+CP=cp
+RM=rm -f
+RMDIR=rmdir
+RD=rm -f -R
+CAT=cat
+GZIP=gzip -f
+TAR=tar
+MSGFMT=msgfmt -c
+MSGMERGE=msgmerge
+XGETTEXT=xgettext -C -D$(srcdir) -k_ -kN_ --msgid-bugs-address=ivprimi@libero.it
+TEXI2HTML=makeinfo --html --no-split
+TEXI2INFO=makeinfo
+TEXI2PDF=texi2pdf
+TEXI2TXT=makeinfo --plaintext
+HELP2MAN=help2man -s 1 -m "User Commands"
+
+# flags for the preprocessor:
+CPPFLAGS        =-DPACKAGE="\"$(PACKAGE)\"" -DPACKAGE2="\"$(PACKAGETWO)\"" -DLOCALEDIR="\"$(LOCALEDIR)\"" -I$(srcdir) -I. @CPPFLAGS@
+# flags for the C compiler:
+CFLAGS          =@CFLAGS@
+
+# flags for the linker:
+LDFLAGS         =@LDFLAGS@
+# -L and -l options:
+LIBS            =@LIBS@ @LIB_CLOCK_GETTIME@
+
+OBJECTS= ./analyze.o ./arith.o ./cmpbuf.o ./cmpfns.o ./error.o ./exitfail.o ./flags.o ./getopt.o ./getopt1.o ./inout.o ./io.o ./linesplit.o ./main.o ./ndselect.o ./numutil.o ./options.o ./setmode.o ./side.o ./thrlist.o ./util.o ./xalloc-die.o ./xmalloc.o @LIBOBJS@
+
+OBJECTSONE=./analyze.o ./arith.o ./cmpbuf.o ./cmpfns.o ./error.o ./exitfail.o ./flags.o ./getopt.o ./getopt1.o ./inout.o ./io.o ./linesplit.o ./main.o ./numutil.o ./options.o ./setmode.o ./side.o ./thrlist.o ./util.o ./xalloc-die.o ./xmalloc.o @LIBOBJS@
+SOURCESONE=$(srcdir)/analyze.c $(srcdir)/arith.c $(srcdir)/cmpbuf.c $(srcdir)/cmpfns.c $(srcdir)/error.c $(srcdir)/errors.c $(srcdir)/exitfail.c $(srcdir)/flags.c $(srcdir)/getopt.c $(srcdir)/getopt1.c $(srcdir)/inout.c $(srcdir)/io.c $(srcdir)/linesplit.c $(srcdir)/main.c $(srcdir)/new.c $(srcdir)/number.c $(srcdir)/numutil.c $(srcdir)/options.c $(srcdir)/read_line.c $(srcdir)/setmode.c $(srcdir)/side.c $(srcdir)/thrlist.c $(srcdir)/util.c $(srcdir)/xalloc-die.c $(srcdir)/xmalloc.c
+OBJECTSTWO=./getopt.o ./getopt1.o ./linesplit.o ./ndselect.o
+SOURCESTWO=$(srcdir)/getopt.c $(srcdir)/getopt1.c $(srcdir)/linesplit.c $(srcdir)/ndselect.c $(srcdir)/read_line.c
+DOCS=$(srcdir)/AUTHORS $(srcdir)/BUGS $(srcdir)/COPYING $(srcdir)/ChangeLog $(srcdir)/INSTALL $(srcdir)/NEWS $(srcdir)/README $(srcdir)/TODO 
+TEXISRC=$(srcdir)/docs/numdiff.txi
+FDLTEXI=$(srcdir)/docs/fdl.texi
+HTMLFILE=$(srcdir)/docs/numdiff.html
+INFOFILE=$(srcdir)/docs/numdiff.info
+MANFILE=$(srcdir)/docs/numdiff.1
+MANFILETWO=$(srcdir)/docs/ndselect.1
+PDFFILE=$(srcdir)/docs/numdiff.pdf
+TXTFILE=$(srcdir)/docs/numdiff.txt
+# l10n files
+PACKAGE_POT=$(srcdir)/po/$(PACKAGE)/$(PACKAGE).pot
+PACKAGETWO_POT=$(srcdir)/po/$(PACKAGETWO)/$(PACKAGETWO).pot
+PACKAGE_IT=$(srcdir)/po/$(PACKAGE)/it
+PACKAGETWO_IT=$(srcdir)/po/$(PACKAGETWO)/it
+IT_LOC_DIR=$(DESTDIR)$(LOCALEDIR)/it/LC_MESSAGES
+
+GARBAGE=./numdiff.aux ./numdiff.cp ./numdiff.cps ./numdiff.fn ./numdiff.ky ./numdiff.log ./numdiff.pg ./numdiff.toc ./numdiff.tp ./numdiff.vr ./config.log ./config.status ./config.h.in.save ./config.h
+
+# Rules to build the executable programs
+
+all: $(PACKAGE) $(PACKAGETWO)
+
+$(PACKAGE): $(OBJECTS)
+	$(CC) $(OBJECTSONE) -o $@ $(LDFLAGS) $(LIBS)
+
+$(PACKAGETWO): $(OBJECTS)
+	$(CC) $(OBJECTSTWO) -o $@ $(LDFLAGS) $(LIBS)
+
+# Rules to build the documentation. The documentation
+# must be built in $(srcdir)/docs !
+
+man: $(MANFILE) $(MANFILETWO)
+
+$(MANFILE):
+	$(HELP2MAN) -n "compare similar files with numeric fields" -p $(PACKAGE) $(PACKAGE) > $(MANFILE)
+
+$(MANFILETWO):
+	$(HELP2MAN) -n "select lines and fields for numdiff" -p $(PACKAGE) $(PACKAGETWO) > $(MANFILETWO)
+
+info: $(INFOFILE).gz
+
+$(INFOFILE).gz: $(INFOFILE)
+	$(CAT) $(INFOFILE) | $(GZIP) > $(INFOFILE).gz
+
+$(INFOFILE): $(TEXISRC)
+	$(TEXI2INFO) $(TEXISRC) -o $(INFOFILE)
+
+html: $(HTMLFILE)
+
+$(HTMLFILE): $(TEXISRC)
+	$(TEXI2HTML) $(TEXISRC) -o $(HTMLFILE)
+
+pdf: $(PDFFILE)
+
+$(PDFFILE): $(TEXISRC)
+	$(TEXI2PDF) $(TEXISRC) -o $(PDFFILE)
+
+txt: $(TXTFILE)
+
+$(TXTFILE): $(TEXISRC)
+	$(TEXI2TXT) $(TEXISRC) -o $(TXTFILE)
+
+# Rules to create PO template files. They should be used
+# only by the maintainer of the package.
+
+pot: $(PACKAGE_POT) $(PACKAGETWO_POT)
+
+$(PACKAGE_POT): $(SOURCESONE)
+	@echo 'This command is intended for maintainers to use; it'
+	@echo 'requires special tools to work.'
+	$(XGETTEXT) --package-name=$(PACKAGE) \
+	--package-version=$(VERSION) \
+	-o $(PACKAGE_POT) $(SOURCESONE) *.h
+
+$(PACKAGETWO_POT): $(SOURCESTWO)
+	@echo 'This command is intended for maintainers to use; it'
+	@echo 'requires special tools to work.'
+	$(XGETTEXT) --package-name=$(PACKAGETWO) \
+	--package-version=$(VERSION) \
+	-o $(PACKAGETWO_POT) $(SOURCESTWO) *.h
+
+po: $(PACKAGE_IT).po $(PACKAGETWO_IT).po 
+
+$(PACKAGE_IT).po: $(PACKAGE_POT)
+	@echo 'This command is intended for maintainers to use; it'
+	@echo 'requires special tools to work.'
+	if $(SHELL) -c "$(LS) $(PACKAGE_IT).po" \
+	>/dev/null 2>&1; then \
+	$(MSGMERGE) $(PACKAGE_IT).po $(PACKAGE_POT) -o $(PACKAGE_IT).po.new; \
+	$(MOVE) $(PACKAGE_IT).po.new $(PACKAGE_IT).po; \
+	else $(CP) $(PACKAGE_POT) $(PACKAGE_IT).po; fi
+
+$(PACKAGETWO_IT).po: $(PACKAGETWO_POT)
+	@echo 'This command is intended for maintainers to use; it'
+	@echo 'requires special tools to work.'
+	if $(SHELL) -c "$(LS) $(PACKAGETWO_IT).po" \
+	>/dev/null 2>&1; then \
+	$(MSGMERGE) $(PACKAGETWO_IT).po $(PACKAGETWO_POT) -o $(PACKAGETWO_IT).po.new; \
+	$(MOVE) $(PACKAGETWO_IT).po.new $(PACKAGETWO_IT).po; \
+	else $(CP) $(PACKAGETWO_POT) $(PACKAGETWO_IT).po; fi
+
+# Rules to build the l10n files. They
+# must be built in $(srcdir)/po/numdiff (for numdiff) and
+# in $(srcdir)/po/ndselect (for ndselect).
+
+mo: $(PACKAGE_IT).mo $(PACKAGETWO_IT).mo
+
+$(PACKAGE_IT).mo: $(PACKAGE_IT).po
+	$(MSGFMT) $(PACKAGE_IT).po -o $(PACKAGE_IT).mo
+
+$(PACKAGETWO_IT).mo: $(PACKAGETWO_IT).po
+	$(MSGFMT) $(PACKAGETWO_IT).po -o $(PACKAGETWO_IT).mo
+
+# Rules needed by the installation process.
+
+installdirs: all
+	$(MKDIR) $(DESTDIR)$(BINDIR)
+	$(MKDIR) $(DESTDIR)$(DOCDIR)
+	$(MKDIR) $(DESTDIR)$(INFODIR)
+	$(MKDIR) $(DESTDIR)$(MANDIR)
+	$(MKDIR) $(IT_LOC_DIR)
+
+install: installdirs html info pdf txt
+	$(INSTALL_PROGRAM) $(PACKAGE) $(PACKAGETWO) $(DESTDIR)$(BINDIR)
+	$(INSTALL_DATA) $(DOCS) $(DESTDIR)$(DOCDIR)
+	$(INSTALL_DATA) $(MANFILE) $(DESTDIR)$(MANDIR)
+	$(INSTALL_DATA) $(MANFILETWO) $(DESTDIR)$(MANDIR)
+	$(INSTALL_DATA) $(HTMLFILE) $(DESTDIR)$(DOCDIR)
+	$(INSTALL_DATA) $(PDFFILE) $(DESTDIR)$(DOCDIR)
+	$(INSTALL_DATA) $(TXTFILE) $(DESTDIR)$(DOCDIR)
+	$(POST_INSTALL)
+	$(INSTALL_DATA) $(INFOFILE) $(DESTDIR)$(INFODIR)
+	$(INSTALL_DATA) $(INFOFILE).gz $(DESTDIR)$(INFODIR)
+	if $(SHELL) -c "$(INSTINFO) --version" \
+	>/dev/null 2>&1; then \
+	$(INSTINFO) --dir-file=$(DESTDIR)$(INFODIR)/dir $(DESTDIR)$(INFODIR)/numdiff.info; \
+	else true; fi
+
+install-nls: install
+	$(INSTALL_DATA) $(PACKAGE_IT).mo $(IT_LOC_DIR)/$(PACKAGE).mo
+	$(INSTALL_DATA) $(PACKAGETWO_IT).mo $(IT_LOC_DIR)/$(PACKAGETWO).mo
+
+# Rules needed to removed the installed stuff
+
+uninstall:
+	$(RM) $(DESTDIR)$(BINDIR)/$(PACKAGE)
+	$(RM) $(DESTDIR)$(BINDIR)/$(PACKAGETWO)
+	$(RM) $(DESTDIR)$(DOCDIR)/*
+	$(RMDIR) $(DESTDIR)$(DOCDIR)
+	$(INSTINFO) --delete $(DESTDIR)$(INFODIR)/numdiff.info $(DESTDIR)$(INFODIR)/dir
+	$(RM) $(DESTDIR)$(INFODIR)/numdiff.info.gz
+	$(RM) $(DESTDIR)$(INFODIR)/numdiff.info
+	$(RM) $(DESTDIR)$(MANDIR)/$(PACKAGE).1
+	$(RM) $(DESTDIR)$(MANDIR)/$(PACKAGETWO).1
+
+uninstall-nls: uninstall
+	$(FIND) $(DESTDIR)$(LOCALEDIR) -name '$(PACKAGE).mo' -exec $(RM) \{\} \;
+	$(FIND) $(DESTDIR)$(LOCALEDIR) -name '$(PACKAGETWO).mo' -exec $(RM) \{\} \;
+
+# Cleaning rules
+
+clean:
+	$(RM) $(OBJECTS)
+	$(RM) $(PACKAGE)
+	$(RM) $(PACKAGETWO)
+
+distclean: clean
+	$(RM) $(GARBAGE)
+
+maintainer-clean: distclean
+	@echo 'This command is intended for maintainers to use; it'
+	@echo 'deletes files that may need special tools to rebuild.'
+	$(RM) $(HTMLFILE)
+	$(RM) $(INFOFILE)
+	$(RM) $(INFOFILE).gz
+	$(RM) $(MANFILE)
+	$(RM) $(MANFILETWO)
+	$(RM) $(PDFFILE)
+	$(RM) $(TXTFILE)
+	$(RM) $(PACKAGE_POT)
+	$(RM) $(PACKAGETWO_POT)
+	$(RM) $(PACKAGE_IT).mo
+	$(RM) $(PACKAGETWO_IT).mo
+
+# To make a distribution tarball
+
+createdirs: 
+	$(DIST_MKDIR) $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(DIST_MKDIR) $(srcdir)/$(PACKAGE)-$(VERSION)/RCS
+	$(DIST_MKDIR) $(srcdir)/$(PACKAGE)-$(VERSION)/docs
+	$(DIST_MKDIR) $(srcdir)/$(PACKAGE)-$(VERSION)/m4
+	$(DIST_MKDIR) $(srcdir)/$(PACKAGE)-$(VERSION)/po
+	$(DIST_MKDIR) $(srcdir)/$(PACKAGE)-$(VERSION)/po/$(PACKAGE)
+	$(DIST_MKDIR) $(srcdir)/$(PACKAGE)-$(VERSION)/po/$(PACKAGETWO)
+
+copy: createdirs
+	$(CP) $(DOCS) $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/Makefile.in $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/aclocal.m4 $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/config.h.in $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/configure.ac $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/configure $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(TEXISRC) $(srcdir)/$(PACKAGE)-$(VERSION)/docs
+	$(CP) $(FDLTEXI) $(srcdir)/$(PACKAGE)-$(VERSION)/docs
+	$(CP) $(HTMLFILE) $(srcdir)/$(PACKAGE)-$(VERSION)/docs
+	$(CP) $(INFOFILE) $(srcdir)/$(PACKAGE)-$(VERSION)/docs
+	$(CP) $(INFOFILE).gz $(srcdir)/$(PACKAGE)-$(VERSION)/docs
+	$(CP) $(MANFILE) $(srcdir)/$(PACKAGE)-$(VERSION)/docs
+	$(CP) $(MANFILETWO) $(srcdir)/$(PACKAGE)-$(VERSION)/docs
+	$(CP) $(PDFFILE) $(srcdir)/$(PACKAGE)-$(VERSION)/docs
+	$(CP) $(TXTFILE) $(srcdir)/$(PACKAGE)-$(VERSION)/docs
+	$(CP) $(srcdir)/analyze.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/arith.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/cmpbuf.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/cmpfns.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/error.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/errors.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/exitfail.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/flags.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/getopt.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/getopt1.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/inout.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/io.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/linesplit.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/main.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/ndselect.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/new.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/number.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/numutil.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/options.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/read_line.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/setmode.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/side.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/thrlist.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/util.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/xalloc-die.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/xmalloc.c $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/cmpbuf.h $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/error.h $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/exitfail.h $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/getopt.h $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/getopt_int.h $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/gettext.h $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/linesplit.h $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/ndselect.h $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/number.h $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/numdiff.h $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/setmode.h $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/system.h $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/unlocked-io.h $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/xalloc.h $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/shtool $(srcdir)/$(PACKAGE)-$(VERSION)
+	$(CP) $(srcdir)/m4/setmode.m4 $(srcdir)/$(PACKAGE)-$(VERSION)/m4
+	$(CP) $(srcdir)/m4/st_mtim.m4 $(srcdir)/$(PACKAGE)-$(VERSION)/m4
+	$(CP) $(PACKAGE_POT)      $(srcdir)/$(PACKAGE)-$(VERSION)/po/$(PACKAGE)
+	$(CP) $(PACKAGE_IT).po    $(srcdir)/$(PACKAGE)-$(VERSION)/po/$(PACKAGE)
+	$(CP) $(PACKAGE_IT).mo    $(srcdir)/$(PACKAGE)-$(VERSION)/po/$(PACKAGE)
+	$(CP) $(PACKAGETWO_POT)   $(srcdir)/$(PACKAGE)-$(VERSION)/po/$(PACKAGETWO)
+	$(CP) $(PACKAGETWO_IT).po $(srcdir)/$(PACKAGE)-$(VERSION)/po/$(PACKAGETWO)
+	$(CP) $(PACKAGETWO_IT).mo $(srcdir)/$(PACKAGE)-$(VERSION)/po/$(PACKAGETWO)
+
+dist: copy
+	$(TAR) cvf $(srcdir)/$(PACKAGE)-$(VERSION).tar $(srcdir)/$(PACKAGE)-$(VERSION) 
+	$(GZIP) $(srcdir)/$(PACKAGE)-$(VERSION).tar
+	$(RD) $(srcdir)/$(PACKAGE)-$(VERSION) 
+
+# To make a backup tarball
+
+tarball: copy
+	$(CP) $(srcdir)/RCS/* $(srcdir)/$(PACKAGE)-$(VERSION)/RCS
+	$(TAR) cvf $(srcdir)/$(PACKAGE)-$(VERSION).tar $(srcdir)/$(PACKAGE)-$(VERSION) 
+	$(GZIP) $(srcdir)/$(PACKAGE)-$(VERSION).tar
+	$(RD) $(srcdir)/$(PACKAGE)-$(VERSION) 

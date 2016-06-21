@@ -1,0 +1,17 @@
+ #
+ # This file contains the parameter names for a Fisher matrix.
+ #
+ omegabh2    \Omega_b h^2      2.260000000000000E-002
+ omegach2    \Omega_c h^2      0.112000000000000     
+ omeganuh2    \Omega_\nu h^2      6.400000000000001E-004
+ h    h      0.700000000000000     
+ yhe    Y_{He}      0.240000000000000     
+ logA    {\rm{ln}}(10^{10} A_s)       3.04452243772342     
+ ns    n_s      0.960000000000000     
+ nrun    n_{\rm run}      0.000000000000000E+000
+ nt    n_t      0.000000000000000E+000
+ r    r       1.00000000000000     
+ tau    \tau      9.000000000000000E-002
+ alpha_SN    \alpha_{\rm SN}      0.000000000000000E+000
+ beta_SN    \beta_{\rm SN}      0.000000000000000E+000
+ M0_SN    M_0^{\rm SN}      0.000000000000000E+000

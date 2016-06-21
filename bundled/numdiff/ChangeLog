@@ -1,0 +1,812 @@
+2013-09-15  Ivano Primi  <ivprimi(atlibero(dot)it>
+
+	* Version 5.8.1 released.
+
+	* config.h.in (VERSION): From 5.8.0 to 5.8.1.
+
+	* NEWS: Added news for version 5.8.1.
+
+	* Makefile.in (VERSION): From 5.8.0 to 5.8.1.
+
+2013-08-28  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* Version 5.8.0 released.
+
+	* BUGS: Doc fixes.
+
+	* BUGS: Added description of the bug discovered by Elias Pipping
+	and a hint on how to avoid it.
+
+2013-08-26  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* INSTALL: Doc fixes.
+
+	* BUGS: Added remind: specify if the operating system is 
+	either 32- or 64-bit.
+
+	* NEWS: Added news for version 5.8.0.
+
+2013-08-25  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* util.c: Added instruction to include linesplit.h
+	Added declaration of the external variable def_ifs.
+	(lines_differ): ifs and Ifs redefined as const char**.
+	(lines_differ): IFS replaced by def_ifs.
+	(lines_differ): for cycle to initialize f1 and
+	let it point to the first field of s1
+	replaced by a call to string_spn().
+	(lines_differ): for cycle to initialize f2 and
+	let it point to the first field of s2
+	replaced by a call to string_spn().
+	(lines_differ): Every couple of for cycles to move f1 
+	to the beginning of the next field has been replaced
+	by a call to string_cspn() and a call to string_spn().
+	(lines_differ): Every couple of for cycles to move f2 
+	to the beginning of the next field has been replaced
+	by a call to string_cspn() and a call to string_spn().
+	(lines_differ): for cycle to set e1 and let it point to
+	the end of the field pointed to by f1 replaced by a call
+	to string_cspn().
+	(lines_differ): for cycle to set e2 and let it point to
+	the end of the field pointed to by f2 replaced by a call
+	to string_cspn().
+	(lines_differ): The instructions
+	f1 = e1;  f2 = e2;
+	have been removed from block of  else if ((f1_is_blurred)) .
+	(lines_differ): The instructions
+	f1 = e1;  f2 = e2;
+	have been removed from `else' block of
+	if ( (compare_numeric_strings (f1, pnf, f2, Pnf)) ) .
+	(lines_differ): for cycle to move f1 from the end of a 
+	field to the beginning of the next field replaced by 
+	a call to string_spn().
+	(lines_differ): for cycle to move f2 from the end of a 
+	field to the beginning of the next field replaced by 
+	a call to string_spn().
+
+2013-08-22  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* thrlist.c, README: Doc fixes.
+
+	* read_line.c:
+	[_TEST_READ_LINE_]: Added instructions to include stdio.h, stdlib.h, and string.h
+	[_TEST_READ_LINE_]: New macro constant BUFF_SIZE
+	[_TEST_READ_LINE_]: New macro constants for error codes:
+	OK, LINE_INTERR, EOF_REACHED, READING_ERROR, OUT_OF_MEMORY, OPEN_FAILED,  
+	WRONG_USAGE, FILE_IS_BINARY.
+	(read_line): New variables n, ch, exception_occurred.
+	(read_line): Cycle   while ((ptr = fgets (buffer, BUFF_SIZE,pf))) { ... }
+	replaced by do { ... } while (!exception_occurred); (do not rely anymore
+	on function fgets() to read input lines, but use getc()).
+	(read_line): Test  if(!ptr)  replaced by  if ((exception_occurred)) .
+	(read_line): Added test  else if ( ch == '\0' ) . If the condition is true,
+	*errcode is set to FILE_IS_BINARY.
+	[_TEST_READ_LINE_] (main): New function.
+	Doc fixes.
+
+	* options.c: Added instruction to include linesplit.h
+	(print_version): Fixed copyright string.
+	(print_help): New help entry for options --delimiters,
+	help message for option -s improved.
+	(print_help): Since the short option for --dummy is not -D anymore but -U,
+	the format strings for a couple of printf() calls have been changed. 
+	(return_ifs): function removed.
+	(setargs): Changed initialization of optstring.
+	(setargs): Since the short option for --dummy is not -D anymore but -U,
+	the entry for the option "dummy" in the array long_options has been
+	changed.
+	(setargs): Since the short option for --dummy is not -D anymore but -U,
+	the label of the corresponding case in   switch (optch){...}
+	is now 'U' instead of 'D'.
+	(setargs): _SD_MASK replaced by _SU_MASK.
+	(setargs): Long option "separator" changed to "separators".
+	(setargs): Added entry for option "delimiters" to the array long_options.
+	(setargs): Instead of using xstrdup(), list->nf1.currency and
+	list->nf2.currency are now initialized by means of 
+	a call to get_separating_string().
+	(setargs): The memory reserved for list->ifs1 and list->ifs2 is now
+	freed by calling delete_string_vector() instead of free().
+	(setargs): ssplit_former_way() is now used in place of return_ifs().
+	(setargs): Added if statements to print a suitable error message and 
+	return -1 in case ssplit_former_way() returns NULL (to indicate a failure).
+	(setargs): To check for the presence of the newline character
+	in list->ifs1 and list->ifs2 the function is_string_in_vector() is used 
+	in place of strchr().
+	(setargs): Before `adding' _S_MASK to list->optmask,
+	the functions remove_duplicates_from_string_vector() and
+	sort_string_vector() are called on list->ifs1 and list->ifs2.
+	(setargs): Added case D to switch statement.
+	(setargs): In case c the function get_separating_string() is now used
+	in place of xstrdup() to set list->nf1.currency and list->nf2.currency.
+	Doc fixes.
+
+2013-08-18  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* numutil.c: Doc fixes.
+
+	* numdiff.h (FILE_IS_BINARY): New macro.
+	(argslist): Changed declaration of the fields ifs1 and ifs2.
+	(_SD_MASK): Macro removed.
+	(_SU_MASK): New macro.
+	(IFS): Macro removed.
+	Doc fixes.
+
+	* new.c: Doc fixes.
+
+	* ndselect.h (Argslist): Changed declaration of field ifs.
+	(Argslist): New field osep.
+	New macros ___SD_MASK and ___SO_MASK.
+	Redefinition of macros ___X_MASK and ___V_MASK.
+	Doc fixes.
+
+	* ndselect.c: Added instruction to include linesplit.h.
+	(return_ifs): function removed.
+	(print_line): Signature and definition changed. All callers changed.
+	(print_line): strspn() and strcspn() replaced by
+	string_spn() and string_cspn() respectively.
+	(print_line): The setting of the variable stop depends now
+	on the value of the variable osep.
+	(print_line): If osep is not NULL, it is printed to the standard
+	output after every selected field.
+	(scan_file): Signature and definition changed. All callers changed.
+	(scan_file): Definition of ifs changed.
+	(scan_file): IFS replaced by def_ifs.
+	(scan_file): calls to print_line() changed.
+	(print_selversion): Fixed copyright string.
+	(print_selhelp): New help entries for options -D and -O,
+	help message for option -S improved.
+	(set_args): Changed initialization of optstring.
+	(set_args): Added entries for options "delimiters"
+	and "output-separator" to the array long_options.
+	(set_args): Long option "separator" changed to "separators".
+	(set_args): Added initialization code for list->osep.
+	(set_args): The memory reserved for list.ifs is now
+	freed by calling delete_string_vector() instead of free(),
+	and after list->ifs is reinitialized to NULL.
+	(set_args): ssplit_former_way() is now used in place of return_ifs().
+	(set_args): To check for the presence of the newline character
+	in list->ifs the function is_string_in_vector() is used 
+	in place of strchr().
+	(set_args): Before `adding' ___SS_MASK to list->optmask,
+	the functions remove_duplicates_from_string_vector() and
+	sort_string_vector() are called on list->ifs.
+	(set_args): Added cases D and O to switch statement.
+	Added definition of static variable def_ifs.
+	(clean_up_memory): New function.
+	(main): def_ifs is properly initialized by means of 
+	a call to ssplit().
+	(main): clean_up_memory() is registered through atexit() to
+	be called at process termination. 
+	(main): If either the call to atexit() or the 
+	initialization of def_ifs fails, the program exits after
+	printing a suitable error message.
+	(main): Changed call to scan_file().
+	Doc fixes.
+
+	* Makefile.in (VERSION): From 5.6.1 to 5.8.0.
+	(OBJECTS): Added ./linesplit.o.
+	(OBJECTSONE): Added ./linesplit.o.
+	(OBJECTSTWO): Added ./linesplit.o.
+	(SOURCESONE): Added $(srcdir)/linesplit.c.
+	(SOURCESTWO): Added $(srcdir)/linesplit.c.
+	(copy): Added commands to copy $(srcdir)/linesplit.c and $(srcdir)/linesplit.h.
+	Doc fixes.
+
+	* main.c: Added instruction to include linesplit.h.
+	Added definition of the external variable def_ifs.
+	(main): def_ifs is properly initialized by calling the function ssplit(),
+	added if statement to check for the successful initialization.
+	(main): The memory reserved for list.ifs1 and list.ifs2 is now
+	freed by calling delete_string_vector() instead of free().
+	(main): Before exiting the program, the function delete_string_vector()
+	is called to free the memory previously reserved for def_ifs.
+	(main): variable test is now initialized to 0 instead of -1.
+	(main): If the call to open_files() fails, the memory is cleaned now
+	before exiting the program.
+	(main): If compare_files() returns a negative value, the program
+	now exits after printing a suitable error message.
+	(main): Now, if either rewind_files() or set_file_pointers() fails, 
+	the memory is cleaned and all files are properly closed 
+	before exiting the program.
+	Doc fixes.
+
+	* io.c, INSTALL: Doc fixes.
+
+	* inout.c: Added instruction to include linesplit.h.
+	(find_and_hash_each_line): Signature and definition changed, all callers changed.
+	(find_and_hash_each_line): for cycle to initialize p and
+	let it point to the first field replaced by a call to string_spn().
+	(find_and_hash_each_line): for cycle to initialize eof 
+	replaced by a call to string_cspn().
+	(find_and_hash_each_line): for cycle to move p to the
+	beginning of the next field replaced by a call to string_spn().
+	Added declaration of the external variable def_ifs.
+	(read_files): ifs1 and ifs2 redefined as char**.
+	(read_files): IFS replaced by def_ifs.
+	(read_files): call to find_and_hash_each_line() changed.
+	Doc fixes.
+
+	* flags.c, errors.c: Doc fixes.
+
+	* configure.ac: AC_INIT(...): From version 5.6 to 5.8.
+	Doc fixes.
+
+	* config.h.in (VERSION): From 5.6.1 to 5.8.0.
+	Doc fixes.
+
+	* cmpfns.c: Added instruction to include linesplit.h.
+	(cmp_lines): Signature and definition changed. All callers changed.
+	(cmp_lines): New local variables end_field1, end_field2.
+	(cmp_lines): strspn() and strcspn() replaced by 
+	string_spn() and string_cspn(), respectively.
+	(cmp_lines): _SD_MASK replaced by _SU_MASK.
+	Added declaration of the external variable def_ifs.
+	(cmp_files): ifs1 and ifs2 redefined as char**.
+	(cmp_files): IFS replaced by def_ifs.
+	(cmp_files): Changed calls to cmp_lines().
+	(cmp_files): The if condition catching any error occurred 
+	while comparing corresponding lines has been extended:
+	the error FILE_IS_BINARY is also caught now.
+	(cmp_files): A suitable error message is printed if one
+	of the two compared files is binary.
+	(cmp_files): Message for reading error fixed.
+	(cmp_files): Format of error message fixed.
+	Doc fixes.
+
+	* AUTHORS, arith.c: Doc fixes.
+
+	* analyze.c (diff_2_files): The instruction which sets the value of 
+	the variable changes has been modified to ensure 
+	that the returned value is either 0 or 1.
+
+2013-07-11  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* linesplit.h, linesplit.c: New file.
+
+2012-02-22  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* Version 5.6.1 released.
+
+	* config.h.in (VERSION): From 5.6.0 to 5.6.1.
+
+	* Makefile.in: VERSION changed to 5.6.1.
+
+	* NEWS: Added news for version 5.6.1.
+
+	* Makefile.in (installdirs): Added  $(MKDIR) $(DESTDIR)$(MANDIR).
+
+2012-02-12  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* Version 5.6.0 released.
+
+	* side.c (display_half_line):
+	label control_char replaced by control_character.
+
+2012-02-05  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* NEWS: Dox fixes.
+
+	* main.c (compare_files):
+	Newline not any more printed, since it makes the report unclear.
+
+	* inout.c (_DEBUG_HASHING_): New Macro.
+	_DEBUG_ has been replaced by  _DEBUG_HASHING_.
+	(find_and_hash_each_line): Fixed improper handling of a file whose last line
+	does not have a trailing newline (bucket[-1] no longer used).
+	(find_and_hash_each_line): Bug fix imported from GNU Diffutils 3.0.
+	(find_and_hash_each_line)[_DEBUG_HASHING_]: Added code for debug.
+	(find_identical_ends): Bug fix imported from GNU Diffutils 3.0.
+
+	* flags.c:
+	(notedown_sdiff_script)[_DEBUG_FLAGSTABLE_]: New debug instruction.
+
+	* cmpfns.c (cmp_files):
+	Fixed improper handling of files whose last line
+	does not have a trailing newline in case filter is on.
+
+	* numdiff.h (_DEBUG_HASHING_): New Macro.
+	_DEBUG_ has been replaced by  _DEBUG_HASHING_.
+
+	* options.c (print_help): two help entries fixed.
+
+2012-01-05  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* ndselect.c (print_selhelp): Several fixes to help entries.
+
+	* options.c (print_help): Several fixes to help entries.
+
+	* cmpfns.c (cmp_lines):
+	New constant fieldno_upper_limit, set to 8*FIELDMASK_SIZE.
+	(cmp_lines): Constant value 8*FIELDMASK_SIZE replaced everywhere
+	by fieldno_upper_limit.
+
+2012-01-03  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* NEWS: Doc fixes.
+
+	* ndselect.c (print_line): Signature changed. All callers changed.
+	(print_line): Added if-else statement based on the value of
+	the variable omit_if_empty.
+	(scan_file): New variable omit_empty_lines, added
+	initialization code.
+	(print_selhelp): New help entry for option `-x',
+	help message improved.
+	(set_args): Changed initialization of optstring.
+	(set_args): Added entry for option "omit-empty-lines" to the array long_options.
+	(set_args): Added case 'x' to switch statement.
+
+	* ndselect.h (___X_MASK): New macro.
+	(___V_MASK): The value of this macro has been changed.
+
+2012-01-02  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* Makefile.in (MANFILETWO): changed description of the manpage.
+
+	* NEWS: Doc fixes.
+
+	* options.c (print_help):
+	New help entry for option -F, other help messages improved.
+	(setargs): Changed initialization of optstring.
+	(setargs): Added entry for option "formula" to the array long_options.
+	(setargs): Added case 'F' to switch statement.
+	(setargs): Removed initial if-else if-else statement from case 'r',
+	replaced by a single call to thrlist_add.
+	(setargs): Parentheses have been written around operator &.
+
+	* numdiff.h: Doc fixes.
+
+	* ndselect.h (Argslist):
+	New fields first_field, last_field, increment, and ifs.
+	(___SF_MASK ___SL_MASK ___SI_MASK ___SS_MASK): New macros.
+	(___V_MASK): The value of this macro has been changed.
+
+	Doc fixes.
+
+	* ndselect.c (return_ifs): New function, copied from options.c.
+	(we_can_go_on): New function.
+	(print_line): New function.
+	(scan_file): New variable ifs, then added initialization code for ifs.
+	(scan_file): call to fputs replaced by call to print_line (done twice).
+	(print_selhelp): New help entries for options -F, -L, -I and -S,
+	other help messages improved.
+	(set_args): Changed initialization of optstring.
+	(set_args): Added entries for "first-field", "last-field", "increment" and
+	"separator" options to the array long_options.
+	(set_args): Added initialization code for list->first_field, list->last_field,
+	list->increment and list->ifs.
+	(set_args): Added cases F, L, I and S to switch statement.
+
+	Doc fixes.
+
+2011-12-31  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* util.c (lines_differ):
+	New constant fieldno_upper_limit, set to 8*FIELDMASK_SIZE.
+	(lines_differ): 8*FIELDMASK_SIZE replaced by fieldno_upper_limit everywhere.
+	(lines_differ): Error message "Line \"%s\"\ncontains too many fields!\n"
+	replaced by a clearer explanation, which is sent to stderr through fprintf.
+
+	* thrlist.c (defaults): Added field CURRENCY.
+	(thrlist_new): list->beg1, list->beg2, and list->end1, list->end2
+	are initialized now with 0 and FIELDNO_MAX - 1 respectively.
+	(thrlist_new): list->double_range_spec is set to zero.
+	(set_interval): *b and *e are set now to beg-1 and end-1 respectively.
+	(set_intervals): Signature has been changed. All callers changed.
+	(set_intervals): Added code to set the variable pointed to by dbl_rng_spec.
+	(thrlist_add): New variable dbl_rng_spec.
+	(thrlist_add): beg1, beg2, and end1, end2 are initialized
+	now with 0 and FIELDNO_MAX - 1 respectively.
+	(thrlist_add): pnode->double_range_spec set to dbl_rng_spec.
+	(thrlist_cmp): The value returned by this function depends now also on the value
+	of pnode->double_range_spec.
+
+	Doc fixes.
+
+	* options.c (print_version): Copyright statement updated.
+	(print_help): Help strings have been updated or improved.
+	New help entries for options `-c' and `-B'.
+	Added instruction to display the default value of the currency name.
+	(VALID_NUMFMT INVALID_NUMFMT INVALID_CURRENCY): New macros.
+	(valid_numfmt): Name changed to is_numfmt_valid. All callers changed.
+	(valid_numfmt): New variable ptr.
+	(valid_numfmt): Macros VALID_NUMFMT, INVALID_NUMFMT and INVALID_CURRENCY are used
+	in the 'return' statements in place of hardcoded integer values.
+	(valid_numfmt): Added code to check the validity of the string pointed to by
+	pnf->currency.
+	(setargs): New constant mask_size, defined as FIELDMASK_SIZE*8.
+	(setargs): modified string pointed to by optstring.
+	(setargs): Added entries for "binary" and "currency" options to the array long_options.
+	(setargs): New variables binary, rv and file_id.
+	(setargs): Removed variable defaults.
+	(setargs): Added initialization of variable binary.
+	(setargs): Added initialization of list->nf*.currency.
+	(setargs): Added cases 'B' and 'c' to switch statement.
+	(setargs): FIELDMASK_SIZE*8 replaced by mask_size everywhere.
+	(setargs)[USE_GMP]: Removed call to delR(), removed directive (done twice).
+	(setargs): thrlist_add is used in place of str2R to add new elements to
+	list->maxabserr and list->maxrelerr. Error handling consequently updated.
+	(setargs): tests "if (!valid_numfmt(&list->nf*) )" replaced by
+	"if ( (rv = is_numfmt_valid(&list->nf*)) == INVALID_NUMFMT )"
+	(setargs): Added code to handle the cases when is_numfmt_valid returns INVALID_CURRENCY.
+
+	Doc fixes.
+
+	* numutil.c (anum):
+	 New variable length, used to store the length of the string pnf->currency.
+	Added code to skip the currency name, if specified.
+	(snum):  New variable length, used to store the length of the string pnf->currency.
+	Added code to skip the currency name, if specified.
+
+	Doc fixes.
+
+	* numdiff.h (currency): New variable.
+	(maxabserr maxrelerr): Variable type has been changed.
+	(CURRENCY): New macro.
+	(binary): New variable.
+
+	Doc fixes.
+
+	* new.c (bc_a2num): New variable length, used to store
+	the length of the string pnf->currency. Added
+	code to skip the currency name, if specified.
+
+	Doc fixes.
+
+	* ndselect.c (print_selversion): Copyright statement updated.
+	Doc fixes.
+
+	* Makefile.in: VERSION set to 5.6.0.
+	(mandir MANDIR HELP2MAN MANFILE MANFILETWO): New variables.
+	(OBJECTSTWO): Added ./getopt1.o.
+	(SOURCESTWO): Added $(srcdir)/getopt1.c.
+	(man $(MANFILE) $(MANFILETWO)): New targets
+	for creation of manpages.
+	(install): Added installation of manpages.
+	(uninstall): Added removal of files
+	$(PACKAGE).1 and $(PACKAGETWO).1, i.e.
+	removal of numdiff and ndselect manpages.
+	(maintainer-clean): Added cleaning instructions for
+	$(MANFILE) and $(MANFILETWO).
+	(copy): Added instructions to copy $(MANFILE)
+	and (MANFILETWO) from docs directory to tarball directory.
+
+	* main.c (init_mpa_support): list->maxabserr and
+	list->maxrelerr are now initialized through
+	a call to thrlist_new(), instead of using initR().
+	(dismiss_mpa_support): list->maxabserr and
+	list->maxrelerr are now disposed through a call
+	to thrlist_dispose(), instead of using delR().
+	(main): variable defaults removed.
+	Doc fixes.
+
+	* configure.ac: AC_INIT(...): From version 5.2 to 5.6.
+
+	* NEWS: Added news for version 5.6.0.
+
+2011-12-30  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* README, read_line.c, ndselect.h, io.c, INSTALL: Doc fixes.
+
+	* inout.c (find_and_hash_each_line): New constant fieldno_upper_limit,
+	set to FIELDMASK_SIZE*8.
+	(find_and_hash_each_line): Added test "fieldno < fieldno_upper_limit" to for cycle.
+	(find_and_hash_each_line): Added error handling in case
+	fieldno >= fieldno_upper_limit.
+
+	* flags.c, errors.c: Doc fixes.
+
+	* configure.ac:
+	AC_CHECK_LIB(gmp, __gmpz_init): Do not search for the GMP library
+	if its use has been turned off through --disable-gmp or
+	--enable-gmp=no.
+	AC_CHECK_LIB(intl, setlocale): If the support for NLS is on, search
+	for the function setlocale in libintl (this fixes building bug
+	under Cygwin).
+	Doc fixes.
+
+	* config.h.in: VERSION changed to 5.6.0.
+	Doc fixes.
+
+	* cmpfns.c (cmp_fields): Signature changed. All callers changed.
+	(cmp_fields): Calls to cmp replaced by calls to thrlist_cmp.
+	(cmp_lines): Error message "@ Line %lu in file \"%s\" contains too many fields!\n" replaced by a clearer message.
+	(cmp_files): Error message "\n***  End of file \"%s\" reached while trying to read line %lu.\n" replaced by clearer message.
+	Doc fixes.
+
+	* AUTHORS, arith.c: Doc fixes.
+
+2011-10-30  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* Makefile.in (OBJECTS OBJECTSONE): Added ./thrlist.o.
+	(SOURCESONE): Added source $(srcdir)/thrlist.c.
+	(copy): Added instruction to copy thrlist.c
+	from source directory to tarball directory.
+
+	* numdiff.h (THRLIST_OK THRLIST_INVALID_FORMAT THRLIST_INVALID_RANGES):
+	New macros.
+	(__thrlist_node): New struct.
+	(thrlist_node): Alias for __thrlist_node.
+	(thrlist): Alias for thrlist_node*.
+	(thrlist_new thrlist_add thrlist_cmp thrlist_dispose): Added declarations.
+
+	* thrlist.c: New file.
+
+2011-10-01  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* side.c (display_half_line): New function.
+	(print_1overview_line): New function.
+
+	* options.c (print_help): New help entry for option -O.
+	(setargs): modified string pointed to by optstring.
+	(setargs): Added entry for "overview" option to the array long_options.
+	(setargs): Added case O to switch statement.
+	(setargs): Added code to initialize list->output_mode to OUTMODE_OVERVIEW.
+
+	* numdiff.h (_SO_MASK): New macro for option -O.
+	(_SS_MASK _SI_MASK _SH_MASK _M_MASK _V_MASK): The values of these macros have been changed.
+	(OUTMODE_OVERVIEW): New macro.
+	(print_1overview_line): Added declaration.
+
+	Doc fixes.
+
+	* Makefile.in: VERSION changed to 5.3.0.
+
+	* config.h.in: VERSION set to 5.3.0.
+
+	* cmpfns.c (cmp_files):
+	Addition of code for the implementation of the overview mode,
+	i.e. added calls to the function print_1overview_line. In case the compared
+	files are equal, print_1overview_line is called only if suppress_common_lines
+	is false (0).
+
+2010-01-24  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	Version 5.2.1 released.
+
+2010-01-24  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* Makefile.in: VERSION changed to 5.2.1.
+
+	* config.h.in (VERSION): From 5.2.0 to 5.2.1.
+
+	* NEWS: Added news for version 5.2.1.
+
+	* system.h: [!ENABLE_NLS] (ngettext): Macro definition.
+
+
+2010-01-07  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	Version 5.2.0 released.
+
+2010-01-07  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* util.c: Doc fixes.
+
+	* util.c: New file.
+
+	* side.c: Doc fixes.
+
+	* side.c: New file.
+
+	* inout.c: Doc fixes.
+
+	* inout.c: New file.
+
+	* analyze.c: Doc fixes.
+
+	* analyze.c: New file.
+
+	* number.c: Doc fixes.
+
+	* options.c: (print_version) [!USE_GMP]: Message string fixed.
+	(print_help): Message string fixed.
+
+2010-01-06  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* NEWS, INSTALL: Doc fixes.
+
+2010-01-05  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* ndselect.c (print_selversion): Fixed Copyright string.
+
+	* read_line.c: Doc fixes.
+
+	* options.c: Doc fixes.
+
+	(print_version): Fixed Copyright string.
+
+	* numutil.c, numdiff.h, number.c: Doc fixes.
+
+	* number.c: New file.
+
+	* new.c, ndselect.h: Doc fixes.
+
+	* ndselect.h: New file.
+
+	* ndselect.c, main.c, io.c, flags.c: Doc fixes.
+
+	* flags.c: New file.
+
+	* errors.c, configure.ac, config.h.in, cmpfns.c, arith.c, README:
+	Doc fixes.
+
+	* README: New file.
+
+	* Makefile.in, INSTALL: Doc fixes.
+
+	* INSTALL, BUGS: New file.
+
+	* AUTHORS: Doc fixes.
+
+	* AUTHORS: New file.
+
+2010-01-03  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* ndselect.c: [USE_GMP]: Removed zalloc.
+	string.h and numutil.c are not anymore included.
+
+	Removed declaration of read_line.
+	Include read_line.c.
+
+	* Makefile.in (SOURCESONE): Added $(srcdir)/read_line.c.
+	(OBJECTSTWO): Removed ./arith.o and ./io.o.
+	(SOURCESTWO): Removed $(srcdir)/arith.c and $(srcdir)/io.c.
+	Added $(srcdir)/read_line.c.
+	(copy): Added instruction to copy read_line.c
+	from source directory to tarball directory.
+
+	* io.c: Doc-fixes: Removed unuseful comments.
+	(read_line): Moved to file read_line.c.
+	Added instruction to include read_line.c.
+
+	* read_line.c, io.c: New file.
+
+	* arith.c: [USE_GMP] (str2C): Replaced isspace by is_space.
+	Replaced '+' by POS_SIGN and '-' by NEG_SIGN.
+	[!USE_GMP] (str2C): Replaced isspace by is_space.
+	Replaced '+' by POS_SIGN and '-' by NEG_SIGN.
+
+	* ndselect.c (setargs): Replaced isspace by is_space.
+
+	* numdiff.h (is_digit, is_punct, is_print): Macro re-definition.
+	(is_space): Macro definition. The macro isspace has been
+	replaced everywhere by is_space.
+
+	* system.h: New file.
+
+	* numutil.c (anum, snum): Replaced toupper by TOLOWER.
+	(anum, acxnum, snum, scxnum): Replaced isspace by is_space.
+
+	* cmpfns.c (strNcasecmp): Replaced tolower by TOLOWER.
+
+	* new.c (bc_a2num): Replaced toupper by TOLOWER.
+	Replaced isspace by is_space.
+
+	* new.c: New file.
+
+2009-12-30  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* NEWS: Added news for version 5.2.0.
+
+	* NEWS: New file.
+
+	* configure.ac: New option --enable-gmp / --disable-gmp.
+	Usage of GNU MP is enabled by default.
+
+	* arith.c: HAVE_LIBGMP has been replaced by USE_GMP.
+	(Epsilon, MEpsilon): Removed.
+	(mpa_define_epsilon, mpa_undef_epsilon): Removed.
+	[USE_GMP] (init_mpa): Signature and definition (argument
+	iscale is used in place of MAX_ISCALE) changed.
+	All callers in other files changed.
+	[!USE_GMP] (init_mpa): Signature changed.
+	All callers in other files changed.
+	(copyR, copyC): Signature and definition changed.
+	All callers in other files changed.
+	[USE_GMP] (str2R, str2C): Calls to mpf_a2num() changed.
+	(cmp, is0): Signature and definition changed.
+	All callers in other files changed.
+	[USE_GMP] (fprintno): Test (u == Inf) has been correctly rewritten.
+	[USE_GMP] (end_mpa): Variable Inf is also cleared now.
+
+	* main.c (init_mpa_support): Call to init_mpa() changed.
+	(print_statistics) [USE_GMP]: Added code to initialize qm_abserr and qm_relerr.
+	(print_statistics): Removed commented out old code.
+	(print_statistics): Changed calls to copyR().
+	(main): Removed calls to mpa_define_epsilon() and mpa_undef_epsilon().
+
+	* ndselect.c: [USE_GMP] (zalloc): New function.
+	[USE_GMP]: Include numutil.c.
+
+	* options.c:
+	(print_version) [USE_GMP]: Added statement on the way the program has been built.
+	(print_version) [!USE_GMP]: Modified statement on the way the program has been built.
+	(set_args) [!USE_GMP]: Removed code to avoid memory leak (not needed in this case
+	and even dangerous).
+
+	* errors.c (out_of_memory):
+	Added missing argument in the call to fprintf().
+
+	* numutil.c: HAVE_LIBGMP has been replaced by USE_GMP.
+	[USE_GMP](mpf_a2num): The case when the number returned by snum()
+	is zero is now correctly handled.
+
+	* cmpfns.c (cmp, is0, copyR): Calls changed.
+
+	* numdiff.h (USE_GMP): New Macro.
+	HAVE_LIBGMP has been replaced by USE_GMP.
+	(MAX_EPXN, MIN_EXPN): They are now constant values of 'long int' type.
+	(cmp, is0, init_mpa, copyR, copyC): Redefinition of signature.
+	All callers changed.
+	(mpa_define_epsilon, mpa_undef_epsilon): Removed.
+
+	* errors.c, options.c, ndselect.c, main.c, cmpfns.c: New file.
+
+2009-12-29  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* configure.ac: AC_INIT(...): From version 5.0 to 5.2.
+
+	* config.h.in (HAVE_LIBGMP): New Macro.
+	(HAVE_LOCALECONV): New Macro.
+	(VERSION): From 5.0.0 to 5.2.0.
+
+	* Makefile.in: VERSION changed to 5.2.0.
+
+	* config.h.in: New file.
+
+	* numutil.c:
+	[HAVE_LIBGMP] (mpf_a2num): Bug fixes after running a text program.
+
+	* numutil.c:
+	[HAVE_LIBGMP] (mpf_a2num): Removed memory leak + Doc fixes.
+
+	* arith.c: [HAVE_LIBGMP] (fprintno): Memory leak removed
+
+2009-12-28  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* numutil.c: [HAVE_LOCALECONV && HAVE_LIBGMP]: Include locale.h.
+	[HAVE_LIBGMP] (mpf_a2num): New function.
+
+	* numutil.c: New file.
+
+	* configure.ac: AC_CHECK_FUNCS(...): Check for localeconv added.
+
+	* numdiff.h (CHAR_ONE CHAR_NINE): Macro definition.
+	[HAVE_LIBGMP] (mpf_a2num): Declaration.
+
+	* arith.c: [HAVE_LIBGMP] (round_far_from_zero fprintno): New functions.
+	[HAVE_LIBGMP] (printno, debug_printno): Transformed into wrappers of the function fprintno.
+	[HAVE_LIBGMP] (str2R): Call to mpf_a2num changed in view of the actual definition of this function.
+
+	* arith.c:
+	[HAVE_LIBGMP] (Zero, Ten, Inf, Epsilon, MEpsilon): Definition of variables.
+	[HAVE_LIBGMP] (init_mpa, mpa_define_epsilon, initR, initC, copyR, copyC)
+	(str2R, str2C, add, square, divide, divide_by_int, square_root)
+	(Cabs, Csub, cmp, is0, smart_cmp, printno, debug_printno)
+	(delR, delC, mpa_undef_epsilon, end_mpa): New functions.
+	[!HAVE_LIBGMP] (copyR, copyC): Re-definition according to the new signature.
+
+	* numdiff.h (copyR copyC): Redefinition of signature.
+	All callers changed.
+
+2009-12-13  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* Makefile.in: Added createdirs, copy and tarball targets.
+	Target dist rewritten.
+
+	* Makefile.in, arith.c: New file.
+
+2009-12-12  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* numdiff.h: [HAVE_LIBGMP] (Real Complex): Definition of types.
+
+	* numdiff.h: New file.
+
+	* configure.ac: AC_CHECK_LIB(gmp, __gmpz_init): Check for GNUMP added.
+
+	* configure.ac: New file.
+
+2009-11-31  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	Version 5.0.0 released.
+

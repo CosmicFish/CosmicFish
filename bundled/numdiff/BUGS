@@ -1,0 +1,25 @@
+Bug reports have to be sent to the address
+<ivprimi(at)libero(dot)it> . Please, put Numdiff
+in the subject and indicate the version of the operating system you
+are running (in particular, do not forget to specify if
+it is a 32- or a 64-bit system), and, if you know it, 
+the version of the compiler used to build Numdiff.
+Please write also whether your version of Numdiff uses the
+GNU MP library or not.
+Before writing an email be sure to run the latest
+stable version of Numdiff, I do not provide
+support for older versions.
+
+-------------------------------------------------------------------------------
+
+Known issues 
+============
+
+If you use gcc 4.7.2 or clang 3.3 to compile and build Numdiff (but other
+versions of these compilers could also be affected by this issue), do not run 
+"configure" with "--enable-optimization" and do not set the environment 
+variable CFLAGS to -O, -O1, -O2, etc., unless you also use "--disable-gmp". 
+If you enable the optimized build of the code while keeping GMP-based 
+multiple precision arithmetic active, then the executable of Numdiff you get
+will not run properly (long execution time with overloading of the processor).
+

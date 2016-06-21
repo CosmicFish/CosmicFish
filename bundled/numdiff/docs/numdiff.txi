@@ -1,0 +1,4711 @@
+\input texinfo   @c -*-texinfo-*-
+@c %**start of header
+@setfilename numdiff.info
+@settitle Numdiff Manual 5.8
+@afourpaper
+@c %**end of header
+
+@dircategory Text creation and manipulation
+@direntry
+* Numdiff: (numdiff).  Comparing files containing numeric fields (and not only)
+@end direntry
+
+@copying
+
+@emph{``...und der eignen Kraft vertrauend steigt ein frei Geschlecht empor!''}
+@sp 2
+
+@noindent
+This manual describes how to install and use Numdiff,
+a program which compares 
+putatively similar files line by line and field by field,
+ignoring small numeric differences or/and different numeric formats.
+
+Copyright @copyright{} 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013  Ivano Primi  @email{ivprimi(at)libero(dot)it}
+
+@quotation
+Permission is granted to copy, distribute and/or modify this
+document under the terms of the GNU Free Documentation License, Version
+1.3 or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+A copy of the license is included in @ref{GNU Free Documentation License}.
+@end quotation
+@end copying
+
+@titlepage
+@title Numdiff User Manual, version 5.8
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@c Output the table of the contents at the beginning.
+@contents
+
+@ifnottex
+@node Top, Copying, (dir), (dir)
+@top Numdiff User Manual
+
+@insertcopying
+@end ifnottex
+
+@menu
+* Copying::                     Numdiff Copying Conditions (GPL)
+* Acknowledgments::             Acknowledgments
+* Overview::                    Introduction to numdiff
+* Installing::                  How to install numdiff
+* Invoking numdiff::            How to use numdiff     
+* ndselect::                    (numdiff) ndselect. Selecting lines and fields
+* Invoking ndselect::           How to use ndselect
+* Filtering::                   How to use the filter of numdiff      
+* Warnings::                    Various recommendations
+* GNU Free Documentation License::  The license covering this document  
+* Index::                       Complete index
+@end menu
+
+
+@node Copying, Acknowledgments, Top, Top
+@chapter Copying
+
+@cindex Copying Conditions
+@cindex License
+@cindex GNU General Public License
+@cindex GPL
+
+Numdiff (also written numdiff) is free software: 
+you can redistribute it and/or modify
+it under the terms of the GNU General Public License 
+as published by the Free Software Foundation, 
+either version 3 of the License, or
+(at your option) any later version.
+
+Numdiff is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see @uref{http://www.gnu.org/licenses/}.
+
+@node Acknowledgments, Overview, Copying, Top
+@chapter Acknowledgments
+
+@cindex Acknowledgments
+@cindex Thanks
+
+I want to thank Mr. Norman Clerman @email{norm(dot)opcon(at)fuse(dot)net}
+for several suggestions he gave me to improve the readability
+and the effectiveness of the output produced by Numdiff.
+He also pointed out the need to implement a filter
+to resynchronize the lines between two files in case of
+addition or deletion of one or more lines.
+I have to give him credit for the urge to prepare the
+versions 4.x and 5.x of Numdiff.
+
+Moreover, I want to thank my friends Mariapia Palombaro,
+since she removed some errors while
+reviewing the first version of this document, and
+Paolo Caramanica, who suggested me to add more
+information to the output of the option @option{-S}. 
+
+@node Overview, Installing, Acknowledgments, Top
+@chapter Overview
+
+@cindex Introduction
+@cindex Usage of numdiff
+@cindex Purposes
+@cindex How to use numdiff
+
+Computer users often find occasion to ask how two files differ.
+Perhaps one file is a newer version of the other file.  Or maybe the
+two files started out as identical copies but were changed by different
+people.
+
+There are several ways to think about the differences between two
+files.  One way to think of the differences is as a series of lines
+that were deleted from, inserted in, or changed in one file to produce
+the other file.  
+The well-known @command{diff} program compares two files line by line, 
+finds groups of lines that differ, and reports each group of differing lines.
+Without particular options, the @command{diff} program considers any
+change in the amount or in the type of the characters as a
+relevant difference. However, trough some command line options
+it also provides ways to suppress certain kinds of
+differences that are not important to the user.
+For instance, @command{diff} provides ways to ignore differences
+in the amount of white space between words or lines, or
+differences in alphabetic case.
+
+Another way to think of the differences is as a series of words
+that were deleted from, inserted in, or changed in one file to produce
+the other file.
+Here ``word'' refers to a sequence of non white-space characters 
+delimited by a couple of white-spaces, one before and the other
+one after the word.
+
+The less known @command{wdiff} program by Franc,ois Pinard  
+@email{pinard(at)iro(dot)umontreal(dot)ca}
+compares words in two files and reports the differences.
+
+At last, one can think of the differences between two files as a
+sequence of pairs of bytes that can be either identical or different.
+The @command{cmp} program reports the differences between two files 
+byte by byte, instead of line by line or word by word.  
+As a result, it is often more useful than @command{diff} or @command{wdiff}
+for comparing binary files.
+
+However, none of these approaches turns out to be good when
+you want to compare a couple of text files composed
+partially or entirely by numerical fields.
+Indeed, when you compare a couple of such files,
+what you want to obtain usually is a list of the numerical fields
+in the second file which @strong{numerically} differ
+from the corresponding fields in the first file. 
+But, as you probably knows, a number can be written
+using different notations and programs like @command{diff} or @command{wdiff}
+can not recognize whether a difference between two numeric fields
+is only due to the notation or is actually a difference of numerical
+values. 
+
+For instance, 11.23   and   11.2300000
+are the same number but represented in different ways.
+While, if you are interested in the numerical values, it is obvious
+that the difference in the representation is not meaningful
+and then it should be ignored, however @command{diff} and @command{wdiff}
+consider the previous one as a relevant difference and there
+is no way for you to tell these programs to ignore it!
+
+Another example of this type is given by
+98765.4321  and  9.87654321E04
+where the difference is only due to the use
+of the scientific notation in place of the ordinary decimal notation.
+
+Moreover, depending on your country you could stick
+to different conventions in writing numbers.
+For instance, the amount ``three hundred millions and
+fifty-two thousands of dollars and forty-six cents'' 
+is usually written by an Italian accountant as 300.052.000,46$
+while an American accountant would write 300,052,000.46$.
+Of course, 300.052.000,46$  and  300,052,000.46$
+represent the same amount of money but
+@command{diff} and @command{wdiff} would report a difference,
+which probably is not what you want in a similar
+case.
+
+At last, sometimes you could want to ignore even
+differences in numerical values as long as they do not
+overcome a certain threshold. In other words,
+you could desire to suppress all ``small'' numerical
+differences too.
+
+For instance, it could happen that you want to ignore
+all numerical differences whose absolute value is
+not greater than 0.0001. If this is the case, then
+the numerical fields 33  and  33.00009
+must be considered equal, while 33  and  33.00011
+must be reported as different.
+
+However, @command{diff} and @command{wdiff} can not be used
+to ignore ``small'' numerical differences, since they
+do not even know what a numerical difference is.
+
+What I have been saying till now explains why
+I decided to implement a new program with
+the capability to ``appropriately'' compare files containing numerical
+fields.
+In writing this program I was inspired by @command{ndiff},
+a GPL'ed software by Nelson H. Baabe of the Salt Lake
+City University. The author of @command{ndiff} had the same
+good reasons as me to write @command{ndiff}. @command{ndiff}
+is actually a good tool and I used it for a while. But I did not
+completely like the way it works and so @command{numdiff} was
+born.
+Although @command{ndiff} inspired @command{numdiff}, they are completely
+different from the viewpoint of the source code:
+@command{numdiff} has been entirely written from scratch
+with the addition of code coming from GNU bc, GNU diff
+and GNUlib.
+In addition, the last versions of Numdiff offer much more
+features than @command{ndiff} does.
+
+@command{numdiff} can be used to compare putatively similar files 
+line by line and field by field, ignoring small numeric differences 
+or/and different numeric formats.
+@command{numdiff} takes two mandatory arguments, the paths of the
+two files to compare, and, after splitting them into lines
+and the lines into fields 
+according to a given list of field delimiters, it compares
+every field of every line of the first file with
+the corresponding field of the second file.
+What @emph{corresponding} here exactly means
+depends on the options passed to the program on
+the command line. With no options, corresponding
+means the field of the second file at the same position,
+where position refers both to the line number and to the
+location within the line.
+If the compared fields are both legal
+numerical values, then @command{numdiff} performs a numerical comparison
+between them, else it performs a literal comparison,
+i.e. the usual byte-by-byte comparison.
+In case of literal comparison, two fields are regarded
+as equal if they are formed by the same sequence
+of characters.
+In case of numerical comparison and without specific
+command line options, two fields are regarded as equal
+if their numerical difference is zero.
+Mind that, if you do not explicitly 
+specify a list of field delimiters by means of the option @option{-s}
+or @option{-D}, @command{numdiff} takes as field delimiters
+the characters newline (@samp{\n}, ASCII code 0x0A),
+horizontal tabulation (@samp{\t}, ASCII code 0x09),
+and blank (@samp{ }, ASCII code 0x20).
+
+For example, if the file @file{list1} contains the data
+@verbatim
+accident        123     23Joshua          34.55           +3+4i	        water
+dog       -3455.321     cat             2.345678e-9     .0005-6.23e2i
+
+@end verbatim
+
+@noindent
+and file @file{list2} contains the data
+
+@verbatim
+Accident        123     23456          34.5500         +3.0001+4i
+dog       -3455.320098  Cat     +2.345678e-9            -6.23e2i    $$$
+A new line
+
+@end verbatim
+
+@noindent
+then the output of the command @samp{numdiff list1 list2} will be:
+
+@example
+----------------
+##1       #:1   <== accident
+##1       #:1   ==> Accident
+@@                                                     @@@@
+##1       #:3   <== 23Joshua
+##1       #:3   ==> 23456
+@@                                                     @@@@
+##1       #:5   <== +3+4i
+##1       #:5   ==> +3.0001+4i
+@@ Absolute error = 1.0000000000e-4, Relative error = 2.0000000000e-5
+##1       #>6   <== water
+##1             ==>
+@@ Line 1 in file "list2" is shorter than expected!
+----------------
+##2       #:2   <== -3455.321
+##2       #:2   ==> -3455.320098
+@@ Absolute error = 9.0200000000e-4, Relative error = 2.6104672633e-7
+##2       #:3   <== cat
+##2       #:3   ==> Cat
+@@                                                     @@@@
+##2       #:5   <== .0005-6.23e2i
+##2       #:5   ==> -6.23e2i
+@@ Absolute error = 5.0000000000e-4, Relative error = 8.0256821830e-7
+##2             <==
+##2       #>6   ==> $$$
+@@ Line 2 in file "list1" is shorter than expected!
+----------------
+##3             <==
+##3       #>1   ==> A new line
+@@ Line 3 in file "list1" is shorter than expected!
+----------------
+          <==
+##4       ==> 
+
+
++++  File "list1" differs from file "list2"
+@end example
+
+At the same time @command{numdiff} will print the following error message
+on stderr:
+@example
+***  End of file "list1" reached while trying to read line 4.
+     File "list2" has more lines than file "list1",
+     line 4 is the last one read from file "list2"
+@end example
+
+It is worth remarking that @command{numdiff} can recognize complex numbers,
+provided that they are written in the form @math{a+bi} or
+@math{a-bi} with no extra characters between the values @math{a}, @math{b} and
+the sign @math{+} or @math{-} (the symbol @math{i},
+used to represent the imaginary unit, can be changed by a suitable
+command line option, @pxref{Invoking numdiff}).
+If you do not know what complex numbers are, do not worry!
+In this case probably you will never manage files containing complex numbers
+and so you can happily continue to ignore them. :)
+
+We consider now an example which shows how Numdiff can
+resynchronize the lines between two files in case of addition or deletion 
+of one or more lines.
+The versions of Numdiff prior to 5 did not work well if 
+one of the two files to compare contains
+in the middle some lines more or less than the other one.
+For instance, if you have one file that is 1000 lines long that you
+are comparing to a second file 1001 lines long, and except for that one
+extra line, located, let us say, at line 500, the files are identical,
+then @command{numdiff} version 4.x does @strong{not} show only the one line difference:
+once the files are out of synchronization @command{numdiff} 4.x reports
+every line as different.
+Since version 5 it is possible in such cases to activate a filter which handles
+additions and deletions of lines. 
+There are several options ruling how the filter
+actually works and I will give later a detailed explanation
+on how to use them to obtain each time the wished result.
+The simplest way to activate the filter consists in
+using the option @option{-z @@}.
+If @file{bill1} and @file{bill2} are given by
+@verbatim
+ Month          Expenses
+-------------------------
+ Jan09          $  233.56
+ Feb09          $  850.77
+ Mar09          $   12.55
+ Apr09          $  524.00
+ May09          $   78.25
+ Jun09          $  230.00
+ Jul09          $  443.10
+ Aug09          $   67.65
+ Sep09          $   10.00
+ Oct09          $  201.45
+ Nov09          $  110.00
+ Dec09          $  200.27
+-------------------------
+Total           $ 2961.60
+@end verbatim
+
+@noindent
+and
+
+@verbatim
+ Month          Expenses
+ Jan09          $  234.00
+ Mar09          $   13.00
+ May09          $   78.25
+ Jul09          $  443.10
+ Sep09          $   10.00
+ Nov09          $  110.00
+ Jan10          $  200.00
+-------------------------
+
+Total           $ 1088.35   
+@end verbatim
+
+@noindent
+respectively, then the differences between the two files are:
+@itemize
+@item the insertion of the separator @verb{|-------------------------|}
+in @file{bill1} before the list of the months,
+@item the deletion in @file{bill2} of the lines
+related to the expenses for the months February,
+April, June, August, October, December, 
+@item small changes in @file{bill2} to the expenses
+of the months January 2009 and March,
+@item the presence in @file{bill2} of an entry for January 2010
+just before the separator @verb{|-------------------------|},
+@item the addition of an empty line to @file{bill2} after the separator
+@verb{|-------------------------|},
+@item and the different values for the total sum of the expenses.
+@end itemize
+
+The output of the command @samp{numdiff -z @@ -V bill1 bill2}
+(I have added here the option @option{-V} to let Numdiff show
+ which couples of lines it is comparing each time) 
+is exactly then what you expect:
+@anchor{command}
+@example
+
+----------------
+##2       <== -------------------------
+          ==>
+
+----------------
+##3       <==  Jan09          $  233.56
+##2       ==>  Jan09          $  234.00
+
+##3       #:3   <== 233.56
+##2       #:3   ==> 234.00
+@@ Absolute error = 4.4000000000e-1, Relative error = 1.8838842268e-3
+----------------
+##4       <==  Feb09          $  850.77
+          ==>
+
+----------------
+##5       <==  Mar09          $   12.55
+##3       ==>  Mar09          $   13.00
+
+##5       #:3   <== 12.55
+##3       #:3   ==> 13.00
+@@ Absolute error = 4.5000000000e-1, Relative error = 3.5856573705e-2
+----------------
+##6       <==  Apr09          $  524.00
+          ==>
+
+----------------
+##8       <==  Jun09          $  230.00
+          ==>
+
+----------------
+##10      <==  Aug09          $   67.65
+          ==>
+
+----------------
+##12      <==  Oct09          $  201.45
+          ==>
+
+----------------
+##14      <==  Dec09          $  200.27
+##8       ==>  Jan10          $  200.00
+
+##14      #:1   <== Dec09
+##8       #:1   ==> Jan10
+@@                                                     @@@@
+##14      #:3   <== 200.27
+##8       #:3   ==> 200.00
+@@ Absolute error = 2.7000000000e-1, Relative error = 1.3500000000e-3
+----------------
+          <==
+##10      ==> 
+
+----------------
+##16      <== Total           $ 2961.60
+##11      ==> Total           $ 1088.35
+
+##16      #:3   <== 2961.60
+##11      #:3   ==> 1088.35
+@@ Absolute error = 1.8732500000e+3, Relative error = 1.7211834428e+0
+
++++  File "bill1" differs from file "bill2"
+
+@end example
+Numdiff has reported correctly the following differences:
+@itemize
+@item the second line of file @file{bill1}, i.e.
+the one containing the separator, has no
+correspondance, or, if you prefer, has been deleted 
+from file @file{bill2}.
+@item The lines related to the months January
+and March 2009 have been slightly modified in
+@file{bill2}, namely the values of the expenses
+are slightly different. Notice that the line 
+with the expenses for January 2009 is the third one
+in file @file{bill1} and the second one in file
+@file{bill2}. This information
+is printed by Numdiff in the form
+@example
+##3       <==  Jan09          $  233.56
+##2       ==>  Jan09          $  234.00
+@end example
+Analogously
+@example
+##5       <==  Mar09          $   12.55
+##3       ==>  Mar09          $   13.00
+@end example 
+says that the line for March is
+the fifth one in @file{bill1} and the third
+one in @file{bill2}. 
+@item The line related to
+the total amount of the expenses
+appears also differently in the two files,
+since the amount of the expenses is different.
+Notice that this line is the 16th one
+in file @file{bill1} and the 11th one in file
+@file{bill2}.
+@item The lines related to the months February,
+April, June, August and October, i.e. the lines
+no. 4, 6, 8, 10 and 12 of @file{bill1}, are not present
+in @file{bill2}. 
+@item The line of @file{bill1} with the expenses for December 2009
+is replaced in @file{bill2} by the line containing
+the value of the expenses for January 2010.
+@item The tenth line of @file{bill2}, i.e. the empty line
+after the separator, is not present in @file{bill1}.
+With respect to @file{bill1} this line represents then an addition.
+@end itemize
+
+If you compare @file{bill1} and @file{bill2}
+without using the option @option{-z @@}, the result is completely
+misleading. This is the output of @samp{numdiff -V bill1 bill2}:
+@example
+
+----------------
+##2       <== -------------------------
+##2       ==>  Jan09          $  234.00
+
+##2       #:1   <== -------------------------
+##2       #:1   ==> Jan09
+@@                                                     @@@@
+##2             <==
+##2       #>2   ==> $  234.00
+@@ Line 2 in file "bill1" is shorter than expected!
+----------------
+##3       <==  Jan09          $  233.56
+##3       ==>  Mar09          $   13.00
+
+##3       #:1   <== Jan09
+##3       #:1   ==> Mar09
+@@                                                     @@@@
+##3       #:3   <== 233.56
+##3       #:3   ==> 13.00
+@@ Absolute error = 2.2056000000e+2, Relative error = 1.6966153846e+1
+----------------
+##4       <==  Feb09          $  850.77
+##4       ==>  May09          $   78.25
+
+##4       #:1   <== Feb09
+##4       #:1   ==> May09
+@@                                                     @@@@
+##4       #:3   <== 850.77
+##4       #:3   ==> 78.25
+@@ Absolute error = 7.7252000000e+2, Relative error = 9.8724600639e+0
+----------------
+##5       <==  Mar09          $   12.55
+##5       ==>  Jul09          $  443.10
+
+##5       #:1   <== Mar09
+##5       #:1   ==> Jul09
+@@                                                     @@@@
+##5       #:3   <== 12.55
+##5       #:3   ==> 443.10
+@@ Absolute error = 4.3055000000e+2, Relative error = 3.4306772908e+1
+----------------
+##6       <==  Apr09          $  524.00
+##6       ==>  Sep09          $   10.00
+
+##6       #:1   <== Apr09
+##6       #:1   ==> Sep09
+@@                                                     @@@@
+##6       #:3   <== 524.00
+##6       #:3   ==> 10.00
+@@ Absolute error = 5.1400000000e+2, Relative error = 5.1400000000e+1
+----------------
+##7       <==  May09          $   78.25
+##7       ==>  Nov09          $  110.00
+
+##7       #:1   <== May09
+##7       #:1   ==> Nov09
+@@                                                     @@@@
+##7       #:3   <== 78.25
+##7       #:3   ==> 110.00
+@@ Absolute error = 3.1750000000e+1, Relative error = 4.0575079872e-1
+----------------
+##8       <==  Jun09          $  230.00
+##8       ==>  Jan10          $  200.00
+
+##8       #:1   <== Jun09
+##8       #:1   ==> Jan10
+@@                                                     @@@@
+##8       #:3   <== 230.00
+##8       #:3   ==> 200.00
+@@ Absolute error = 3.0000000000e+1, Relative error = 1.5000000000e-1
+----------------
+##9       <==  Jul09          $  443.10
+##9       ==> -------------------------
+
+##9       #:1   <== Jul09
+##9       #:1   ==> -------------------------
+@@                                                     @@@@
+##9       #>2   <== $  443.10
+##9             ==>
+@@ Line 9 in file "bill2" is shorter than expected!
+----------------
+##10      <==  Aug09          $   67.65
+##10      ==> 
+
+##10      #>1   <== Aug09          $   67.65
+##10            ==>
+@@ Line 10 in file "bill2" is shorter than expected!
+----------------
+##11      <==  Sep09          $   10.00
+##11      ==> Total           $ 1088.35
+
+##11      #:1   <== Sep09
+##11      #:1   ==> Total
+@@                                                     @@@@
+##11      #:3   <== 10.00
+##11      #:3   ==> 1088.35
+@@ Absolute error = 1.0783500000e+3, Relative error = 1.0783500000e+2
+----------------
+##12      <==  Oct09          $  201.45
+          ==>
+
+
+***  End of file "bill2" reached while trying to read line 12.
+     File "bill1" has more lines than file "bill2",
+     line 12 is the last one read from file "bill1"
+
+
++++  File "bill1" differs from file "bill2"
+@end example
+Numdiff compares now the first, second, third line of @file{bill1}
+with the first, second, third line of @file{bill2} and so on.
+But probably this is not what you want in such a case: what
+is reasonable here is to compare entries related to the same
+month and not lines having the same location, i.e. the
+same line number.
+
+Numdiff offers also an option to run just the filter
+and see how it resynchronizes the two given files
+without doing any comparison between corresponding lines.
+The output of @samp{numdiff -z @@ -f bill1 bill2} is
+@example
+ Month          Expenses          Month          Expenses
+-------------------------     <
+ Jan09          $  233.56         Jan09          $  234.00
+ Feb09          $  850.77     <
+ Mar09          $   12.55         Mar09          $   13.00
+ Apr09          $  524.00     <
+ May09          $   78.25         May09          $   78.25
+ Jun09          $  230.00     <
+ Jul09          $  443.10         Jul09          $  443.10
+ Aug09          $   67.65     <
+ Sep09          $   10.00         Sep09          $   10.00
+ Oct09          $  201.45     <
+ Nov09          $  110.00         Nov09          $  110.00
+ Dec09          $  200.27     |   Jan10          $  200.00
+-------------------------        -------------------------
+                              >
+Total           $ 2961.60        Total           $ 1088.35
+
+
++++  File "bill1" differs from file "bill2"
+@end example
+
+@noindent
+and shows that the filter is doing its job in the right way,
+associating the lines according to the month
+and not to the line number.
+Running just the filter is extremely useful in all
+situations when you are not sure if the filter is working as
+you wish.
+You have indeed to instruct the filter in the right way to let
+it work correctly, and this requires the use of different
+options depending on the structure of the files to compare.
+Since to guess the right options can be sometime
+tricky, running just the filter and see the result is
+the best way to be certain that you are setting up
+everything correctly. 
+Later, @pxref{Filtering}, I will explain in detail 
+@itemize
+@item what the filter 
+does behind the scenes to understand
+if and how it has to resynchronize the files to compare,
+@item and how the related options affect the action
+of the filter.
+@end itemize
+
+By the way, it is even possible to use @option{-f}
+without any other additional option for the filter, like
+in @samp{numdiff -f bill1 bill2}, but the result is more or less
+the same you would obtain by performing a byte-by-byte comparison
+with removal of the field delimiters.
+
+The option @option{-f} can be followed by an argument in the form
+of an integer number whose meaning will be explained 
+later, @pxref{Use of the option -f}.
+
+Even if the output of @command{numdiff} is self-explanatory, in the
+next section I will explain in details all you have to know about it.
+
+@menu
+* Output format::         How numdiff prints its reports on stdout
+* Overview mode::         An alternative way to print listings of differences
+* Filter output::         How the built-in filter prints its report 
+@end menu
+
+@node Output format, Overview mode, , Overview
+@section Output format
+
+@cindex Output format (numdiff)
+@cindex Format of the reports
+
+Let us go back to our first example.
+If the files @file{list1} and @file{list2} contain the data
+@verbatim
+accident        123     23Joshua          34.55           +3+4i	        water
+dog       -3455.321     cat             2.345678e-9     .0005-6.23e2i
+
+@end verbatim
+
+@noindent
+and
+
+@verbatim
+Accident        123     23456          34.5500         +3.0001+4i
+dog       -3455.320098  Cat     +2.345678e-9            -6.23e2i    $$$
+A new line
+
+@end verbatim
+
+@noindent
+respectively, then the output of the command @samp{numdiff list1 list2}
+will be:
+
+@example
+----------------
+##1       #:1   <== accident
+##1       #:1   ==> Accident
+@@                                                     @@@@
+##1       #:3   <== 23Joshua
+##1       #:3   ==> 23456
+@@                                                     @@@@
+##1       #:5   <== +3+4i
+##1       #:5   ==> +3.0001+4i
+@@ Absolute error = 1.0000000000e-4, Relative error = 2.0000000000e-5
+##1       #>6   <== water
+##1             ==>
+@@ Line 1 in file "list2" is shorter than expected!
+----------------
+##2       #:2   <== -3455.321
+##2       #:2   ==> -3455.320098
+@@ Absolute error = 9.0200000000e-4, Relative error = 2.6104672633e-7
+##2       #:3   <== cat
+##2       #:3   ==> Cat
+@@                                                     @@@@
+##2       #:5   <== .0005-6.23e2i
+##2       #:5   ==> -6.23e2i
+@@ Absolute error = 5.0000000000e-4, Relative error = 8.0256821830e-7
+##2             <==
+##2       #>6   ==> $$$
+@@ Line 2 in file "list1" is shorter than expected!
+----------------
+##3             <==
+##3       #>1   ==> A new line
+@@ Line 3 in file "list1" is shorter than expected!
+----------------
+          <==
+##4       ==> 
+
+
++++  File "list1" differs from file "list2"
+@end example
+
+@command{numdiff} prints a report on the standard output
+for every field of the first file which
+differs from the corresponding field of the second file.
+
+First this report indicates the locations
+of the fields, namely the numbers
+of the lines where the fields appear and
+their positions within the line. The position in the line 
+is ``1'' for the first field of a line, ``2''
+for the second field, ``3''
+for the third one and so on: fields
+are numerated starting from the left hand of the line
+and proceeding towards the right hand.
+For each report the line number is introduced  by the symbol ``##'',
+while the field number by ``#:''.
+Then @command{numdiff} shows in what the difference consists.
+For instance,
+@example
+##1       #:1   <== accident
+##1       #:1   ==> Accident
+@@                                                     @@@@
+@end example
+
+@noindent
+means that the first field of the first line is
+``accident'' in the first file, while in the
+second file it appears as ``Accident''.
+This difference could be then canceled
+by removing ``accident'' from the first file
+and inserting ``Accident'' in place of it.
+The arrows ``<=='' and ``==>'' try to
+visualize this idea.
+Analogously,
+@example
+##2       #:2   <== -3455.321
+##2       #:2   ==> -3455.320098
+@@ Absolute error = 9.0200000000e-4, Relative error = 2.6104672633e-7
+@end example
+
+@noindent
+means that the second field of the second line
+is ``-3455.321'' in the first file and
+``-3455.320098'' in the second one.
+Since the contents of the field are numerical
+in both files, @command{numdiff} also prints
+the absolute and relative errors.
+
+The absolute error (or absolute difference) is given by the absolute
+value of the difference between the values  
+appearing in the two files.
+
+The relative error (or relative difference) is actually defined
+in a more complicated way.
+If @emph{n1} is the value appearing in the first
+file and @emph{n2} is the value in the second file,
+then the absolute error is given by the formula @emph{A=|n1-n2|},
+while the relative error @emph{R} is given by:
+
+@itemize
+@item @emph{R = 0} if @emph{n1} and @emph{n2} are equal,
+@item @emph{Inf} (infinity) if @emph{n2} differs from @emph{n1} and
+at least one of them is zero,
+@item @emph{R = A/ min(|n1|, |n2|)} if @emph{n1} and @emph{n2} are
+both non zero and @emph{n2} differs from @emph{n1}. @emph{min(|n1|, |n2|)}
+denotes the minimum between the absolute value of @emph{n1}
+and the absolute value of @emph{n2}.
+@end itemize
+
+@noindent
+With these definitions of absolute
+and relative error it turns out that @emph{A(n2, n1) = A(n1, n2)} and
+@emph{R(n2, n1) = R(n1, n2)}. In other words, the absolute/relative error
+does not change if you only change the order of the compared values.
+Since version 5 it is actually possible to let Numdiff
+compute the relative error always with respect to the value
+from the first file or always with respect to the value
+from the second file, instead of using the preceding formula.
+This can be done through the option @option{-F}, 
+@pxref{Alternative formulas for the computation of the relative difference}.
+
+If at least one of the compared fields is not numerical, then the output line
+reporting absolute and relative errors is replaced by
+the separator:
+@verbatim
+@                                                     @@
+@end verbatim
+
+It can happen that a line in one of the two
+files to compare contains 
+more fields than the corresponding line of
+the other file.
+When this is the case, @command{numdiff} reports this difference
+by telling that a certain line (identified by its
+line number) appears to be shorter than expected,
+just as in
+@example
+##1       #>6   <== water
+##1             ==>
+@@ Line 1 in file "list2" is shorter than expected!
+@end example
+
+or in
+@example
+##3             <==
+##3       #>1   ==> A new line
+@@ Line 3 in file "list1" is shorter than expected!
+@end example
+
+In addition, @command{numdiff} shows
+the @i{tail} of the longer line, using the notation ``#>@math{n}''
+to indicate the number @math{n} of the first field of the longer line
+for which there is no corresponding field in the shorter line.
+For example,
+@example
+##1       #>6   <== water
+##1             ==>
+@@ Line 1 in file "list2" is shorter than expected!
+@end example
+
+@noindent
+means that none of the fields of the first line starting from the sixth one
+has a corresponding field in the second file (@file{list2}).
+In this context, the symbol @verb{|<<*>>|} (when it appears) is used to denote
+the End-Of-File, i.e. a line or the tail of a line which
+is located at the end of the corresponding file and
+does not have a terminating @emph{newline} character. 
+
+It can also happen that one of the two
+files to compare has less lines than the other one.
+In this case, if no special option is passed to the program,
+@command{numdiff} prints the number of the first
+line which appears in only one of the two files and
+a message on the standard error telling in which of the two files
+the end has been prematurely reached:
+@example
+***  End of file "list1" reached while trying to read line 4.
+     File "list2" has more lines than file "list1",
+     line 4 is the last one read from file "list2"
+@end example
+
+Unless the option @option{-q} is used (@pxref{Invoking numdiff}),
+@command{numdiff} prints on standard output
+a message reporting the final status of the comparison.
+This message says either the two files are equal
+or they are different, just as in the example we are
+considering:
+@example
++++  File "list1" differs from file "list2"
+@end example
+
+@node Overview mode, Filter output, Output format, Overview
+@section Overview mode
+
+@cindex Overview mode of numdiff
+@cindex Side-by-side report (numdiff)
+
+Since version 5.6 an alternative way to display the differences
+between two files is available, which can be activated 
+through the option @option{-O}. 
+If this option is present on the command line, @command{numdiff}
+prints a side-by-side report instead of the usual one.
+
+For example, if @file{sheet1} contains the text
+@verbatim
+A    1    1
+B    2    4
+C    3    9
+D    4   16
+E    5   25
+F    6   36
+G    7   49
+H    8   64
+I    9   81
+J   10  100
+@end verbatim
+
+@noindent
+and @file{sheet2} the following lines
+
+@verbatim
+A    1      1
+B    2      4
+C    3.3    9.03
+D    4     16
+E    5.5   25.05
+F    6.6   36
+G    7.7   49.49
+H    8     64
+I    9.9   81.09
+@end verbatim
+
+@noindent
+then @samp{numdiff -O sheet1 sheet2} prints this report
+@example
+A    1    1                            A    1      1
+B    2    4                            B    2      4
+C    3    9                         :!:C    3.3    9.03
+D    4   16                            D    4     16
+E    5   25                         :!:E    5.5   25.05
+F    6   36                         :!:F    6.6   36
+G    7   49                         :!:G    7.7   49.49
+H    8   64                            H    8     64
+I    9   81                         :!:I    9.9   81.09
+J   10  100                         :<:
+
+***  End of file "sheet2" reached while trying to read line 10.
+     File "sheet1" has more lines than file "sheet2",
+     line 10 is the last one read from file "sheet1"
+
+
++++  File "sheet1" differs from file "sheet2"
+@end example
+
+On the left side you can see the lines coming from the file
+specified as first on the command line, i.e. @file{sheet1},
+on the right side the lines from the second file of the command line,
+in this case @file{sheet2}. In the middle there is a @i{gutter}
+which contains one of these markers:
+@table @samp
+@item white spaces
+The corresponding lines are in common.  That is, either the lines
+are identical, or the difference is ignored because of one of the
+options @option{-s}, @option{-D}, @option{-I}, @option{-X}, @option{-a}, 
+@option{-r}, @option{-P} and @option{-N}. 
+
+@item :!:
+The corresponding lines have at least one field which differs.
+
+@item :<:
+The files differ and only the first file contains the line.
+
+@item :>:
+The files differ and only the second file contains the line.
+@end table
+
+In the case of @file{sheet1} and @file{sheet2} a message
+is printed after the report saying that the end of the second file 
+has been prematurely reached. The two files do not have indeed
+the same number of lines and the filter has not been activated. 
+
+The option @option{-O} can take an optional argument, which
+allows to set the width of the output and eventually to suppress
+common lines, @pxref{Invoking numdiff}. 
+The default value for the width of the side-by-side report
+is 130. No wonder then that the command @samp{numdiff -O40 sheet1 sheet2}
+displays a report with shorter lines:
+@example
+A    1    1           A    1      1
+B    2    4           B    2      4
+C    3    9       :!: C    3.3    9.03
+D    4   16           D    4     16
+E    5   25       :!: E    5.5   25.05
+F    6   36       :!: F    6.6   36
+G    7   49       :!: G    7.7   49.49
+H    8   64           H    8     64
+I    9   81       :!: I    9.9   81.09
+J   10  100       :<:
+
+***  End of file "sheet2" reached while trying to read line 10.
+     File "sheet1" has more lines than file "sheet2",
+     line 10 is the last one read from file "sheet1"
+
+
++++  File "sheet1" differs from file "sheet2"
+@end example 
+
+A negative argument makes that only the differences are listed in
+the side-by-side report, as shown by
+the output of the command @samp{numdiff -O40 sheet1 sheet2}:
+@example
+C    3    9       :!: C    3.3    9.03
+E    5   25       :!: E    5.5   25.05
+F    6   36       :!: F    6.6   36
+G    7   49       :!: G    7.7   49.49
+I    9   81       :!: I    9.9   81.09
+J   10  100       :<:
+
+***  End of file "sheet2" reached while trying to read line 10.
+     File "sheet1" has more lines than file "sheet2",
+     line 10 is the last one read from file "sheet1"
+
+
++++  File "sheet1" differs from file "sheet2"
+@end example
+
+If you set the width of the report to a too small value, it can happen
+that some or even all lines from the compared files appear truncated as
+in the output of @samp{numdiff -O24 sheet1 sheet2}:
+@example
+A    1         A    1  
+B    2         B    2  
+C    3    :!:  C    3.3
+D    4         D    4  
+E    5    :!:  E    5.5
+F    6    :!:  F    6.6
+G    7    :!:  G    7.7
+H    8         H    8  
+I    9    :!:  I    9.9
+J   10    :<:
+
+***  End of file "sheet2" reached while trying to read line 10.
+     File "sheet1" has more lines than file "sheet2",
+     line 10 is the last one read from file "sheet1"
+
+
++++  File "sheet1" differs from file "sheet2"
+@end example
+
+If you set the width of the report to a very small value, Numdiff
+ignores it and uses the default value, i.e. 130.
+
+Notice that the numeric argument must immediately follow the option @option{-O},
+intermediate spaces are not allowed. This
+is also the case for the optional argument of @option{-f}, while
+the options of Numdiff which require a mandatory argument permit
+the presence of intermediate spaces between them and the argument.
+
+The option @option{-O} can be used together with any other option of
+Numdiff except for @option{-f}, @option{-q}, @option{-U}, @option{-E},
+@option{-V} and @option{-b}. When @option{-O} is in use, @option{-U}, 
+@option{-E}, @option{-V} and @option{-b} are ignored. If @option{-q}
+is present on the command line together with @option{-O}, then
+@option{-O} is ignored. Finally, if both @option{-f} and @option{-O}
+are present, then the behavior depends on the order: the option which
+appears first on the command line is the one which matters. 
+
+Therefore, the command @samp{numdiff -O40 -f sheet1 sheet2}
+displays the same report as @samp{numdiff -O40 sheet1 sheet2},
+while the output of @samp{numdiff -f -O40 sheet1 sheet2} is
+given by
+@example
+A    1    1                            A    1      1
+B    2    4                            B    2      4
+C    3    9                          | C    3.3    9.03
+D    4   16                            D    4     16
+E    5   25                          | E    5.5   25.05
+F    6   36                          | F    6.6   36
+G    7   49                          | G    7.7   49.49
+H    8   64                            H    8     64
+I    9   81                          | I    9.9   81.09
+J   10  100                          <
+
+
++++  File "sheet1" differs from file "sheet2"
+@end example 
+
+@noindent
+and coincides then with the one of @samp{numdiff -f sheet1 sheet2}.
+
+The option @option{-O} can be used together with the filter to cope
+with the addition/deletion of lines.
+If the file @file{sheet3} contains the text
+@verbatim
+A    1      1
+C    3.3    9.03
+E    5.5   25.05
+G    7.7   49.49
+I    9.9   81.09
+J    10   100.00
+K    0      0.02
+@end verbatim
+
+@noindent
+then @samp{numdiff -O40 sheet1 sheet3} prints a wrong report,
+as in the example with files @file{bill1} and @file{bill2}:
+@example
+A    1    1           A    1      1
+B    2    4     :!:   C    3.3    9.03
+C    3    9     :!:   E    5.5   25.05
+D    4   16     :!:   G    7.7   49.49
+E    5   25     :!:   I    9.9   81.09
+F    6   36     :!:   J    10   100.00
+G    7   49     :!:   K    0      0.02
+H    8   64     :<:
+
+***  End of file "sheet3" reached while trying to read line 8.
+     File "sheet1" has more lines than file "sheet3",
+     line 8 is the last one read from file "sheet1"
+
+
++++  File "sheet1" differs from file "sheet3"
+@end example
+
+On the other hand, the presence of @option{-z @@} makes Numdiff
+always compare fields of corresponding lines, as shown by
+the output of the command @samp{numdiff -O40 -z @@ sheet1 sheet3}:
+@example
+A    1    1           A    1      1
+B    2    4     :<:
+C    3    9     :!:   C    3.3    9.03
+D    4   16     :<:
+E    5   25     :!:   E    5.5   25.05
+F    6   36     :<:
+G    7   49     :!:   G    7.7   49.49
+H    8   64     :<:
+I    9   81     :!:   I    9.9   81.09
+J   10  100           J    10   100.00
+                :>:   K    0      0.02
+
++++  File "sheet1" differs from file "sheet3"
+@end example
+
+Side-by-side format is easy to read, but it has limitations.  
+It generates much wider output than usual, and truncates
+lines that are too long to fit.  Also, it relies on lining up output
+quite heavily, so its output looks particularly bad if you
+use varying width fonts, nonstandard tab stops, or nonprinting
+characters.
+ 
+@node Filter output, , Overview mode, Overview
+@section Output of the filter
+
+@cindex Filter output (numdiff)
+
+The output produced just by running the filter (option @option{-f}) is
+a side-by-side difference listing of the compared files
+like the one displayed by GNU sdiff. 
+The files are listed in two columns with a gutter between them.  The
+gutter contains one of the following markers:
+@table @samp
+@item white space
+The corresponding lines are in common.  That is, either the lines
+are identical, or the difference is ignored because of one of the
+options @option{-s}, @option{-D}, @option{-I}, @option{-X}, 
+@option{-z} and @option{-Z}. 
+
+@item |
+The corresponding lines differ, and they are either both complete
+or both incomplete.
+
+@item <
+@itemx (
+The files differ and only the first file contains the line.
+
+@item >
+@itemx )
+The files differ and only the second file contains the line.
+
+@item \
+The corresponding lines differ, and only the first line is
+incomplete.
+
+@item /
+The corresponding lines differ, and only the second line is
+incomplete.
+@end table
+
+An input line is incomplete if its last character is not a newline.
+This can happen only if the line is the last one of its file.
+When an output line of the side by side difference listing
+represents two differing lines, one might be incomplete
+while the other is not.  In this case the gutter is marked 
+@samp{\} if the line from the first file is incomplete, @samp{/} 
+if the line from the second file is.
+
+Like @option{-O}, the option @option{-f} can take an optional argument which
+allows to set the width of the output and eventually to suppress
+common lines, @pxref{Invoking numdiff} and @ref{Use of the option -f}.
+
+More generally, the user can always make @command{numdiff}
+avoid to print, partially or totally, the messages
+that it would otherwise send to standard output. 
+This can be achieved by some suitable command
+line options, @pxref{Invoking numdiff}.
+
+@node Installing, Invoking numdiff, Overview, Top
+@chapter Installing
+
+@cindex Install
+@cindex Compile
+@cindex Build
+
+To successfully compile, build and install Numdiff some
+tools are required. The first one is an ANSI C compiler.
+This compiler should at least accept 
+the option @option{-o} to write its output to a specified file,
+the option @option{-D} for macros predefinition,
+the option @option{-l} to search for a specified library,
+and the options @option{-I} and @option{-L}
+to add a given directory to the search path for include and
+library files respectively.
+
+In addition, you need a POSIX implementation of the @command{make} utility
+(I used both GNU make and smake by Joerg Schilling  
+to compile Numdiff) and a POSIX implementation
+of the commands @command{rm} and @command{find}.
+At last, you need a proper installation of GNU Texinfo 
+(in order to install the info documentation) and
+a shell sh-compatible.
+
+Numdiff has been successfully compiled and tested on:
+
+@itemize
+@item Slackware@registeredsymbol{} GNU/Linux 10.2 with the version 3.3.6 of the GNU C Compiler (GCC),
+@item Slackware GNU/Linux 11 with GCC 3.4.6,
+@item Slackware GNU/Linux 12.2 with GCC 4.2.4, 
+@item Slackware GNU/Linux 13 with GCC 4.3.3, 
+@item Debian@registeredsymbol{} GNU/Linux 4.0 with GCC 4.1.2 20061115 (prerelease) (Debian 4.1.1-21),
+@item Debian GNU/Linux 6.0.3 with GCC 4.4.5 (Debian 4.4.5-8),
+@item Debian GNU/Linux 7.1 with GCC 4.7.2 (Debian 4.7.2-5),
+@item SunOS@registeredsymbol{} 5.8 with GCC 2.95.3, and
+@item SunOS 5.10 (i386) with the version 5.9 of the Sun C compiler.
+@end itemize
+
+Configuration, building and installation of Numdiff can be
+performed through the standard three steps:
+@example
+        ./configure
+        make
+        make install
+@end example
+
+@noindent
+If you leave enabled the Natural Language Support and you
+also want to install the localization files (at the moment
+only the Italian localization is supplied), then, after
+@samp{make}, you will have to type and run
+@example
+        make install-nls
+@end example
+
+By default, @samp{make install} will install all the files in
+@file{/usr/local/bin}, @file{/usr/local/info} etc.  You can specify
+an installation prefix other than @file{/usr/local} using the
+option @option{--prefix} in the @command{configure} step,
+for instance @samp{--prefix=$HOME}:
+@example
+        ./configure --prefix=$HOME
+@end example 
+
+@noindent
+For better control, you can use the options
+@option{--bindir}, @option{--infodir}, and so on.
+Type @samp{./configure --help} to obtain
+the complete list of all the available options.
+
+Anyway, the documentation files, including a full User Manual
+available in several formats (HTML, PDF and plain ASCII text),
+will always be put in @file{@var{DOCDIR}/numdiff},
+where @var{DOCDIR} is the path specified by the option @option{--docdir}
+or, if this option has not been given to
+@command{configure}, @file{@var{PREFIX}/local/doc}.
+Here @var{PREFIX} is the installation prefix specified by the
+option @option{--prefix} or the default @file{/usr/local}.
+
+Once Numdiff has been installed you can remove all the
+files previously installed by a simple @samp{make uninstall}.
+If you have also installed the localization files trough
+@samp{make install-nls}, then, in order to remove also 
+these ones, use @samp{make uninstall-nls} in place
+of @samp{make uninstall}.
+
+Between the options accepted by @command{configure}
+there are @option{--enable-debug}, @option{--enable-optimization}, 
+@option{--enable-nls} and @option{--enable-gmp}.
+
+The option @option{--enable-debug} turns on debugging when
+compiling the source code. This is obtained by passing to the
+compiler the @option{-g} option, but you can change this default
+debugging flag (which could not even be recognized by your compiler)
+by setting the environment variable @env{DBGFLAGS} before
+calling @command{configure}.
+
+The option @option{--enable-optimization} turns on basic optimization when
+compiling the source code. This is obtained by passing to the
+compiler the @option{-O} option, but you can change this default
+flag (which could not even be recognized by your compiler)
+by setting the environment variable @env{OPTFLAGS} before
+calling @command{configure}.
+
+The option @option{--enable-nls} turns on Natural Language Support.
+But you do not need to use it explicitly, since Natural
+Language Support is enabled by default.
+However, you can disable it by using @option{--disable-nls}.
+Disabling Natural Language Support is suggested whenever
+you want to install Numdiff on a system where the GNU gettext library
+is not present. In this case
+the installation of Numdiff can be accomplished, for example, through
+@example
+        ./configure --disable-nls
+        make
+        make install
+@end example
+
+@noindent
+Since version 5.2.0 Numdiff uses to perform all computations
+the GNU Multiple Precision Arithmetic Library
+(also called GNU MP or GMP), if this library is available 
+at build-time.
+The old internal support for multiple precision arithmetic
+is a fall-back in case GNU MP is absent.
+However, it is possible to use the internal support for 
+multiple precision arithmetic even when GNU MP is available:
+it is sufficient to pass the option @option{--enable-gmp=no}
+or @option{--disable-gmp} to the  configure  script
+before building the program, like in
+@example
+        ./configure --disable-gmp
+        make
+        make install
+@end example
+
+@noindent
+Enabling the old internal support for multiple precision arithmetic
+is deprecated, @pxref{with GNU MP is better}.
+The latest version of GNU MP is available at
+@uref{ftp://ftp.gnu.org/gnu/gmp/}. See the GNU MP web page
+at @uref{http://gmplib.org/} for up-to-date information on GNU MP.
+
+@node Invoking numdiff, ndselect, Installing, Top
+@chapter Invoking numdiff
+
+@cindex Invoking numdiff
+@cindex Options, command line (numdiff)
+@cindex Command line options for numdiff
+@cindex Synopsis (numdiff)
+@cindex Diagnostics (numdiff)
+@cindex Predefined settings of numdiff
+
+@strong{SYNOPSIS}
+
+@example
+   numdiff -h|--help|-v|--version
+@end example
+or
+@example
+   numdiff [-s @var{IFS}][-D @var{DELIMS}][-a @var{THRVAL}[:@var{RANGE}|:@var{RANGE1}:@var{RANGE2}]]
+   [-r @var{THRVAL}[:@var{RANGE}|:@var{RANGE1}:@var{RANGE2}]][-2][-F @var{NUM}][-# @var{NUM}][-P][-N][-I]
+   [-c @var{CURRNAME}][-d @var{C1C2}][-t @var{C1C2}][-g @var{N1N2}][-p @var{C1C2}][-n @var{C1C2}][-e @var{C1C2}]
+   [-i @var{C1C2}][-X 1:@var{RANGE}][-X 2:@var{RANGE}][-E][-U][-b][-V][-O[@var{NUM}]][-q][-S]
+   [-z 1:@var{RANGE}][-z 2:@var{RANGE}][-Z 1:@var{RANGE}][-Z 2:@var{RANGE}][-m][-H][-f[@var{NUM}]]
+   [-T][-B][-l @var{PATH}][-o @var{PATH}] @var{FILE1} @var{FILE2}
+@end example
+
+@noindent
+where @var{FILE1} and @var{FILE2} are the names of the two files to compare
+and @var{RANGE}, @var{RANGE1} and @var{RANGE2} stay for a positive integer
+value or for a range of integer values, like @samp{1-}, @samp{3-5} or @samp{-7}.
+
+In the first case @command{numdiff} prints a short help
+(not so short actually :)) or/and version number, Copyright, License notice,
+NO-Warranty disclaimer and some information about the way it was built.
+In the second case @command{numdiff} compares the files specified by
+the two mandatory arguments which follow the list of the options.
+The complete paths of the files should be given,
+a directory name is not accepted.
+In addition, the two arguments cannot refer to the same file
+but one of them can be @verb{|-|}, which refers to stdin.
+
+@noindent
+@strong{OPTIONS}
+
+@table @option
+@item -s, --separators=@var{IFS}
+Specify the set of characters to use as delimiters
+while splitting the input lines into fields
+(The default set of characters is space, tab and newline).
+If @var{IFS} is prefixed with @samp{1:} or @samp{2:} then use the given delimiter set
+only for the lines from the first or the second file respectively
+
+@item -D, --delimiters=@var{DELIMS}
+Specify the set of strings to use as delimiters
+while splitting the input lines into fields
+(The default set of characters is space, tab and newline).
+If @var{DELIMS} is prefixed with @samp{1:} or @samp{2:} then use the given delimiter set
+only for the lines from the first or the second file respectively
+
+@item -a, --absolute-tolerance=@var{THRVAL}[:@var{RANGE}|:@var{RANGE1}:@var{RANGE2}]
+Set to @var{THRVAL} the maximum absolute difference permitted
+before that two numeric fields are regarded as different
+(The default value is zero).
+If a @var{RANGE} is given, use the specified
+threshold only when comparing fields whose indexes lie in @var{RANGE}.
+If both @var{RANGE1} and @var{RANGE2} are given and have the same length,
+then use the specified threshold when comparing a field of @var{FILE1}
+lying in @var{RANGE1} with the corresponding field of @var{FILE2} in @var{RANGE2}
+
+@item -r, --relative-tolerance=@var{THRVAL}[:@var{RANGE}|:@var{RANGE1}:@var{RANGE2}]
+Set to @var{THRVAL} the maximum relative difference permitted
+before that two numeric fields are regarded as different
+(The default value is zero).
+If a @var{RANGE} is given, use the specified
+threshold only when comparing fields whose indexes lie in @var{RANGE}.
+If both @var{RANGE1} and @var{RANGE2} are given and have the same length,
+then use the specified threshold when comparing a field of @var{FILE1}
+lying in @var{RANGE1} with the corresponding field of @var{FILE2} in @var{RANGE2}
+
+@item -2, --strict 
+Consider two numerical values as equal only if
+both absolute and relative difference do not exceed
+the corresponding tolerance threshold
+
+@item -F, --formula=@var{NUM}
+Use the formula indicated by @var{NUM} to compute the relative errors.
+If @var{NUM} is 0 use the classic formula.
+If @var{NUM} is 1 compute the relative errors by considering
+the values in @var{FILE1} as sample values.
+If @var{NUM} is 2 compute the relative errors by considering
+the values in @var{FILE2} as sample values.
+
+@item -#, --digits=@var{NUM}
+Set to @var{NUM} the number of digits in the significands
+used in multiple precision arithmetic
+
+@item -P, --positive-differences
+Ignore all differences due to numeric fields of the second file that
+are less than the corresponding numeric fields in the first file
+
+@item -N, --negative-differences
+Ignore all differences due to numeric fields of the second file that
+are greater than the corresponding numeric fields in the first file
+
+@item -I, --ignore-case
+Ignore changes in case while doing literal comparisons
+
+@item -c, --currency=@var{CURRNAME}
+Set to @var{CURRNAME} the currency name for the two files to compare.
+@var{CURRNAME} must be prefixed with @samp{1:} or @samp{2:} to specify the
+currency name only for the first or the second file
+
+@item -d, --decimal-point=@var{C1C2}
+Specify the characters representing the decimal point
+in the two files to compare
+
+@item -t, --thousands-separator=@var{C1C2}
+Specify the characters representing the thousands separator
+in the two files to compare
+
+@item -g, --group-length=@var{N1N2}
+Specify the number of digits forming each group of thousands
+in the two files to compare
+
+@item -p, --plus-prefix=@var{C1C2}
+Specify the (optional) prefixes for positive values
+used in the two files to compare
+
+@item -n, --minus-prefix=@var{C1C2}
+Specify the prefixes for negative values
+used in the two files to compare
+
+@item -e, --exponent-letter=@var{C1C2}
+Specify the exponent letters
+used in the two files to compare
+
+@item -i, --imaginary-unit=@var{C1C2}
+Specify the characters representing the imaginary unit
+in the two files to compare
+
+@item -X, --exclude=1:@var{RANGE}
+Select the fields of the first file that have to be ignored
+
+@item -X, --exclude=2:@var{RANGE}
+Select the fields of the second file that have to be ignored
+
+@item -E, --essential
+While printing the differences between the two compared files
+show only the numerical ones
+
+@item -U, --dummy
+While printing the differences between the two compared files
+neglect all the numerical ones (dummy mode)
+
+@item -b, --brief
+Suppress all messages concerning the differences discovered
+in the structures of the two files
+
+@item -V, --verbose
+For every couple of lines which differ in at least one field print an header
+to show how these lines appear in the two compared files
+
+@item -O, --overview[=@var{NUM}]
+Display a side by side difference listing of the two files
+showing which lines are present only in one file, which
+lines are present in both files but with one or more differing fields,
+and which lines are identical.
+If @var{NUM} is zero or is not specified, output at most 130 columns per line.
+If @var{NUM} is a positive number, output at most @var{NUM} columns per line.
+If @var{NUM} is a negative number, do not output common lines
+and display at most -@var{NUM} columns per line.
+
+@item -q, --quiet, --silent
+Suppress all the standard output
+
+@item -S, --statistics
+Add some statistics to the standard output
+
+@item -z, --blur-if-numerical=1:@var{RANGE}
+Select the fields of the first file that have to be
+blurred during the synchronization procedure
+only if they turn out to be numeric
+
+@item -z, --blur-if-numerical=2:@var{RANGE}
+Select the fields of the second file that have to be
+blurred during the synchronization procedure
+only if they turn out to be numeric
+
+@item -Z, --blur-unconditionally=1:@var{RANGE}
+Select the fields of the first file that have to be
+unconditionally blurred during the synchronization procedure
+
+@item -Z, --blur-unconditionally=2:@var{RANGE}
+Select the fields of the second file that have to be
+unconditionally blurred during the synchronization procedure
+
+@item -m, --minimal
+During synchronization try hard to find a smaller set of changes
+
+@item -H, --speed-large-files
+During synchronization assume large files and
+many scattered small changes
+
+@item -f, --test-filter[=@var{NUM}]
+Run only the filter and then show the results of its
+attempt to synchronize the two files.
+If @var{NUM} is zero or is not specified, output at most 130 columns per line.
+If @var{NUM} is a positive number, output at most
+@var{NUM} columns per line.
+If @var{NUM} is a negative number, do not output common lines
+and display at most -@var{NUM} columns per line.
+
+@item -T, --expand-tabs
+Expand tabs to spaces in output while displaying the results of the
+synchronization procedure (meaningful only together with option @option{-O}
+or @option{-f})
+
+@item -B, --binary
+Treat both files as binary files (only meaningful under Doz/Windoz)
+
+@item -l, --warnings-to=@var{PATH}
+Redirect warning and error messages from stderr to the indicated file
+
+@item -o, --output=@var{PATH}
+Redirect output from stdout to the indicated file
+
+@item -h, --help
+Show help message and predefined settings
+
+@item -v, --version
+Show version number, Copyright, Distribution Terms and NO-Warranty
+@end table
+
+@noindent
+@strong{DIAGNOSTICS}
+
+The exit status is 1 if the two given files differ, 0 if they are equal, 
+-1 (255) in case of error.
+
+@noindent
+@strong{DEFAULT NUMERIC FORMAT (for both files to compare):}
+@anchor{Default Numeric Format}
+
+Currency name = ""
+@sp 1
+Decimal point = `.'
+@sp 1
+Thousands separator = `,'
+@sp 1
+Number of digits in each thousands group = 3
+@sp 1
+Leading positive sign = `+'
+@sp 1
+Leading negative sign = `-'
+@sp 1
+Prefix for decimal exponent = `e'
+@sp 1
+Symbol used to denote the imaginary unit = `i'
+
+@noindent
+@strong{SOME EXPLANATIONS}
+
+The options @option{-U}, @option{-E}, @option{-b} and
+@option{-q} are used to
+hide part of the standard output of the program according
+to some rule.
+
+The option @option{-U} triggers the @i{dummy mode}. In this mode
+@command{numdiff} does not print the numerical differences. A numerical
+difference occurs whenever the compared fields turn out to be both of numerical
+type, but the field from the second file has a value
+which differs from the one of the field from the first file.
+The @i{dummy mode} is so called since in this mode
+@command{numdiff} does not perform the job for which I created it.
+
+The option @option{-E} triggers the @i{essential mode}. In this mode
+@command{numdiff} only prints the numerical differences between the
+files and, if there are some, the differences in the
+structure. The latter ones occur either when one of
+the files contains a line for which there is no
+corresponding line in the other file, or
+when, comparing two lines, it turns out that
+one of them contains a field for which there exists no
+corresponding field in the other line. 
+If you are not running any filter or cutting out any
+fields through the option @option{-X}, then 
+the differences in the structure simply consist either
+in a different number of lines in the
+two files, or in a different number of fields on a line.
+
+The option @option{-b} triggers the @i{brief mode}. In this mode
+@command{numdiff} does not print the differences in
+the structure of the two files (see above for an explanation
+about what they are).
+
+The option @option{-q} triggers the @i{quiet mode}.
+In this mode @command{numdiff} does not print anything on the
+standard output. The @i{quiet mode} is useful if you only want
+to know whether a couple of files are equal or not.
+This information can be obtained by looking at the exit status
+of the program.
+
+The option @option{-O} activates the @i{overview mode},
+which makes @command{numdiff} print a side-by-side report
+in the form described in section @ref{Overview mode}.
+The optional numeric argument after @option{-O} must immediately
+follow, intermediate spaces are not allowed. 
+The option @option{-O} can be used together with any other option 
+of Numdiff except for @option{-f}, @option{-q}, @option{-U}, @option{-E},
+@option{-V} and @option{-b}. When @option{-O} is in use, @option{-U}, @option{-E},
+@option{-V} and @option{-b} are ignored. 
+If @option{-q} is present on the command line together with @option{-O}, 
+then @option{-O} is ignored. Finally, if both @option{-f} and @option{-O} are
+present, then the behavior depends on the order: 
+the option which appears first on the command line is the
+one which matters.
+
+The option @option{-V} triggers the @i{verbose mode}. In this
+mode @command{numdiff} produces a richer report by printing an header
+whenever the compared lines differ. The header shows
+how and where these lines appear in the compared files.
+For instance, if the files @file{data1} and @file{data2} contain the data
+@verbatim
+12      33
+22      44.5
+0.008   1.002
+221.12  -34.56  water
+2101.21 boats
+@end verbatim
+
+@noindent
+and
+
+@verbatim
+12      33
+22.3      44.5
+0.008   1.202
+221.12  -34.56
+2101.21 boats   dogs
+@end verbatim
+
+@noindent
+respectively, then the command @samp{numdiff -V data1 data2}
+will print the following output:
+@example
+----------------
+##2       <== 22      44.5
+##2       ==> 22.3      44.5
+
+##2       #:1   <== 22
+##2       #:1   ==> 22.3
+@@ Absolute error = 3.0000000000e-1, Relative error = 1.3636363636e-2
+----------------
+##3       <== 0.008   1.002
+##3       ==> 0.008   1.202
+
+##3       #:2   <== 1.002
+##3       #:2   ==> 1.202
+@@ Absolute error = 2.0000000000e-1, Relative error = 1.9960079840e-1
+----------------
+##4       <== 221.12  -34.56  water
+##4       ==> 221.12  -34.56
+
+##4       #>3   <== water
+##4             ==>
+@@ Line 4 in file "data2" is shorter than expected!
+----------------
+##5       <== 2101.21 boats
+##5       ==> 2101.21 boats   dogs
+
+##5             <==
+##5       #>3   ==> dogs
+@@ Line 5 in file "data1" is shorter than expected!
+
++++  File "data1" differs from file "data2"
+@end example
+
+You must care that the options @option{-b} and @option{-V}
+will be overridden if @option{-q} is also set.
+
+The amount of additional information printed by @option{-V} is 
+trivially influenced by the options that alter 
+the way @command{numdiff} performs the comparisons between fields
+(for instance @option{-a}, @option{-r}, @option{-2}, @option{-N},
+@option{-P}, @option{-U}, @option{-E}, @option{-I}, @option{-X}). 
+
+In the headers printed by @command{numdiff} when in ``verbose mode''
+can also appear the symbol @verb{|<<*>>|}. This symbol, if present,
+is always located at the end of a line to mean that the line
+is at the end of the corresponding file and
+does not have a terminating @strong{newline} character. 
+
+The option @option{-S} adds to the standard output of @command{numdiff}
+a statistical report with the following information:
+@itemize
+@item the number of numeric comparisons the program has done (this quantity,
+like the successive ones, is influenced by the options @option{-P} and
+@option{-N}) and the number of those comparisons whose outcome
+is a relevant numerical difference.
+@item the largest absolute error in the set of relevant numerical differences
+and the corresponding relative error,
+@item the largest relative error in the set of relevant numerical differences
+together with the corresponding absolute error,
+@item the sum and the arithmetic mean of all absolute errors,
+@item the sum and the arithmetic mean of the relevant absolute
+errors,
+@item the square root of the sum of the squares of all absolute errors,
+@item the square root of the sum of the squares of the relevant 
+absolute errors,
+@item the quadratic mean of all absolute errors, and
+@item the quadratic mean of the relevant absolute errors.
+@end itemize
+By relevant numerical differences and relevant absolute errors
+I mean those ones appearing in the output of @command{numdiff} when the options
+@option{-U}, @option{-f}, @option{-O} and @option{-q} are not used.
+The information printed by @option{-S} is not
+removed when this option is used together with @option{-q}.
+
+The options @option{-a}, @option{-r}, @option{-2},
+@option{-P} and @option{-N} affect the way @command{numdiff}
+performs the comparisons between numerical values.
+Without any of these options, @command{numdiff} considers two
+numerical fields as equal when their difference is zero.
+
+The option @option{-a} can be used to order that
+two numerical fields must be considered equal as long
+as their absolute difference does not exceed a certain threshold,
+which is specified by the argument that follows the @option{-a} option.
+This argument can take several forms. The basic form consists of a
+single numerical value, the extended form adds the
+specification of one or two ranges of integer values.
+
+Independently of the form of the argument, if the absolute
+difference between two fields does not exceed the given threshold value, 
+the fields are considered equal;
+otherwise, @command{numdiff} prints the difference in its report,
+unless some other option, for example @option{-P} or @option{-N}, 
+makes the difference unimportant.
+If nothing else follows the threshold value,
+what has been just explained applies to all comparisons
+between numerical fields.
+To see this in practice, if the file
+@file{many_columns1} contains the text
+@verbatim
+A	1	 1.2	  1	 0.1	  11.0         1.0e-1
+B	2        2.4      4      0.4      24.0         1.0e-2
+C	3        3.6      9      0.9      39.0         1.0e-3
+D	4	 4.8     16      1.6     416.0         1.0e-4
+@end verbatim
+
+@noindent
+and the contents of the file @file{many_columns2} are given by
+
+@verbatim
+A	1.1	1.08	 1.01	 0.1	 11.011        -1.0e-1
+B	2.2     2.16     4.04    0.4     24.024        -1.0e-2
+C	3.3     3.24     9.09    0.9     39.039        -1.0e-3
+D	4.4	4.32    16.16    1.6    416.039        -1.0e-4
+@end verbatim
+
+@noindent
+then the output of the command @samp{numdiff -a 0.5 many_columns1 many_columns2} is
+@example
+
++++  Files "many_columns1" and "many_columns2" are equal
+@end example
+
+@noindent
+The highest absolute difference between a field from 
+@file{many_columns1} and the corresponding field from @file{many_columns2}
+is given indeed by  |4.32 - 4.8| = |-0.48| = 0.48, and then all
+numeric differences between the two files remain below the
+threshold value 0.5.
+
+On the other hand, the command @samp{numdiff -a 0.35 many_columns1 many_columns2} 
+prints the report
+@example
+----------------
+##3       #:3   <== 3.6
+##3       #:3   ==> 3.24
+@ Absolute error = 3.6000000000e-1, Relative error = 1.1111111111e-1
+----------------
+##4       #:2   <== 4
+##4       #:2   ==> 4.4
+@ Absolute error = 4.0000000000e-1, Relative error = 1.0000000000e-1
+##4       #:3   <== 4.8
+##4       #:3   ==> 4.32
+@ Absolute error = 4.8000000000e-1, Relative error = 1.1111111111e-1
+
++++  File "many_columns1" differs from file "many_columns2"
+@end example
+
+@noindent
+since the absolute differences |3.24-3.6| = |-0.36| = 0.36,
+|4.4-4| = |0.4| = 0.4 and |4.32 - 4.8| = 0.48 exceed
+the value 0.35, and the other differences are below this threshold.
+
+If you want that the specified threshold value applies
+only when comparing some particular fields, you
+have to use the extended form for the argument of @option{-a}.
+This means that after the threshold value one
+or two ranges of integer numbers must follow, each
+preceded by a colon (`:').
+If you specify only one range of numbers after
+the threshold value, @command{numdiff} uses the
+given threshold only when comparing fields whose positions lie 
+in the specified range.
+Remember that the positions of the fields on a line
+are numbered starting from the left hand of the line
+and proceeding towards the right hand.
+For example, @samp{-a 0.01:2-5} sets the threshold value
+to 0.01 only for the comparisons between numerical fields
+which occupy on their lines a position between the second and the fifth one inclusive.
+For the other comparisons the threshold value is left unchanged and
+is in particular equal to zero if it has not been
+explicitly set.
+If the files @file{many_columns1} and @file{many_columns2} are the same as before,
+then the command @samp{numdiff -a 0.5:3-6 many_columns1 many_columns2}
+displays the following report
+@example
+----------------
+##1       #:2   <== 1
+##1       #:2   ==> 1.1
+@ Absolute error = 1.0000000000e-1, Relative error = 1.0000000000e-1
+##1       #:7   <== 1.0e-1
+##1       #:7   ==> -1.0e-1
+@ Absolute error = 2.0000000000e-1, Relative error = 2.0000000000e+0
+----------------
+##2       #:2   <== 2
+##2       #:2   ==> 2.2
+@ Absolute error = 2.0000000000e-1, Relative error = 1.0000000000e-1
+##2       #:7   <== 1.0e-2
+##2       #:7   ==> -1.0e-2
+@ Absolute error = 2.0000000000e-2, Relative error = 2.0000000000e+0
+----------------
+##3       #:2   <== 3
+##3       #:2   ==> 3.3
+@ Absolute error = 3.0000000000e-1, Relative error = 1.0000000000e-1
+##3       #:7   <== 1.0e-3
+##3       #:7   ==> -1.0e-3
+@ Absolute error = 2.0000000000e-3, Relative error = 2.0000000000e+0
+----------------
+##4       #:2   <== 4
+##4       #:2   ==> 4.4
+@ Absolute error = 4.0000000000e-1, Relative error = 1.0000000000e-1
+##4       #:7   <== 1.0e-4
+##4       #:7   ==> -1.0e-4
+@ Absolute error = 2.0000000000e-4, Relative error = 2.0000000000e+0
+
++++  File "many_columns1" differs from file "many_columns2"
+@end example
+
+@noindent
+since the threshold value 0.5 applies now only when comparing
+fields in third, fourth, fifth and sixth position, while for the other
+comparisons the threshold value is the default one, i.e. zero.
+If you want to specify a non null threshold also for the fields
+in second and seventh position, you can do it by using the option
+@option{-a} more times. The command
+@samp{numdiff -a 0.5:3-6 -a 0.25:2 -a 4e-3:7 many_columns1 many_columns2}
+sets the threshold value to 0.25 for the comparisons between the
+fields in second position, and to 4e-3 for the comparisons of the
+fields in seventh position. No wonder then, that the command
+prints exactly this report:
+@example
+----------------
+##1       #:7   <== 1.0e-1
+##1       #:7   ==> -1.0e-1
+@ Absolute error = 2.0000000000e-1, Relative error = 2.0000000000e+0
+----------------
+##2       #:7   <== 1.0e-2
+##2       #:7   ==> -1.0e-2
+@ Absolute error = 2.0000000000e-2, Relative error = 2.0000000000e+0
+----------------
+##3       #:2   <== 3
+##3       #:2   ==> 3.3
+@ Absolute error = 3.0000000000e-1, Relative error = 1.0000000000e-1
+----------------
+##4       #:2   <== 4
+##4       #:2   ==> 4.4
+@ Absolute error = 4.0000000000e-1, Relative error = 1.0000000000e-1
+
++++  File "many_columns1" differs from file "many_columns2"
+@end example
+
+@noindent
+Observe that @verb{|:2|} and @verb{|:7|} are abbreviations
+of @verb{|:2-2|} and @verb{|:7-7|}, respectively.
+It is even possible to use range expressions like
+@samp{@var{m}-} or @samp{-@var{n}}. The first
+expression corresponds to all fields starting from
+the @var{m}th one (inclusive) till to the end of line,
+the second selects all fields from the first one
+till to the @var{n}th one, both inclusive.
+ 
+If you specify two ranges of numbers after
+the threshold value and they have the same length
+(the length of a range is the difference between its maximum and its minimum), 
+@command{numdiff} uses the given threshold when 
+comparing a field of the first file
+lying in the first range with the corresponding field 
+of the second file from the second range.
+For example, @samp{-a 1e-4:3-5:4-6} sets the threshold value
+to 0.0001 only for the numerical comparisons of the third,
+fourth, and fifth field of each line from the first file
+with the fourth, fifth and sixth field respectively
+of the corresponding line from the second file.
+For the other comparisons the threshold value is left unchanged
+and is in particular equal to zero if it has not been
+explicitly set. This way to restrict the application of
+a threshold value is useful in conjunction with the
+option @option{-X}, which makes @command{numdiff} ignore one
+or more fields from one of the compared files.
+
+The file @file{many_columns3}:
+@verbatim
+A    I	1.1	1.08	 1.01	 0.1	 11.011        -1.0e-1
+B   II	2.2     2.16     4.04    0.4     24.024        -1.0e-2
+C  III	3.3     3.24     9.09    0.9     39.039        -1.0e-3
+D   IV	4.4	4.32    16.16    1.6    416.039        -1.0e-4
+@end verbatim
+
+@noindent
+has one column more than the file @file{many_columns1}, namely
+the second one. When comparing @file{many_columns1} with
+@file{many_columns3} it is natural then to ignore the second
+column of the second file. This can be achieved by passing
+the argument 2:2 to the option @option{-X} (for a full
+description of the use of this option,
+@pxref{Restriction of the comparison to particular fields}).
+Ignoring the second field of each line of @file{many_columns3}
+implies that the fields in the third column of this file
+are compared with the corresponding fields of the second
+column of @file{many_columns1}, the fields in the fourth column
+of @file{many_columns3} are compared with the ones in the third
+column of @file{many_columns1}, and so on.
+Therefore, if you want to set a threshold value only for the
+comparisons between some particular fields you have to consider 
+that @samp{-X 2:2} makes @command{numdiff} compare the
+first, second, third, fourth, fifth, sixth, and seventh field
+of each line of @file{many_columns1} with the first, third, fourth,
+fifth, sixth, seventh, and eighth field respectively of
+the corresponding line of  @file{many_columns3}.
+Therefore, the command @samp{numdiff -X 2:2 -a 0.5:3-6 many_columns1 many_columns3}
+will use 0.5 as threshold value only when comparing 
+the third, fourth, and fifth field of a line from 
+@file{many_columns1} with the fourth,
+fifth, and sixth field respectively of the corresponding line
+of @file{many_columns3}.
+This explains why the report of @samp{numdiff -X 2:2 -a 0.5:3-6 many_columns1 many_columns3}
+@example
+----------------
+##1       #:2   <== 1
+##1       #:3   ==> 1.1
+@ Absolute error = 1.0000000000e-1, Relative error = 1.0000000000e-1
+##1       #:6   <== 11.0
+##1       #:7   ==> 11.011
+@ Absolute error = 1.1000000000e-2, Relative error = 1.0000000000e-3
+##1       #:7   <== 1.0e-1
+##1       #:8   ==> -1.0e-1
+@ Absolute error = 2.0000000000e-1, Relative error = 2.0000000000e+0
+----------------
+##2       #:2   <== 2
+##2       #:3   ==> 2.2
+@ Absolute error = 2.0000000000e-1, Relative error = 1.0000000000e-1
+##2       #:6   <== 24.0
+##2       #:7   ==> 24.024
+@ Absolute error = 2.4000000000e-2, Relative error = 1.0000000000e-3
+##2       #:7   <== 1.0e-2
+##2       #:8   ==> -1.0e-2
+@ Absolute error = 2.0000000000e-2, Relative error = 2.0000000000e+0
+----------------
+##3       #:2   <== 3
+##3       #:3   ==> 3.3
+@ Absolute error = 3.0000000000e-1, Relative error = 1.0000000000e-1
+##3       #:6   <== 39.0
+##3       #:7   ==> 39.039
+@ Absolute error = 3.9000000000e-2, Relative error = 1.0000000000e-3
+##3       #:7   <== 1.0e-3
+##3       #:8   ==> -1.0e-3
+@ Absolute error = 2.0000000000e-3, Relative error = 2.0000000000e+0
+----------------
+##4       #:2   <== 4
+##4       #:3   ==> 4.4
+@ Absolute error = 4.0000000000e-1, Relative error = 1.0000000000e-1
+##4       #:6   <== 416.0
+##4       #:7   ==> 416.039
+@ Absolute error = 3.9000000000e-2, Relative error = 9.3750000000e-5
+##4       #:7   <== 1.0e-4
+##4       #:8   ==> -1.0e-4
+@ Absolute error = 2.0000000000e-4, Relative error = 2.0000000000e+0
+
++++  File "many_columns1" differs from file "many_columns3"
+@end example
+
+@noindent
+does not show the same difference listing of the command
+@samp{numdiff -a 0.5:3-6 many_columns1 many_columns2}.
+
+If what you want is to obtain the same difference listing
+of @samp{numdiff -a 0.5:3-6 many_columns1 many_columns2}, then
+the right command is @samp{numdiff -X 2:2 -a 0.5:3-6:4-7 many_columns1 many_columns3}.
+The report printed by this last command is indeed
+@example
+----------------
+##1       #:2   <== 1
+##1       #:3   ==> 1.1
+@ Absolute error = 1.0000000000e-1, Relative error = 1.0000000000e-1
+##1       #:7   <== 1.0e-1
+##1       #:8   ==> -1.0e-1
+@ Absolute error = 2.0000000000e-1, Relative error = 2.0000000000e+0
+----------------
+##2       #:2   <== 2
+##2       #:3   ==> 2.2
+@ Absolute error = 2.0000000000e-1, Relative error = 1.0000000000e-1
+##2       #:7   <== 1.0e-2
+##2       #:8   ==> -1.0e-2
+@ Absolute error = 2.0000000000e-2, Relative error = 2.0000000000e+0
+----------------
+##3       #:2   <== 3
+##3       #:3   ==> 3.3
+@ Absolute error = 3.0000000000e-1, Relative error = 1.0000000000e-1
+##3       #:7   <== 1.0e-3
+##3       #:8   ==> -1.0e-3
+@ Absolute error = 2.0000000000e-3, Relative error = 2.0000000000e+0
+----------------
+##4       #:2   <== 4
+##4       #:3   ==> 4.4
+@ Absolute error = 4.0000000000e-1, Relative error = 1.0000000000e-1
+##4       #:7   <== 1.0e-4
+##4       #:8   ==> -1.0e-4
+@ Absolute error = 2.0000000000e-4, Relative error = 2.0000000000e+0
+
++++  File "many_columns1" differs from file "many_columns3"
+@end example
+
+@noindent
+and up to the positions of the fields from @file{many_columns3}
+coincides with the one of @samp{numdiff -a 0.5:3-6 many_columns1 many_columns2}.
+
+The option @option{-a} can appear more times on the command line.
+In case of conflicts, the last setting is the one
+which matters.
+If you look at the report of the command 
+@samp{numdiff -a 0.5:3-6 -a 0.08:4 many_columns1 many_columns2}
+@example
+----------------
+##1       #:2   <== 1
+##1       #:2   ==> 1.1
+@ Absolute error = 1.0000000000e-1, Relative error = 1.0000000000e-1
+##1       #:7   <== 1.0e-1
+##1       #:7   ==> -1.0e-1
+@ Absolute error = 2.0000000000e-1, Relative error = 2.0000000000e+0
+----------------
+##2       #:2   <== 2
+##2       #:2   ==> 2.2
+@ Absolute error = 2.0000000000e-1, Relative error = 1.0000000000e-1
+##2       #:7   <== 1.0e-2
+##2       #:7   ==> -1.0e-2
+@ Absolute error = 2.0000000000e-2, Relative error = 2.0000000000e+0
+----------------
+##3       #:2   <== 3
+##3       #:2   ==> 3.3
+@ Absolute error = 3.0000000000e-1, Relative error = 1.0000000000e-1
+##3       #:4   <== 9
+##3       #:4   ==> 9.09
+@ Absolute error = 9.0000000000e-2, Relative error = 1.0000000000e-2
+##3       #:7   <== 1.0e-3
+##3       #:7   ==> -1.0e-3
+@ Absolute error = 2.0000000000e-3, Relative error = 2.0000000000e+0
+----------------
+##4       #:2   <== 4
+##4       #:2   ==> 4.4
+@ Absolute error = 4.0000000000e-1, Relative error = 1.0000000000e-1
+##4       #:4   <== 16
+##4       #:4   ==> 16.16
+@ Absolute error = 1.6000000000e-1, Relative error = 1.0000000000e-2
+##4       #:7   <== 1.0e-4
+##4       #:7   ==> -1.0e-4
+@ Absolute error = 2.0000000000e-4, Relative error = 2.0000000000e+0
+
++++  File "many_columns1" differs from file "many_columns2"
+@end example
+
+@noindent
+you see that 0.08 and not 0.5 is taken as threshold value
+for the comparison of the fields in fourth position.
+
+Finally, if @option{-a} is not present on the command line,
+then the default threshold value of zero applies to all comparisons
+of numerical fields and any non null absolute difference
+is considered as significant, unless some other option, 
+for example @option{-P} or @option{-N}, makes @command{numdiff} ignore it.
+
+The option @option{-r} can be used to order that
+two numerical fields must be considered equal as long
+as their relative difference does not exceed a certain threshold,
+which is specified by the argument that follows the @option{-r} option.
+As for the option @option{-a}, the argument of @option{-r}
+can have several forms. These forms are the same accepted by
+@option{-a} and have the same meanings, but the threshold value
+applies to the relative difference, not to the absolute one.
+
+The relative difference is normally defined in this way.
+If @emph{n1} is a value from the file 
+specified as first on the command line and @emph{n2} 
+is the corresponding value from the second file,
+then the absolute difference is given by the formula @emph{A=|n1-n2|}.
+The relative difference @emph{R} is given by:
+
+@itemize
+@item @emph{R = 0} if @emph{n1} and @emph{n2} are equal,
+@item @emph{Inf} (infinity) if @emph{n2} differs from @emph{n1} and
+at least one of them is zero,
+@item @emph{R = A/ min(|n1|, |n2|)} if @emph{n1} and @emph{n2} are
+both non zero and @emph{n2} differs from @emph{n1}. @emph{min(|n1|, |n2|)}
+denotes the minimum between the absolute value of @emph{n1}
+and the absolute value of @emph{n2}.
+@end itemize
+
+@noindent
+With this definition of relative difference it turns out that 
+@emph{R(n2, n1) = R(n1, n2)}: the relative difference
+does not change if you only change the ordering of the compared files
+on the command line.
+
+@anchor{Alternative formulas for the computation of the relative difference}
+However there are cases when this default definition of
+relative error makes no sense. This can happen for instance
+when one of the files is a sample file containing a list of expected data,
+which could have been computed theoretically or come from experiments in a laboratory.
+In this case it is more natural to define the relative difference
+as the ratio between the absolute difference and the absolute
+value of the number coming from the sample file.
+If you use the option @option{-F} together with the argument 1
+(or 2), then Numdiff always compute 
+the relative difference as the ratio between the absolute difference and the absolute
+value of the number from the first file (the second file, respectively).
+More precisely, with @samp{-F 1} 
+the relative difference @emph{R} is computed according to
+these rules:
+@itemize
+@item @emph{R = 0} if @emph{n1} and @emph{n2} are equal,
+@item @emph{Inf} (infinity) if @emph{n2} differs from @emph{n1} and
+@emph{n1} is zero,
+@item @emph{R = |n1-n2|/ |n1|} if @emph{n1} is not zero 
+and @emph{n2} differs from @emph{n1}. 
+@end itemize
+
+@noindent
+With @samp{-F 2} the rules become:
+@itemize
+@item @emph{R = 0} if @emph{n1} and @emph{n2} are equal,
+@item @emph{Inf} (infinity) if @emph{n2} differs from @emph{n1} and
+@emph{n2} is zero,
+@item @emph{R = |n1-n2|/ |n2|} if @emph{n2} is not zero 
+and @emph{n2} differs from @emph{n1}. 
+@end itemize
+
+@noindent
+With the last two sets of rules it is not anymore true
+that @emph{R(n2, n1) = R(n1, n2)}: the relative difference
+changes, in the general case, together with the ordering of the files
+on the command line.
+As a simple example, suppose that @var{file1} and @var{file2} contain
+@verbatim
+1    9.9  0.5  440
+@end verbatim
+
+@noindent
+and
+@verbatim
+1.2  8    0.51 400 
+@end verbatim
+
+@noindent
+respectively. Then
+@samp{numdiff @var{file1} @var{file2}} displays
+@example
+----------------
+##1       #:1   <== 1
+##1       #:1   ==> 1.2
+@ Absolute error = 2.0000000000e-1, Relative error = 2.0000000000e-1
+##1       #:2   <== 9.9
+##1       #:2   ==> 8
+@ Absolute error = 1.9000000000e+0, Relative error = 2.3750000000e-1
+##1       #:3   <== 0.5
+##1       #:3   ==> 0.51
+@ Absolute error = 1.0000000000e-2, Relative error = 2.0000000000e-2
+##1       #:4   <== 440
+##1       #:4   ==> 400
+@ Absolute error = 4.0000000000e+1, Relative error = 1.0000000000e-1
+
++++  File "file1" differs from file "file2"
+@end example
+
+@noindent
+@samp{numdiff -F 1 @var{file1} @var{file2}}
+prints
+@example
+----------------
+##1       #:1   <== 1
+##1       #:1   ==> 1.2
+@ Absolute error = 2.0000000000e-1, Relative error = 2.0000000000e-1
+##1       #:2   <== 9.9
+##1       #:2   ==> 8
+@ Absolute error = 1.9000000000e+0, Relative error = 1.9191919192e-1
+##1       #:3   <== 0.5
+##1       #:3   ==> 0.51
+@ Absolute error = 1.0000000000e-2, Relative error = 2.0000000000e-2
+##1       #:4   <== 440
+##1       #:4   ==> 400
+@ Absolute error = 4.0000000000e+1, Relative error = 9.0909090909e-2
+
++++  File "file1" differs from file "file2"
+@end example
+
+@noindent
+the output of
+@samp{numdiff -F 2 @var{file1} @var{file2}} is
+@example
+----------------
+##1       #:1   <== 1
+##1       #:1   ==> 1.2
+@ Absolute error = 2.0000000000e-1, Relative error = 1.6666666667e-1
+##1       #:2   <== 9.9
+##1       #:2   ==> 8
+@ Absolute error = 1.9000000000e+0, Relative error = 2.3750000000e-1
+##1       #:3   <== 0.5
+##1       #:3   ==> 0.51
+@ Absolute error = 1.0000000000e-2, Relative error = 1.9607843137e-2
+##1       #:4   <== 440
+##1       #:4   ==> 400
+@ Absolute error = 4.0000000000e+1, Relative error = 1.0000000000e-1
+
++++  File "file1" differs from file "file2"
+@end example
+
+@noindent
+@samp{numdiff -F 1 -r 0.195 @var{file1} @var{file2}}
+displays
+@example
+----------------
+##1       #:1   <== 1
+##1       #:1   ==> 1.2
+@ Absolute error = 2.0000000000e-1, Relative error = 2.0000000000e-1
+
++++  File "file1" differs from file "file2"
+@end example
+
+@noindent
+and, finally, 
+@samp{numdiff -F 2 -r 0.195 @var{file1} @var{file2}}
+displays
+@example
+----------------
+##1       #:2   <== 9.9
+##1       #:2   ==> 8
+@ Absolute error = 1.9000000000e+0, Relative error = 2.3750000000e-1
+
++++  File "file1" differs from file "file2"
+@end example
+
+@noindent
+
+The option @option{-2} is only meaningful when the user 
+specifies a non-zero tolerance threshold for both
+absolute and relative difference. Without this option
+@command{numdiff} considers two numerical fields equal 
+as long as at least one between
+absolute and relative difference does not exceed the
+corresponding threshold.
+With the option @option{-2} @command{numdiff} regards two numerical
+fields as equal only if both absolute and relative difference do not exceed the
+thresholds of tolerance specified for those fields.
+For example, if @var{file1} contains the unique line
+@verbatim
+100
+@end verbatim
+
+@noindent
+and @var{file2} the line
+@verbatim
+100.00012
+@end verbatim
+
+@noindent
+then the output of the command @samp{numdiff @var{file1} @var{file2}}
+will be
+
+@example
+----------------
+##1       #:1   <== 100
+                ==> 100.00012
+@@ Absolute error = 1.2000000000e-4, Relative error = 1.2000000000e-6
+
++++  File "@var{file1}" differs from file "@var{file2}"
+@end example
+
+@noindent
+The output of the commands
+@samp{numdiff -a 1.0e-4 @var{file1} @var{file2}} and
+@samp{numdiff -r 1.0e-6 @var{file1} @var{file2}}
+will be the same as above, but
+@samp{numdiff -a 1.0e-4 -r 1.3e-6 @var{file1} @var{file2}} and
+@samp{numdiff -a 1.3e-4 -r 1.0e-6 @var{file1} @var{file2}}
+will print the message
+@example
+
++++  Files "@var{file1}" and "@var{file2}" are equal
+@end example
+
+@noindent
+since the relative difference is 1.2e-6 < 1.3e-6,
+the absolute difference is 1.2e-4 < 1.3e-4, and
+it is sufficient that one of them does not exceed
+its tolerance threshold.
+
+On the other hand, the commands
+@samp{numdiff -a 1.0e-4 -r 1.3e-6 -2 @var{file1} @var{file2}} and
+@samp{numdiff -a 1.3e-4 -r 1.0e-6 -2 @var{file1} @var{file2}}
+will print the message
+
+@example
+----------------
+##1       #:1   <== 100
+                ==> 100.00012
+@@ Absolute error = 1.2000000000e-4, Relative error = 1.2000000000e-6
+
++++  File "@var{file1}" differs from file "@var{file2}"
+@end example
+
+@noindent
+since the option @option{-2} makes @command{numdiff} regard two values
+as equal only if both absolute and relative difference do not exceed
+the corresponding threshold of tolerance.
+
+The option @option{-P} makes @command{numdiff} consider two values equal
+whenever the second one, i.e. the value coming from the file specified as last
+on the command line, is less or equal than the first one, which
+is the value coming from the file specified as first on the command line.
+If the values to compare are complex numbers, saying that
+the second one is less or equal than the first one means that
+both real and imaginary part of the second value are
+not greater than the real part and, respectively,
+the imaginary part of the first value. 
+
+Finally, the option @option{-N} makes @command{numdiff} consider two values equal
+whenever the second one, i.e. the value coming from the file specified as last
+on the command line, is greater or equal than the first one, which
+is the value coming from the file specified as first on the command line.
+If the values to compare are complex numbers, saying that
+the second one is greater or equal than the first one means that
+both real and imaginary part of the second value are
+not less than the real part and, respectively,
+the imaginary part of the first value. 
+
+The options @option{-B}, @option{-I}, @option{-l}, @option{-o}, @option{-h} and
+@option{-v} do not require further explanations.
+The options @option{-l} and @option{-o} are only supplied
+for the users of some poorly designed operating systems
+(like MSDog or MSWindoze), whose default shell does not 
+allow the redirection of standard error and standard output.
+The option @option{-I} has no effect on the outcome
+of numerical comparisons but affects the action of
+the filter, @pxref{Filtering}.
+
+The option @option{-s} requires as argument a set of characters,
+which will be taken as field delimiters.
+It is better to quote the set of the delimiters, 
+just as in the next examples:
+
+@example
+numdiff -s ' \t\n,;:.' @var{file1} @var{file2}
+numdiff -s ' \t\n\r\f\v"\:;' @var{file1} @var{file2}
+numdiff -s `` \t\n''' @var{file1} @var{file2}
+@end example
+
+@noindent
+If you want to include in the set of delimiters also
+some special characters, e.g the @strong{blank}, then
+you must quote it.
+I recommend you to always use the single quote character 
+(@verb{|'|}) to enclose the list of the delimiters, 
+since in this way you will prevent
+any substitution or handling of characters by the shell.
+
+@noindent
+@command{numdiff} recognizes and interprets
+the following sequences of characters within the argument
+passed to the option @option{-s}:
+
+@itemize
+@item @samp{\a}     alert (bell),
+@item @samp{\b}     backspace,
+@item @samp{\f}     form feed,
+@item @samp{\n}     newline,
+@item @samp{\r}     carriage return,
+@item @samp{\s}     blank,
+@item @samp{\t}     horizontal tab,
+@item @samp{\v}     vertical tab,
+@item @samp{\\}     backslash,
+@item @samp{\@var{nnn}}   the eight-bit character whose value is the octal value @var{nnn} (one to three digits),
+@item @samp{\x@var{HH}}   the eight-bit character whose value is the hexadecimal value @var{HH} (one or two digits). 
+@end itemize
+
+@noindent
+By passing the string @samp{ \t\n,;:.} as argument
+for the option @option{-s}, one tells @command{numdiff} to use
+as field delimiters the characters @strong{blank}, 
+@strong{horizontal tab}, @strong{newline}, @strong{comma},
+@strong{semicolon}, @strong{colon} and @strong{dot}.
+Passing @samp{ \t\n} as argument to the option @option{-s}
+is the same as not using at all the option @option{-s}, since
+@strong{blank}, @strong{horizontal tab} and @strong{newline}
+are the default field delimiters.
+
+In the list of field delimiters the character @strong{backslash}
+(@samp{\}) is always treated in a special way.
+If it forms, combined with the subsequent character(s), one
+of the backslash escape sequences listed above, then it is
+considered to be an escape character and the whole escape sequence is 
+decoded as shown above. Otherwise, the @strong{backslash} is just ignored. 
+
+Therefore, the delimiters specified by the command line
+
+@example
+numdiff -s' \t\n\\\"' @var{file1} @var{file2}
+@end example
+
+@noindent
+are @strong{blank}, @strong{horizontal tab}, @strong{newline},
+@strong{backslash} and @strong{double quote}, since
+@samp{\\} and @samp{\"} are interpreted by @command{numdiff}
+as @samp{\} and @samp{"}.
+
+Even if I have recommended to enclose the set of
+delimiters in single quotes, there are 
+cases in which you will be constrained to use
+the double quote character (@samp{"}) to enclose
+the set of field delimiters, e.g. if the single
+quote character is used as field delimiter, like
+in one of the precedent examples.
+However you must take into account that in this case
+the shell could make some substitutions on the command line
+before executing @command{numdiff}.
+For instance, if your shell is GNU bash, then (citing the man page of
+GNU bash)
+@quotation
+Enclosing characters in double quotes preserves the literal value of 
+all characters within the quotes, with the exception of @samp{$}, 
+@samp{`}, and @samp{\}. 
+The characters @samp{$} and @samp{`} retain their special 
+meaning within double quotes. 
+The backslash retains its special meaning only when followed by one of 
+the following characters: @samp{$}, @samp{`}, @samp{"}, 
+@samp{\}, or @strong{<newline>}. 
+A double quote may be quoted within double quotes by preceding 
+it with a backslash @enddots{}
+The special parameters * and @@ have special meaning when in double quotes
+@dots{}
+@end quotation
+
+@noindent
+Therefore, if the set of delimiters is formed by @samp{ }, @samp{\t},
+@samp{\n}, @samp{\} and @samp{"}, and you decide to enclose them
+in double quotes, the @command{numdiff} command line should be
+
+@example
+numdiff -s'' \t\n\\\\\"'' @var{file1} @var{file2}
+@end example
+
+@noindent
+and not
+
+@example
+numdiff -s'' \t\n\\\"'' @var{file1} @var{file2}
+@end example
+
+@noindent
+In this last case the shell would indeed replace the string
+
+@samp{ \t\n\\\"} 
+
+@noindent
+by
+
+@samp{ \t\n\"} 
+
+@noindent
+and then @command{numdiff} would take @samp{ }, @samp{\t}, @samp{\n} 
+and @samp{"} as field delimiters.
+
+@command{numdiff} requires the presence of the @strong{newline}
+in the set of characters passed to @option{-s}. The absence
+of the @strong{newline} in the set of delimiters causes the issue
+of a suitable warning message and the termination of the program.
+
+If you run Numdiff with the option @option{-B} (@option{--binary})
+on files created under MSDog/MSWindoze, then you should
+put the @strong{carriage return} in the set of field delimiters.
+Otherwise, this character would be included in all the fields
+which stay at the end of a line and this would cause some
+undesirable effects. For instance, a number put at the
+end of a line would not be regarded as a numerical field
+by @command{numdiff}, since @command{numdiff} would consider
+the final @strong{carriage return} as part of the field and
+this one would be then qualified as non-numerical.
+
+You can specify different delimiters for the two files to compare
+by putting the prefix @samp{1:} or @samp{2:} in front of the
+set of characters passed to @option{-s}.
+If the argument of @option{-s} begins with @samp{1:}, the
+characters after this prefix are used as field delimiters
+only for the file passed as first on the command line.
+Analogously, if the prefix is @samp{2:}, then the
+characters after it are used as field delimiters only
+for the file specified as second on the command line.
+You can also provide an explicit set of
+delimiters for just one of the files to compare,
+in which case @command{numdiff} uses the default field
+delimiters @strong{blank}, @strong{tab} and @strong{newline}
+for the other file.
+Therefore, with
+@samp{numdiff -s '1:: \n' @var{file1} @var{file2}} 
+the program will take @strong{colon}, @strong{blank}
+and @strong{newline} as delimiters for @var{file1},
+and @strong{blank}, @strong{tab} and
+@strong{newline} as delimiters for @var{file2}.
+The recommendations about quoting the set of delimiters
+are valid also in presence of a prefix.
+
+Starting from version 5.8 @command{numdiff} allows to specify
+whole strings as field delimiters instead of single characters.
+To this purpose the option @option{-D} is provided.
+Assume that file @file{register1} and file @file{register2} contain
+@verbatim
+--A:    +1.0---
+--B:    -2.0---
+--C:    +3.0---
+--D:    -4.0---
+--E:    +5.0---
+--F:    -6.0---
+@end verbatim
+
+@noindent
+and
+@verbatim
+--a:    +1.1---
+--b:    -2.2---
+--c:    +3.3---
+--d:    -4.4---
+--e:    +5.5---
+--f:    -6.6---
+@end verbatim
+
+@noindent
+respectively. Assume in addition, you would like that the dashes
+at the begin and at the end of every line are treated as delimiters and then
+neglected during the line by line comparison. To obtain this you cannot just
+specify the character @verb{|-|} (minus) as delimiter via the option 
+@option{-s}: if you do it, then the negative numbers appearing in the
+two files will be treated as positive, since the minus sign will be regarded
+as a delimiter. By means of the option @option{-D} you can tell @command{numdiff}
+to consider the strings @verb{|--|} and @verb{|---|} as field delimiters
+but not the single character @verb{|-|}.
+To see this in practice, look at the output of the command 
+@samp{numdiff -D ': -- --- \s \n' register1 register2}:
+@example
+----------------
+##1       #:1   <== A
+##1       #:1   ==> a
+@                                                     @@
+##1       #:2   <== +1.0
+##1       #:2   ==> +1.1
+@ Absolute error = 1.0000000000e-1, Relative error = 1.0000000000e-1
+----------------
+##2       #:1   <== B
+##2       #:1   ==> b
+@                                                     @@
+##2       #:2   <== -2.0
+##2       #:2   ==> -2.2
+@ Absolute error = 2.0000000000e-1, Relative error = 1.0000000000e-1
+----------------
+##3       #:1   <== C
+##3       #:1   ==> c
+@                                                     @@
+##3       #:2   <== +3.0
+##3       #:2   ==> +3.3
+@ Absolute error = 3.0000000000e-1, Relative error = 1.0000000000e-1
+----------------
+##4       #:1   <== D
+##4       #:1   ==> d
+@                                                     @@
+##4       #:2   <== -4.0
+##4       #:2   ==> -4.4
+@ Absolute error = 4.0000000000e-1, Relative error = 1.0000000000e-1
+----------------
+##5       #:1   <== E
+##5       #:1   ==> e
+@                                                     @@
+##5       #:2   <== +5.0
+##5       #:2   ==> +5.5
+@ Absolute error = 5.0000000000e-1, Relative error = 1.0000000000e-1
+----------------
+##6       #:1   <== F
+##6       #:1   ==> f
+@                                                     @@
+##6       #:2   <== -6.0
+##6       #:2   ==> -6.6
+@ Absolute error = 6.0000000000e-1, Relative error = 1.0000000000e-1
+
++++  File "register1" differs from file "register2"
+@end example
+
+@noindent
+The argument @samp{-D ': -- --- \s \n'} instructs @command{numdiff} to
+regard every occurrence of a colon (@verb{|:|}), of a blank (@verb{|\s|}),
+of a newline (@verb{|\n|}), as well as every occurrence of the strings
+@verb{|--|} and @verb{|---|} as field delimiters. The minus sign in
+front of the negative numbers is then handled as it should be.
+
+In general the argument to the option @option{-D} is a blank
+separated sequence of one or more strings each of which contains
+no blank. 
+Thus, the general form of the argument to the option @option{-D} is
+@example
+@var{string1} @var{string2} ... @var{stringN}
+@end example
+
+@noindent
+where @var{string1}, @var{string2}, and so on are sequences of one or
+more characters (strings) containing no blank.
+
+Mind that at least one of these strings must be @samp{\n}.
+In addition, if a string contains the newline character, this
+must be the only one: strings like @samp{#\n}, @samp{%%\n}, or
+@samp{\s\n} are not allowed (entering such a string makes
+the program terminate after issuing a suitable warning message).
+
+Since the blank character has a special meaning for the shell, if
+the argument of @option{-D} is formed by two or more strings
+it should be quoted either with a single (@samp{'}) 
+or with a double quote (@samp{"}). 
+Quoting is also adviced if one of the strings passed to @option{-D}
+contains a character (or a sequence of characters)
+having a special meaning for the shell.
+
+For the usage of single and double quoting to delimit 
+the argument of @option{-D} the same warnings and recommendations 
+apply as for the argument of @option{-s}. 
+
+If you want to set as delimiter a string which contains one or more blanks,
+then you have to make use of the escape sequence @option{\s}, 
+like in the example above: within the argument of @option{-D} the blank
+character is always interpreted as a separator of adjacent delimiters.
+
+More generally, when writing the argument of @option{-D} 
+the same escape sequences are allowed as for the argument of @option{-s}.
+This turns out to be particularly useful whenever a multibyte character
+is used as delimiter in (one of) the files to compare.
+As example consider the comparison between @file{ledger1}:
+@example
+             In                            Out
+
+Jan      1200.00@euro{}                1000.00@euro{}
+Feb       800.40@euro{}                 650.00@euro{}
+Mar      1620.50@euro{}                1500.00@euro{}
+Apr       760.00@euro{}                 900.00@euro{}
+
+Total    4380.90@euro{}                4050.00@euro{}
+
+Difference: +330.90@euro{}
+@end example
+
+@noindent
+and @file{ledger2}:
+@example
+             In                            Out
+
+Jan      1100.00@euro{}                1000.00@euro{}
+Feb       800.40@euro{}                 750.00@euro{}
+Mar      1620.50@euro{}                1700.00@euro{}
+Apr       750.00@euro{}                 900.00@euro{}
+
+Total    4270.90@euro{}                4350.00@euro{}
+
+Difference: -79.10@euro{}
+@end example
+
+Since the Euro symbol is attached to all values, 
+@command{numdiff} cannot compare them in the proper way 
+if it is run with the default field delimiters, as
+the output of the command @samp{numdiff ledger1 ledger2} shows:
+@example
+----------------
+##3       #:2   <== 1200.00@euro{}
+##3       #:2   ==> 1100.00@euro{}
+@                                                     @@
+----------------
+##4       #:3   <== 650.00@euro{}
+##4       #:3   ==> 750.00@euro{}
+@                                                     @@
+----------------
+##5       #:3   <== 1500.00@euro{}
+##5       #:3   ==> 1700.00@euro{}
+@                                                     @@
+----------------
+##6       #:2   <== 760.00@euro{}
+##6       #:2   ==> 750.00@euro{}
+@                                                     @@
+----------------
+##8       #:2   <== 4380.90@euro{}
+##8       #:2   ==> 4270.90@euro{}
+@                                                     @@
+##8       #:3   <== 4050.00@euro{}
+##8       #:3   ==> 4350.00@euro{}
+@                                                     @@
+----------------
+##10      #:2   <== +330.90@euro{}
+##10      #:2   ==> -79.10@euro{}
+@                                                     @@
+
++++  File "ledger1" differs from file "ledger2"
+@end example
+
+@noindent
+The trick to perform the comparison in the proper way consists
+in specifying the @euro{} symbol as field delimiter, in addition
+to blank, horizontal tabulation and newline.
+If @file{ledger1} and @file{ledger2} are encoded in UTF-8,
+this can be done by using the option @option{-D} with the argument
+@samp{\xE2\x82\xAC \s \t \n}, since the hexadecimal representation
+of @euro{} in UTF8 is given by the byte sequence 0xE2 0x82 0xAC.
+On my PC the output of the command 
+@samp{numdiff -D '\xE2\x82\xAC \s \t \n' ledger1 ledger2}
+shows that in this case @command{numdiff} performs indeed
+a numerical comparison of the values contained in the two files:
+@example
+----------------
+##3       #:2   <== 1200.00
+##3       #:2   ==> 1100.00
+@ Absolute error = 1.0000000000e+2, Relative error = 9.0909090909e-2
+----------------
+##4       #:3   <== 650.00
+##4       #:3   ==> 750.00
+@ Absolute error = 1.0000000000e+2, Relative error = 1.5384615385e-1
+----------------
+##5       #:3   <== 1500.00
+##5       #:3   ==> 1700.00
+@ Absolute error = 2.0000000000e+2, Relative error = 1.3333333333e-1
+----------------
+##6       #:2   <== 760.00
+##6       #:2   ==> 750.00
+@ Absolute error = 1.0000000000e+1, Relative error = 1.3333333333e-2
+----------------
+##8       #:2   <== 4380.90
+##8       #:2   ==> 4270.90
+@ Absolute error = 1.1000000000e+2, Relative error = 2.5755695521e-2
+##8       #:3   <== 4050.00
+##8       #:3   ==> 4350.00
+@ Absolute error = 3.0000000000e+2, Relative error = 7.4074074074e-2
+----------------
+##10      #:2   <== +330.90
+##10      #:2   ==> -79.10
+@ Absolute error = 4.1000000000e+2, Relative error = 5.1833122630e+0
+
++++  File "ledger1" differs from file "ledger2"
+@end example
+
+If @file{ledger1} and @file{ledger2} had been saved using
+a multi-byte encoding different from UTF-8, then the sequence
+of bytes which corresponds to @euro{} in this other encoding should have been
+passed to @option{-D}.
+
+As for @option{-s}, with @option{-D} you can specify different delimiters 
+for the two files to compare by means of the prefixes @samp{1:} and @samp{2:},
+like in @samp{numdiff -D '1:\t \n' -D '2: -- \s \n' first_file second_file}.
+The recommendations about quoting the set of delimiters
+are valid also in presence of a prefix.
+Mind that, if you provide an explicit set of delimiters for just one of the 
+files to compare, @command{numdiff} uses the default field
+delimiters @strong{blank}, @strong{tab} and @strong{newline}
+for the other file.
+
+If you run Numdiff with the option @option{-B} (@option{--binary})
+on files created under MSDog/MSWindoze, you should 
+always include the character @samp{\r} in the set of field delimiters.
+
+The option @option{-s} and @option{-D} can appear more than once
+on the command line. In case of conflicts, @command{numdiff}
+assumes as set of delimiters for a given file the one
+specified last on the command line.
+
+By means of the option @option{-#} the user can set the number of digits 
+in the significands used in multiple precision arithmetic.
+The default value is 35, the largest admissible value is 180.
+If @command{numdiff} has been linked against the 
+GNU Multiple Precision Arithmetic Library (also called GNU MP), 
+then the precision it uses is typically higher
+than the specified one. On my machine the actual value
+of the precision is 20 if the user gives a value between 0 and 20,
+30 if the user specifies a precision between 21 and 30,
+40 for a user-specified value between 31 and 40, and so on.
+Anyway, the actual precision is never less than
+the one required by the user.
+
+@noindent
+Take into account that an higher precision makes the
+execution of @command{numdiff} slower. This is particularly
+true if @command{numdiff} is not using the computational routines
+from the GNU MP library and the files to compare contain a lot of numerical fields.
+In addition, you have to care that @command{numdiff} truncates
+the value of a numerical field if it has @i{too much} digits with respect
+to the current precision. To be precise, denoted by
+@var{P} the current value of the precision, the following
+rules apply.
+@itemize
+@item If @command{numdiff} has been built with
+its own internal support for multiple precision arithmetic, then
+@itemize
+@item if a number is written in ordinary decimal notation, @command{numdiff}
+will consider, in addition to all digits of the integer part, only
+the first @var{P} digits of the fractional part;
+@item if a value is written in scientific notation, then @command{numdiff}
+will only consider the first @var{P} digits of the fractional part
+of the mantissa.
+@end itemize
+@item If @command{numdiff} uses the routines from the GNU MP library
+to perform its computations, the value of a numerical
+field is first translated into scientific notation and then 
+only the first @var{P} digits of the fractional part
+of the mantissa are considered.
+@end itemize
+
+@noindent
+You can find out whether your local version of @command{numdiff}
+is relying on GNU MP or not by executing the command @samp{numdiff -v}.
+If @command{numdiff} uses GNU MP, then this command will display
+the following message or similar (possibly translated
+into your mother language) among other information:
+@example
+The software has been linked against
+the GNU Multiple Precision Arithmetic Library,
+version number 4.2.4.
+@end example
+
+@noindent
+If @command{numdiff} does not rely on GNU MP, then
+the displayed message will be (up to translation into
+your mother language)
+@example
+The software has been built with
+its own internal support for multiple precision arithmetic.
+@end example
+
+@noindent
+By means of the option @option{-c} the user can qualify
+a string as a symbol or name for a currency. The string
+passed as argument to this option is ignored by @command{numdiff}
+whenever it appears immediately before the first digit of a number.
+In particular, the presence of this string does not prevent a
+field from being considered of numeric type. By prefixing
+the argument of @option{-c} with @samp{1:} or @samp{2:}
+it is possible to set the currency name/symbol only
+for one of the compared files, or to specify different
+currency names for the two files. As
+example we consider the files @file{money1}:
+@verbatim
+	Profits			Expenses
+
+	+$430.10		-$300.50
+	+$750.20		-$550.02
+	+$876.24		-$720.00
+
+Totals  $2056.54               -$1570.52
+@end verbatim
+
+@noindent
+and @file{money2}:
+@verbatim
+	Profits			Expenses
+
+	USD430.10		-USD300.50
+	USD750.20		-USD550.02
+	USD876.24		-USD720.15
+	
+Totals    2056.54                 -1570.67
+@end verbatim
+To properly compare them we have to tell @command{numdiff}
+that @samp{$} and @samp{USD} are the currency symbols for
+@file{money1} and @file{money2} respectively.
+This can be achieved by @samp{-c 1:$} and @samp{-c 2:USD}.
+The output of the command @samp{numdiff -c 1:$ -c 2:USD money1 money2} is
+@example
+----------------
+##5       #:2   <== -$720.00
+##5       #:2   ==> -USD720.15
+@ Absolute error = 1.5000000000e-1, Relative error = 2.0833333333e-4
+----------------
+##7       #:3   <== -$1570.52
+##7       #:3   ==> -1570.67
+@ Absolute error = 1.5000000000e-1, Relative error = 9.5509767466e-5
+
++++  File "money1" differs from file "money2"
+@end example
+
+@noindent
+as it should be. 
+
+The argument of @option{-c} may also be
+a multi-byte string, in particular a multi-byte string encoded in UTF-8. 
+If your locale uses UTF-8 as encoding, you can write the argument directly
+in this form. For instance, you can write @samp{-c @euro{}}
+to specify as currency name the Euro symbol.
+If your locale does not use UTF-8 as encoding, or UTF-8 is not
+supported by your terminal, you may still write an
+UTF-8 encoded string as a multi-byte string by specifying each single byte
+of every (multi-byte) character.
+To this purpose you can use the same octal and hexadecimal escape sequences
+recognized by the options @option{-s} and @option{-D}.
+
+For example, if the files to compare are encoded in UTF-8,
+you can set @euro{} as currency name by
+adding @samp{-c '\xE2\x82\xAC'} to the command line of
+@command{numdiff}, since the hexadecimal representation
+of @euro{} in UTF-8 is given by the sequence of bytes
+0xE2 0x82 0xAC.
+Mind that in this case the argument of @option{-c} has to be quoted
+to avoid the interpretation of the hexadecimal escape sequences by the shell.
+
+To see this in practice, if @file{euro1} contains the text
+@example
+	Profits			       Expenses
+
+	+@euro{}430.10		      -@euro{}300.50
+	+@euro{}750.20		      -@euro{}550.02
+	+@euro{}876.24		      -@euro{}720.00
+@end example
+
+@noindent
+and @file{euro2} the text
+@example
+	Profits			       Expenses
+
+	+@euro{}430.10		      -@euro{}300.00
+	+@euro{}750.20		      -@euro{}550.02
+	+@euro{}876.00		      -@euro{}720.00
+@end example
+
+@noindent
+then the report of @samp{numdiff -c '\xE2\x82\xAC' euro1 euro2} is
+@example
+----------------
+##3       #:2   <== -@euro{}300.50
+##3       #:2   ==> -@euro{}300.00
+@ Absolute error = 5.0000000000e-1, Relative error = 1.6666666667e-3
+----------------
+##5       #:1   <== +@euro{}876.24
+##5       #:1   ==> +@euro{}876.00
+@ Absolute error = 2.4000000000e-1, Relative error = 2.7397260274e-4
+
++++  File "euro1" differs from file "euro2"
+@end example
+
+Please consider that @option{-c}
+is only provided to let @command{numdiff} regard
+a field as numeric also in presence of a currency name
+immediately before its first digit: @command{numdiff}
+does not know anything about currencies and can not perform any
+kind of conversion between them. 
+In addition, mind that the number after the currency name
+can be written in any format, not only in financial notation.
+@command{numdiff} can even cope with the currency name
+when it appears in a complex number. For example,
+with @samp{-c EUR} @command{numdiff} considers
+@verb{|+EUR12-EUR0.24i|} and @verb{|+12-0.24i|}
+as equal.
+
+The options @option{-d}, @option{-t}, @option{-g}, 
+@option{-p}, @option{-n}, @option{-e} and @option{-i} can be used
+to instruct @command{numdiff} about the numeric formats used in the
+files which it is going to compare.
+The two files to compare do not have to adopt the same numeric format
+and then @command{numdiff} allows to specify different numeric 
+formats for them.
+Each of the options @option{-d}, @option{-t}, @option{-g}, 
+@option{-p}, @option{-n}, @option{-e}, and @option{-i}
+can have as argument one or two (single-byte) characters, in particular 
+one or two digits if the option is @option{-g}. In the first case
+the argument refers to both files to compare, in the second case
+the first character is for the file specified
+first on the command line, the second character for
+the file specified last.
+For instance, the option @option{-d} can be used to
+tell @command{numdiff} which character(s) is(are) 
+used to indicate the decimal point in the two files to compare. 
+If you give the command
+@samp{numdiff -d_ @var{file1} @var{file2}},
+then @command{numdiff} will understand that both in @var{file1} and in @var{file2}
+the character @strong{underscore} (@samp{_}) is used in place
+of the default one (@samp{.}) to indicate
+the position of the decimal point in the numerical values.
+But if the command is
+@samp{numdiff -d_: @var{file1} @var{file2}},
+then @command{numdiff} will understand that the decimal point
+is indicated by the character @strong{underscore} in @var{file1},
+and by @strong{colon} (@samp{:}) in @var{file2}.
+
+If you omit to use one of the options
+@option{-d}, @option{-t}, @option{-g}, 
+@option{-p}, @option{-n}, @option{-e}, and @option{-i}, then the corresponding
+attribute will take its default value, @pxref{Default Numeric Format}. 
+
+You should be careful whenever you use one or more of these options.
+First, not all characters can be passed to them as arguments.
+The arguments of the option @option{-g} must be digits,
+the arguments of the options @option{-d} and @option{-t} must
+be punctuation marks (punctuation marks are all the
+characters of the ASCII set for which the standard C function 
+@code{ispunct} returns a non zero value), those ones
+of the options @option{-p}, @option{-n}, @option{-e} and @option{-i} 
+must be graphical characters but digits (graphical characters
+are all the characters of the ASCII set for which the standard C function 
+@code{isgraph} returns a non zero value).
+
+It is not possible to set the decimal point, the thousands separator,
+the positive sign, the negative sign, the
+prefix for decimal exponent or the
+symbol of the imaginary unit in such a way that, for a same file,
+two or more of these characters come out to be equal.
+This rule also applies if you miss/omit to explicitly select
+a symbol through the appropriate option.
+For instance, the command
+@samp{numdiff -d,. @var{file1} @var{file2}}
+will make @command{numdiff} abnormally terminate after printing
+the error message:
+
+@example
+The numeric format specified for the first file is illegal,
+the following symbols should be all different
+while two or more of them are actually equal:
+
+Decimal point = `,'
+Thousands separator = `,'
+Leading positive sign = `+'
+Leading negative sign = `-'
+Prefix for decimal exponent = `e'
+Symbol used to denote the imaginary unit = `i'
+@end example
+
+@noindent
+With the option @option{-d} we have told @command{numdiff}
+that in the first file the decimal point is indicated by the character
+@strong{comma}, but at the same time we have not modified the character
+in use to separate the groups of thousands, which has remained the
+default one, i.e. @strong{comma}, for both files to compare.
+In this way we have implicitly told that in
+@var{file1} the character @strong{comma} represents both decimal point
+and thousands separator. Since this is not reasonable, @command{numdiff}
+refuses to work.
+To avoid this problem it would be sufficient to
+set explicitly the thousands separator
+by means of the option @option{-t}:
+@samp{numdiff -d,. -t., @var{file1} @var{file2}}.
+Of course, we assume here that the decimal point
+and the thousands separator are represented in @var{file1}
+by @strong{comma} and @strong{dot} respectively, in
+@var{file2} by @strong{dot} and @strong{comma}.
+
+I strongly suggest you, whenever you write a file, to 
+avoid using the same symbol to mean two different things (like would be using
+@strong{comma} for both decimal point and thousands
+separator), it is nonsense.
+
+At last, it is possible (but stupid) to use
+as argument for the options @option{-d}, @option{-t}, @option{-g}, 
+@option{-p}, @option{-n}, @option{-e}, and @option{-i}
+one of the characters used as delimiters in the files to compare.
+In such a case @command{numdiff} does not complain, but you have
+to consider that it first uses the set of field delimiters
+to split the files into fields and then, when it has to distinguish 
+between numerical and non-numerical fields, it takes
+into account the numeric formats specified for the two files.
+However, it should never happen to specify as argument for one of
+the options @option{-d}, @option{-t}, @option{-g}, 
+@option{-p}, @option{-n}, @option{-e}, and @option{-i} a character
+which is also used as field delimiter: in writing a file you 
+should avoid (and people usually avoid it)
+to use the same symbol to mean two different things.
+What we have said also explains why the argument
+of the option @option{-c} should never contain one
+or more field delimiters.
+
+@anchor{Restriction of the comparison to particular fields}
+The option @option{-X} can be used
+to restrict the comparison between files to a certain
+group of fields.
+@anchor{Use of the option -X}
+This option requires as argument a range of positive integer values
+or eventually just one positive integer number. The argument specifies
+the position(s) of the fields that @command{numdiff}
+has to ignore.
+Remember that the fields of a line are numerated starting 
+from the left hand of the line
+and proceeding towards the right hand.
+
+The argument passed to @option{-X} can start with a prefix,
+which must be either @samp{1:} or @samp{2:}.
+@samp{1:} refers to the file passed as first on the command line,
+@samp{2:} to the file specified as second.
+With the prefix @samp{1:} only the fields of the first file
+corresponding to the given position(s) are ignored.  
+Similarly, if you want to ignore only fields from the
+second file you have to use the prefix @samp{2:}.
+
+The option @option{-X} can appear more times on the command line,
+in which case @command{numdiff} will ignore all fields
+located in the positions so specified.
+Some examples can clarify the use of ranges and prefixes.
+If the file @file{List1} contains the data
+@verbatim
+* a  1    1     1     1
+* b  2    2     2     2
+* c  3    3     3     3
+* d  4    4     4     4
+* e  5    5     5     5
+@end verbatim
+
+@noindent
+and @file{List2} the data
+@verbatim
+     1    1.1  1.01   A  1.001  1.0001
+     2    2.2  2.02   B  2.002  2.0002
+     3    3.3  3.03   C  3.003  3.0003
+     4    4.4  4.04   D  4.004  4.0004
+     5    5.5  5.05   E  5.005  5.0005
+@end verbatim
+
+@noindent
+then the output of @samp{numdiff -X 1:1-2 -X 2:4 -X 1:6 -X 2:5-6 List1 List2} is
+@example
+----------------
+##1       #:4   <== 1
+##1       #:2   ==> 1.1
+@@ Absolute error = 1.0000000000e-1, Relative error = 1.0000000000e-1
+##1       #:5   <== 1
+##1       #:3   ==> 1.01
+@@ Absolute error = 1.0000000000e-2, Relative error = 1.0000000000e-2
+----------------
+##2       #:4   <== 2
+##2       #:2   ==> 2.2
+@@ Absolute error = 2.0000000000e-1, Relative error = 1.0000000000e-1
+##2       #:5   <== 2
+##2       #:3   ==> 2.02
+@@ Absolute error = 2.0000000000e-2, Relative error = 1.0000000000e-2
+----------------
+##3       #:4   <== 3
+##3       #:2   ==> 3.3
+@@ Absolute error = 3.0000000000e-1, Relative error = 1.0000000000e-1
+##3       #:5   <== 3
+##3       #:3   ==> 3.03
+@@ Absolute error = 3.0000000000e-2, Relative error = 1.0000000000e-2
+----------------
+##4       #:4   <== 4
+##4       #:2   ==> 4.4
+@@ Absolute error = 4.0000000000e-1, Relative error = 1.0000000000e-1
+##4       #:5   <== 4
+##4       #:3   ==> 4.04
+@@ Absolute error = 4.0000000000e-2, Relative error = 1.0000000000e-2
+----------------
+##5       #:4   <== 5
+##5       #:2   ==> 5.5
+@@ Absolute error = 5.0000000000e-1, Relative error = 1.0000000000e-1
+##5       #:5   <== 5
+##5       #:3   ==> 5.05
+@@ Absolute error = 5.0000000000e-2, Relative error = 1.0000000000e-2
+
++++  File "List1" differs from file "List2"
+@end example
+
+@noindent
+Numdiff cuts off from @file{List1}
+the fields in the positions 1, 2 and 6
+and from @file{List2} the fields in the positions
+4, 5 and 6.
+In this way it compares the third, fourth and fifth field 
+of every line of
+@file{List1} with the first, second and third field respectively
+of the corresponding line of @file{List2}.
+An equivalent form of the command
+@samp{numdiff -X 1:1-2 -X 2:4 -X 1:6 -X 2:5-6 List1 List2}
+is given by
+@samp{numdiff -X 1:1-2 -X 2:4-5 -X 6 List1 List2} :
+since the sixth field is cut off from both files we can
+refer to it without a prefix.
+
+As you can see, you can specify a range of fields
+by using the notation @samp{@var{m}-@var{n}},
+where @var{m} and @var{n} are the field numbers
+of the first and of the last field in the range.
+It is even possible to use range expressions like
+@samp{@var{m}-} or @samp{-@var{n}}. The first
+expression corresponds to all fields starting from
+the @var{m}th one (inclusive) till to the end of line,
+the second selects all fields from the first one
+till to the @var{n}th one (inclusive).
+Therefore the command
+@samp{numdiff -X 1:1-2 -X 2:4 -X 1:6 -X 2:5-6 List1 List2}
+is equivalent to
+@samp{numdiff -X 1:-2 -X 2:4 -X 1:6 -X 2:5- List1 List2}
+or to
+@samp{numdiff -X 1:-2 -X 1:6 -X 2:4- List1 List2}.
+
+Mind that the largest field number you can
+use while writing a specification for the option @option{-X} is
+32768.
+
+If you use the option @option{-X} the exit status of @command{numdiff} 
+reflects the outcome of the restricted comparison.
+For instance, the exit status of @samp{numdiff -X 8- @var{file1} @var{file2}}
+is 1 only if @command{numdiff} has found a difference
+in the first seven fields of @var{file1} and @var{file2}.
+If the two files differ only in the fields after the seventh one,
+then @command{numdiff} ends with a zero exit status.
+
+Going back to the example with @file{List1} and @file{List2},
+the output of
+@samp{numdiff -X 1:1-2 -X 1:4- -X 2:2- List1 List2} is
+@example
+
++++  Files "List1" and "List2" are equal
+@end example
+
+@noindent
+since every field of @file{List1} at position 3 is equal
+to the first field in the corresponding line of @file{List2}.
+The exit code returned by the program to the shell
+is zero.
+
+The options @option{-z}, @option{-Z}, @option{-m}, @option{-H},
+@option{-f}, and @option{-T} influence the action of the filter  
+and their use is then described later, @ref{Filtering}.
+Care that @option{-z} and @option{-Z} need both an argument in the same
+form required by @option{-X}.
+
+Since version 5 Numdiff accepts also long options to conform to
+the GNU standards. Now it is then possible, e.g., to use
+@samp{--separators='\n\t %'} or @samp{--separators '\n\t %'} 
+instead of using @samp{-s '\n\t %'}.
+
+The long options, which start all with two dashes,
+are listed at the beginning of this chapter, each one near to
+the corresponding short option.
+
+The argument of a long option may or may not preceded
+by the @verb{|=|} sign. The only exceptions are the options
+@option{--test-filter} and @option{--overview},
+for which the presence of the @verb{|=|}
+before the argument is mandatory.
+Then @samp{--test-filter=60} is correct while
+@samp{--test-filter 60} is not accepted.
+
+@node ndselect, Invoking ndselect, Invoking numdiff, Top
+@chapter Selecting lines and fields for the comparison
+
+@cindex ndselect (introduction to its use)
+@cindex Tools
+
+Together with the version 5.x of Numdiff is shipped the program @command{ndselect}.
+Originally, I decided to create this utility in order to deal with a situation
+that comes out often in Numerical Analysis. Here I present a very simple example of
+such a situation. Let us suppose that file @file{list1}
+contains the values of the square root, rounded to the 20th decimal digit,
+for all integer numbers between 12 and 24:
+@verbatim
+12       3.46410161513775458705
+13       3.60555127546398929312
+14       3.74165738677394138558
+15       3.87298334620741688518
+16       4
+17       4.12310562561766054982
+18       4.24264068711928514641
+19       4.35889894354067355224
+20       4.47213595499957939282
+21       4.58257569495584000659
+22       4.69041575982342955457
+23       4.7958315233127195416
+24       4.89897948556635619639
+@end verbatim
+
+@noindent
+and @var{list2} contains @emph{suitable} approximations of the square root 
+only for the numbers between 12 and 21 which are multiple of 3:
+
+@verbatim
+12       3.46410162002945508100
+15       3.87298387096774193548
+18       4.24264705882352941176
+21       4.58260869565217391304
+@end verbatim
+
+@noindent
+These approximations could have been obtained
+by using the famous Heron's algorithm, which, given an approximation
+@code{a} for the square root of a number @code{x}, computes a better
+approximation by the formula @code{a := 0.5 * (x/a + a)}.
+What we want now is to understand by using @command{numdiff} 
+how good the approximations
+contained in file @var{list2} are. Unfortunately,
+we cannot execute directly the command @samp{numdiff list1 list2},
+since in this way we would compare the approximations provided for
+the square roots of 15, 18, and 21 with the square roots of
+13, 14, and 15 respectively. To make the comparison in the right way,
+one could open @file{list1} in a text editor and remove from this file
+all lines but the ones related to the numbers 12, 15, 18, and 21. 
+This approach is practicable since we have to remove only a few lines:
+one can easily figure out how boring and inefficient would be to manually
+remove hundreds or thousands of lines from a file.
+
+An expert GNU user would suggest that it is
+possible to automate this removal by using the well known utilities
+@command{head} and @command{sed}, in this particular case
+@samp{head -n 10 list1 | sed -n -e '1~3 p' > List1}.
+A quick explanation for the ones who do not know how to use @command{head}
+and @command{sed}: the previous command extracts from
+@file{list1} the first 10 lines, namely the lines containing the square roots 
+of the numbers from 12 to 21, then picks every third line starting
+from the first one to select only the lines related to 12, 15, 18, and 21.
+Finally, these lines are printed
+on the file @file{List1}, which then looks like:
+@verbatim
+12       3.46410161513775458705
+15       3.87298334620741688518
+18       4.24264068711928514641
+21       4.58257569495584000659
+@end verbatim 
+
+Once obtained @file{List1}, we can perform the comparison between 
+the values we are interested in by means of @samp{numdiff List1 list2} .
+Unfortunately, this trick only works if you have installed the GNU version
+of @command{sed}, which, as far as I know, is the only one to
+provide the extension @var{first~step} to specify line addresses.
+That is way I decided to implement @command{ndselect}, which allows to
+obtain the same result as above with the simpler command
+@samp{ndselect -b 1 -e 10 -s 3 list1 > List1} 
+
+The meaning of the arguments passed to the options @option{-b},
+@option{-e}, and @option{-s} is the following: we tell
+@command{ndselect} to print every third line of file @file{list1}
+(the option @option{-s} specifies the step)
+starting from the first one (the option @option{-b} specifies the beginning) 
+and ending within the tenth one possibly inclusive 
+(the option @option{-e} specifies the end). 
+Because of the presence of the redirection operator @code{>},
+the previous command sends to the file @file{List1} 
+what @command{ndselect} would print on the screen (standard output).
+
+Since version 5.6 @command{ndselect} can also be used to select
+particular fields of a file.
+Instead of printing all fields of every line, you may want to print
+indeed only the fields at particular positions.
+To do this you can employ the option @option{-F} to
+indicate the position of the first field to print,
+the option @option{-L} to indicate the position of the last field that
+can be printed, the option @option{-I} to set the increment
+when selecting the fields. In addition, the option @option{-S}
+can be used to specify a set of field delimiters different from the
+default one (which consists of @strong{blank}, @strong{tab} and 
+@strong{newline}). As for @command{numdiff}, the field
+delimiters are used to split the input lines into fields.
+
+The option @option{-S} of @command{ndselect}
+recognizes and accepts the same escape sequences of
+@command{numdiff} options @option{-s}, @option{-D}, and @option{-c}.
+
+As example consider the selection of the even fields between
+the second and the sixth one inclusive from the file
+@file{many_many_columns}, whose contents are shown here:
+@verbatim
+A |   I | 1.1 |   1.08  |   1.01  |  0.1  |   11.011    |    -1.0e-1  
+B |  II | 2.2 |   2.16  |   4.04  |  0.4  |   24.024    |    -1.0e-2  
+C | III | 3.3 |   3.24  |   9.09  |  0.9  |   39.039    |    -1.0e-3  
+D |  IV | 4.4 |   4.32  |  16.16  |  1.6  |  416.039    |    -1.0e-4  
+E |   V | 5.5 |   5.40  |  25.25  |  2.5  |  525.416    |    -1.0e-5  
+F |   # |  #  |    #    |    #    |   #   |     #       |      #
+@end verbatim
+
+@noindent
+This selection can be accomplished by means of the command
+@samp{ndselect -S '| \t\n' -F 2 -L 6 -I 2 many_many_columns}, whose
+output shows only the selected fields:
+@example
+I | 1.08  |   0.1
+II | 2.16  |   0.4
+III | 3.24  |   0.9
+IV | 4.32  |  1.6
+V | 5.40  |  2.5
+# |  #    |    #
+@end example
+
+@noindent
+Of course, you can also select particular fields of particular lines,
+as shown by the output of the command
+@samp{ndselect -S '| \t\n' -b 1 -e 5 -s 3 -F 2 -L 6 -I 2 many_many_columns}:
+@example
+I | 1.08  |   0.1
+IV | 4.32  |  1.6
+@end example
+
+By default, @command{ndselect} reuses the delimiters found in the input
+lines while writing the selected fields to the standard output.
+You can specify a custom separator by means of the option @option{-O}.
+This one recognizes and accepts the same escape sequences of
+@command{numdiff} options @option{-s}, @option{-D}, and @option{-c}.
+For example,
+@samp{ndselect -S '| \t\n' -b 1 -e 5 -s 3 -F 2 -L 6 -I 2 -O '\t\t' many_many_columns}
+puts two horizontal tabulations after every printed field:
+@verbatim
+I		1.08		0.1		
+IV		4.32		1.6		
+@end verbatim
+
+Even if the implementation of a filter in @command{numdiff} and the addition
+of the option @option{-X} have made @command{ndselect} much less useful than
+in the past, this tool can still be used to handle some special cases.
+In addition, it can be used as a filter for other programs than @command{numdiff}.
+The complete synopsis of @command{ndselect} can be found in the
+next chapter. 
+
+@node Invoking ndselect, Filtering, ndselect, Top
+@chapter Invoking ndselect
+
+@cindex Invoking ndselect
+@cindex Options, command line (ndselect)
+@cindex Command line options for ndselect
+@cindex Synopsis (ndselect)
+@cindex Diagnostics (ndselect)
+
+@noindent
+@strong{SYNOPSIS}
+
+@example
+   ndselect -h|--help|-v|--version 
+@end example
+or
+@example
+   ndselect [-b @var{N}][-e @var{N}][-s @var{N}][-F @var{N}][-L @var{N}][-I @var{N}][-S @var{IFS}][-D @var{DELIMS}]
+   [-O @var{OSEP}][-x][-l @var{PATH}][-o @var{PATH}][@var{FILE}]
+@end example
+
+@noindent
+where @var{FILE} is the name of the file to read from.
+
+In the first case @command{ndselect} prints a 
+short help or/and version number, Copyright, License notice 
+and NO-Warranty disclaimer.
+In the second case @command{ndselect} prints on the standard output 
+a subset of lines and fields from @var{FILE}.
+The complete path of @var{FILE} should be given,
+a directory name is not accepted.
+If no input file is specified, the program reads 
+from the standard input.
+
+@noindent
+@strong{OPTIONS}
+
+@table @option
+@item -b, --beginning, --start=@var{N}
+Set to @var{N} the number of the first line to print
+(The default behavior is to start with line number 1)
+
+@item -e, --end=@var{N}
+Set to @var{N} the number of the last line that can be printed
+(The default behavior is to arrive till to the end of the file)
+
+@item -s, --step=@var{N}
+Set to @var{N} the increment to use when selecting the lines to print
+(The default value for the increment is 1)
+
+@item -F, --first-field=@var{N}
+Set to @var{N} the number of the first field to print
+(The default behavior is to start with field number 1)
+
+@item -L, --last-field=@var{N}
+Set to @var{N} the number of the last field that can be printed
+(The default behavior is to arrive till to the end of every line)
+
+@item -I, --increment=@var{N}
+Set to @var{N} the increment to use when selecting the fields to print
+(The default value for the increment is 1)
+
+@item -S, --separators=@var{IFS}
+Specify the set of characters to use as delimiters
+while splitting the input lines into fields
+(The default set of characters is space, tab and newline)
+
+@item -D, --delimiters=@var{DELIMS}
+Specify the set of strings to use as delimiters
+while splitting the input lines into fields
+(The default set of delimiters is space, tab and newline)
+
+@item -O, --output-separator=@var{OSEP}
+Specify the string to use as separator
+while writing the selected fields to the standard output
+(The default behavior consists in reusing the delimiters found in the input lines)
+
+@item -x, --omit-empty-lines
+Do not print empty lines
+
+@item -l, --warnings-to=@var{PATH}
+Redirect warning and error messages from stderr 
+to the indicated file
+
+@item -o, --output=@var{PATH}
+Redirect output from stdout to the indicated file
+
+@item -h, --help
+Show this help message
+
+@item -v, --version
+Show version number, Copyright, Distribution Terms and NO-Warranty
+@end table
+
+@noindent
+Passing 0 as argument to the option @option{-L} or to @option{-e} 
+is equivalent to omit this option and leave enabled the default behavior
+(which consists in scanning till to the end of the line and of
+the file, respectively). 
+
+@noindent
+@strong{DIAGNOSTICS}
+
+The exit status is 0 in case of normal termination, 
+-1 (255) in case of error.
+
+@noindent
+As @command{numdiff} does, since version 5 also @command{ndselect}
+accepts long options. Thus, instead of @samp{ndselect -b 1 -e 10 -s 3 list1 > List1}
+you can write @samp{ndselect --start=1 --end=10 --step=3 list1 > List1}.
+
+The usage of the option @option{-D} is the same as for @command{numdiff}.
+The option @option{-S} corresponds to the option @option{-s} of @command{numdiff}.
+
+@node Filtering, Warnings, Invoking ndselect, Top
+@chapter Using the filter of numdiff
+
+@cindex Filter
+
+Since version 5 it is possible
+to activate a filter when calling @command{numdiff},
+so that the program performs automatically the
+comparison in the desired way.
+Recalling the example of chapter 6,
+if you run the command @command{numdiff -z 2- -V list1 list2}
+you obtain the following result:
+@example
+
+----------------
+##1       <== 12       3.46410161513775458705
+##1       ==> 12       3.46410162002945508100
+
+##1       #:2   <== 3.46410161513775458705
+##1       #:2   ==> 3.46410162002945508100
+@ Absolute error = 4.8917004940e-9, Relative error = 1.4121122985e-9
+----------------
+##2       <== 13       3.60555127546398929312
+          ==>
+
+----------------
+##3       <== 14       3.74165738677394138558
+          ==>
+
+----------------
+##4       <== 15       3.87298334620741688518
+##2       ==> 15       3.87298387096774193548
+
+##4       #:2   <== 3.87298334620741688518
+##2       #:2   ==> 3.87298387096774193548
+@ Absolute error = 5.2476032505e-7, Relative error = 1.3549253331e-7
+----------------
+##5       <== 16       4
+          ==>
+
+----------------
+##6       <== 17       4.12310562561766054982
+          ==>
+
+----------------
+##7       <== 18       4.24264068711928514641
+##3       ==> 18       4.24264705882352941176
+
+##7       #:2   <== 4.24264068711928514641
+##3       #:2   ==> 4.24264705882352941176
+@ Absolute error = 6.3717042443e-6, Relative error = 1.5018250929e-6
+----------------
+##8       <== 19       4.35889894354067355224
+          ==>
+
+----------------
+##9       <== 20       4.47213595499957939282
+          ==>
+
+----------------
+##10      <== 21       4.58257569495584000659
+##4       ==> 21       4.58260869565217391304
+
+##10      #:2   <== 4.58257569495584000659
+##4       #:2   ==> 4.58260869565217391304
+@ Absolute error = 3.3000696334e-5, Relative error = 7.2013423303e-6
+----------------
+##11      <== 22       4.69041575982342955457
+          ==>
+
+----------------
+##12      <== 23       4.7958315233127195416
+          ==>
+
+----------------
+##13      <== 24       4.89897948556635619639
+          ==>
+
+
++++  File "list1" differs from file "list2"
+@end example
+
+Numdiff has recognized that the lines of @file{list1}
+with the square roots for the numbers
+13, 14, 16, 17, 19, 20, 22, 23 and 24
+have been deleted from @file{list2}.
+The numerical comparison has been done
+by likening each line of @file{list2}
+to the line of @file{list1} which displays
+the square root for the same integer value.
+The output obtained running
+the filter of Numdiff by @command{numdiff -f -z 2- list1 list2}
+confirms this:
+@example
+12       3.46410161513775458705         12       3.46410162002945508100
+13       3.60555127546398929312      <
+14       3.74165738677394138558      <
+15       3.87298334620741688518         15       3.87298387096774193548
+16       4                           <
+17       4.12310562561766054982      <
+18       4.24264068711928514641         18       4.24264705882352941176
+19       4.35889894354067355224      <
+20       4.47213595499957939282      <
+21       4.58257569495584000659         21       4.58260869565217391304
+22       4.69041575982342955457      <
+23       4.7958315233127195416       <
+24       4.89897948556635619639      <
+
+
++++  File "list1" differs from file "list2"
+@end example
+
+If you compare the command
+@command{numdiff -z 2- -V list1 list2} with the one
+used for the files @file{bill1} and
+@file{bill2}, @pxref{command},  you surely notice that the filter
+has been invoked in different ways, first
+with @option{-z @@} and then with @option{-z 2-}.
+
+The @i{synchronization} procedure used by the filter
+is based on @i{blurring} and byte-by-byte comparison.
+The options @option{-z} and @option{-Z} are used
+to select which fields from which file have to
+be blurred. They take both an argument in the
+same form requested by @option{-X}, @pxref{Use of the option -X},
+but accept additionally the special value @samp{@@}
+as abbreviation for the range of fields @samp{1-}.
+Then the specifications @samp{1:@@}, @samp{2:@@} and @samp{@@}
+are used to mean all fields of the first file,
+of the second one or of both, respectively.   
+
+Employing @option{-z} and @option{-Z} in the right way
+is extremely important to let the filter work as desired.
+For instance, @command{numdiff -f -z @@ list1 list2}
+matches the lines of @file{list1} and @file{list2}
+in the same wrong way
+@example
+12       3.46410161513775458705         12       3.46410162002945508100
+13       3.60555127546398929312         15       3.87298387096774193548
+14       3.74165738677394138558         18       4.24264705882352941176
+15       3.87298334620741688518         21       4.58260869565217391304
+16       4                           <
+17       4.12310562561766054982      <
+18       4.24264068711928514641      <
+19       4.35889894354067355224      <
+20       4.47213595499957939282      <
+21       4.58257569495584000659      <
+22       4.69041575982342955457      <
+23       4.7958315233127195416       <
+24       4.89897948556635619639      <
+
+
++++  File "list1" differs from file "list2"
+@end example
+
+@noindent
+as Numdiff would do without employing the filter.
+
+It is essential then to understand what @i{blurring a field} means
+and how the filter uses blurring to match the lines
+of the files to compare.
+
+After reading the files the filter removes from each of them
+(from their images in the memory, actually) 
+all the fields selected by the option
+@option{-X}, then it replaces each of the fields that
+have to be blurred by a special character.
+This special character is the same for both files
+and it is so chosen that it cannot appear in
+the text. Blurring a field means to replace
+it by this sort of @i{place card}.
+
+After doing this, the filter converts all remaining numerical
+fields to a standard format and compares
+the files byte by byte neglecting the field
+delimiters.
+This comparison is just used to establish which
+lines of the first file are not present in the second,
+which lines of the second file are missing in the first one
+and how to match the remaining lines to create
+a one-to-one correspondence.
+
+Only at this point @command{numdiff} inspects
+each couple of corresponding lines, splits the
+two lines into the constituent fields, and
+neglecting those ones eventually specified
+through the option @option{-X} compares corresponding
+fields as it is supposed to do, performing
+a numerical comparison whenever the fields
+are both legal numerical values.
+
+Blurring the right fields is essential to
+match the lines from the two files appropriately before
+doing any numerical comparison.
+Without blurring, the numerical fields 
+could prevent @command{numdiff} from an
+appropriate matching of the lines,
+in case some of these are present
+in only one file, by creating confusion 
+with their (maybe small) numeric differences.
+
+Blurring can be of two types, conditional
+or unconditional. 
+The blurring is conditional if it has
+to be performed only for fields which turn out
+to be legal numerical values.
+The arguments of the option @option{-z} indicate which
+fields of which file have to be blurred @strong{under the condition that 
+they are recognized as numeric fields}. Non-numeric fields
+are left by @option{-z} untouched (no blurring occurs for them).
+Then @samp{-z 1:5-7} makes the filter blur the 5th, 6th and 7th field of each
+line of the first file whenever they are recognized as numeric.
+
+By the option @option{-Z} you can specify which
+fields have to be unconditionally blurred, i.e.
+independently of their type, numeric or not.
+For example, @samp{-Z 2:3-4} activates the blurring of the 3th and 4th field of each
+line of the second file.
+
+Going back to the comparison of the files @file{list1} and @file{list2},
+the option @samp{-z 2-} of the command @samp{numdiff -z 2- -V list1 list2}
+makes the filter transform the (memory copies of the)
+two files as
+@example
+12       @bullet{}
+13       @bullet{}
+14       @bullet{}
+15       @bullet{}
+16       @bullet{}
+17       @bullet{}
+18       @bullet{}
+19       @bullet{}
+20       @bullet{}
+21       @bullet{}
+22       @bullet{}
+23       @bullet{}
+24       @bullet{}
+@end example
+
+@noindent
+and
+
+@example
+12       @bullet{}
+15       @bullet{}
+18       @bullet{}
+21       @bullet{}
+@end example
+
+@noindent
+respectively. Here @bullet{} denotes the special
+symbol used by the filter in the blurring procedure, even if this
+symbol is not actually a bullet.
+Since in this example space, tab and newline are
+used as field delimiters, the byte-by-byte comparison between
+the transformed files produces the same result displayed by the command 
+@samp{sdiff -W} when applied to them:
+
+@example
+12       @bullet{}                        12       @bullet{}
+13       @bullet{}                     <
+14       @bullet{}                     <
+15       @bullet{}                        15       @bullet{}
+16       @bullet{}                     <
+17       @bullet{}                     <
+18       @bullet{}                        18       @bullet{}
+19       @bullet{}                     <
+20       @bullet{}                     <
+21       @bullet{}                        21       @bullet{}
+22       @bullet{}                     <
+23       @bullet{}                     <
+24       @bullet{}                     <
+@end example
+
+@noindent
+If you put the blurred fields back you obtain exactly the output
+of @samp{numdiff -f -z 2- list1 list2}:
+
+@example
+12       3.46410161513775458705           12       3.46410162002945508100
+13       3.60555127546398929312        <
+14       3.74165738677394138558        <
+15       3.87298334620741688518           15       3.87298387096774193548
+16       4                             <
+17       4.12310562561766054982        <
+18       4.24264068711928514641           18       4.24264705882352941176
+19       4.35889894354067355224        <
+20       4.47213595499957939282        <
+21       4.58257569495584000659           21       4.58260869565217391304
+22       4.69041575982342955457        <
+23       4.7958315233127195416         <
+24       4.89897948556635619639        <
+
+
++++  File "list1" differs from file "list2"
+
+@end example
+
+@noindent
+Since the second field is a numerical value in all the lines
+of @file{list1} and @file{list2}, to use the option @option{-Z}
+instead of @option{-z} makes no difference in this case. 
+The output of @samp{numdiff -f -Z 2- list1 list2} is then the
+same of @samp{numdiff -f -z 2- list1 list2}.
+
+After this explanation you can also understand why 
+@samp{numdiff -f -z @@ list1 list2} gives a wrong result.
+Since also the first field is always a numerical value,
+the option @samp{-z @@} makes the filter transform the two
+given files as
+@example
+@bullet{}       @bullet{}
+@bullet{}       @bullet{}
+@bullet{}       @bullet{}
+@bullet{}       @bullet{}
+@bullet{}       @bullet{}
+@bullet{}       @bullet{}
+@bullet{}       @bullet{}
+@bullet{}       @bullet{}
+@bullet{}       @bullet{}
+@bullet{}       @bullet{}
+@bullet{}       @bullet{}
+@bullet{}       @bullet{}
+@bullet{}       @bullet{}
+@end example
+
+@noindent
+and
+
+@example
+@bullet{}       @bullet{}
+@bullet{}       @bullet{}
+@bullet{}       @bullet{}
+@bullet{}       @bullet{}
+@end example
+
+@noindent
+respectively, so that it is not anymore possible
+to match the lines in a reasonable way.
+ 
+We consider now a typical situation
+where it is better to use @option{-Z} in place of @option{-z}.
+If the file @file{Table1} contains
+@verbatim
+-6 	 2.449490
+-5 	 2.236068
+-4 	 2.000000
+-3 	 1.732051
+-2 	 1.414214
+-1       1.000000
+0        0
+- - - - - - - - -
+1 	 1.000000
+2 	 1.414214
+3 	 1.732051
+4 	 2.000000
+- - - - - - - - -
+5 	 2.236068
+6 	 2.449490
+7 	 2.645751
+- - - - - - - - -
+8 	 2.828427
+9 	 3.000000
+10 	 3.162278
+11 	 3.316625
+12 	 3.464102
+- - - - - - - - -
+- - - - - - - - -
+13 	 3.605551
+14 	 3.741657
+@end verbatim
+
+@noindent
+and @file{Table2} contains
+
+@verbatim
+-6       Not_defined
+-4       Not_defined
+-2       Not_defined
+ 0       0.000000
+ 2 	 1.414216
+ 4 	 2.000000
+ 6 	 2.449494
+ 8 	 2.828469
+ 10 	 3.162278
+ 12 	 3.464102
+ 14 	 3.741658
+********************END
+@end verbatim
+
+@noindent
+then the output of @samp{numdiff -z 1:2 -Z 2:2 -f Table1 Table2} is
+@example
+-6       2.449490               -6       Not_defined
+-5       2.236068            <
+-4       2.000000               -4       Not_defined
+-3       1.732051            <
+-2       1.414214               -2       Not_defined
+-1       1.000000            <
+0        0                       0       0.000000
+- - - - - - - - -            <
+1        1.000000            <
+2        1.414214                2       1.414216
+3        1.732051            <
+4        2.000000                4       2.000000
+- - - - - - - - -            <
+5        2.236068            <
+6        2.449490                6       2.449494
+7        2.645751            <
+- - - - - - - - -            <
+8        2.828427                8       2.828469
+9        3.000000            <
+10       3.162278                10      3.162278
+11       3.316625            <
+12       3.464102                12      3.464102
+- - - - - - - - -            <
+- - - - - - - - -            <
+13       3.605551            <
+14       3.741657                14      3.741658
+                             >  ********************END
+
+
++++  File "Table1" differs from file "Table2"
+@end example
+
+@noindent
+which is exactly what is expected.
+On the other hand the command @samp{numdiff -z 2 -f Table1 Table2} displays
+@example
+-6       2.449490            |  -6       Not_defined
+-5       2.236068            |  -4       Not_defined
+-4       2.000000            |  -2       Not_defined
+-3       1.732051            <
+-2       1.414214            <
+-1       1.000000            <
+0        0                       0       0.000000
+- - - - - - - - -            <
+1        1.000000            <
+2        1.414214                2       1.414216
+3        1.732051            <
+4        2.000000                4       2.000000
+- - - - - - - - -            <
+5        2.236068            <
+6        2.449490                6       2.449494
+7        2.645751            <
+- - - - - - - - -            <
+8        2.828427                8       2.828469
+9        3.000000            <
+10       3.162278                10      3.162278
+11       3.316625            <
+12       3.464102                12      3.464102
+- - - - - - - - -            <
+- - - - - - - - -            <
+13       3.605551            <
+14       3.741657                14      3.741658
+                             >  ********************END
+
+
++++  File "Table1" differs from file "Table2"
+@end example
+
+@noindent
+which is partially wrong.
+
+Notice that in @file{Table1} you find (truncated to the sixth decimal digit)
+the square roots of the absolute values of the integer numbers
+between -6 and 20, plus some randomly added lines.
+The file @file{Table2} contains
+some approximations (obtained by Newton's method)
+for the square roots of the even numbers between
+-6 and 20. Since the (real) square root is not defined for
+negative numbers, the values corresponding to -6, -4 and -2
+are replaced by @verb{|Not_defined|}.
+
+Since @verb{|Not_defined|} is not a numeric value,
+during the execution of the last command the filter
+transforms @file{Table1} in this way
+@example
+-6       @bullet{}
+-5       @bullet{}
+-4       @bullet{}
+-3       @bullet{}
+-2       @bullet{}
+-1       @bullet{}
+0        @bullet{}
+- - - - - - - - -
+1        @bullet{}
+2        @bullet{}
+3        @bullet{}
+4        @bullet{}
+- - - - - - - - -
+5        @bullet{}
+6        @bullet{}
+7        @bullet{}
+- - - - - - - - -
+8        @bullet{}
+9        @bullet{}
+10       @bullet{}
+11       @bullet{}
+12       @bullet{}
+- - - - - - - - -
+- - - - - - - - -
+13       @bullet{}
+14       @bullet{}
+@end example
+
+@noindent
+and @file{Table2} in this other way
+
+@example
+-6       Not_defined
+-4       Not_defined
+-2       Not_defined
+ 0       @bullet{}
+ 2       @bullet{}
+ 4       @bullet{}
+ 6       @bullet{}
+ 8       @bullet{}
+ 10      @bullet{}
+ 12      @bullet{}
+ 14      @bullet{}
+********************END
+@end example
+
+@noindent
+Unfortunately the first three lines are enough to
+confuse the synchronization procedure, which is based on
+a byte-by-byte comparison with exclusion of the field
+delimiters, as we explained before.
+
+You can check that this is definitely the case by
+looking at the output of the command
+@samp{sdiff -W} on the transformed files, 
+which is
+@example
+-6       @bullet{}           |  -6       Not_defined
+-5       @bullet{}           |  -4       Not_defined
+-4       @bullet{}           |  -2       Not_defined
+-3       @bullet{}           <
+-2       @bullet{}           <
+-1       @bullet{}           <
+0        @bullet{}               0       @bullet{}
+- - - - - - - - -    <
+1        @bullet{}           <
+2        @bullet{}               2       @bullet{}
+3        @bullet{}           <
+4        @bullet{}               4       @bullet{}
+- - - - - - - - -    <
+5        @bullet{}           <
+6        @bullet{}               6       @bullet{}
+7        @bullet{}           <
+- - - - - - - - -    <
+8        @bullet{}               8       @bullet{}
+9        @bullet{}           <
+10       @bullet{}               10      @bullet{}
+11       @bullet{}           <
+12       @bullet{}               12      @bullet{}
+- - - - - - - - -    <
+- - - - - - - - -    <
+13       @bullet{}           <
+14       @bullet{}               14      @bullet{}
+                     >  ********************END
+@end example
+
+If we give the command @samp{numdiff -z 1:2 -Z 2:2 -f Table1 Table2}
+instead of @samp{numdiff -z 2 -f Table1 Table2}, 
+the second field of the lines of @file{Table2} is always
+blurred. The filter transforms then
+@file{Table2} into
+@example
+-6       @bullet{}
+-4       @bullet{}
+-2       @bullet{}
+ 0       @bullet{}
+ 2       @bullet{}
+ 4       @bullet{}
+ 6       @bullet{}
+ 8       @bullet{}
+ 10      @bullet{}
+ 12      @bullet{}
+ 14      @bullet{}
+********************END
+@end example
+
+@noindent
+and @i{re-synchronizes} the files @file{Table1} and @file{Table2} 
+in the right way.
+
+Using the unconditional blurring is suggested in all cases
+when a certain field, which you want to include
+in the comparison (use @option{-X} to completely
+neglect one or more fields), is of numeric type
+in almost all lines of (one of) the given
+files. This can be the case e.g. when in some
+lines the content of the field is given by
+a special numeric value, like @verb{|Infinity|}, @verb{|Inf|}, 
+@verb{|+Inf|} or @verb{|-Inf|},
+or by @verb{|NaN|}, abbreviation for @i{Not a Number}.
+
+Concerning the numeric fields which are not blurred,
+one has to remark that the filter is not confused by differences in the
+numeric format. Before the byte-by-byte comparison,
+numeric values are converted indeed to a standard
+format. To offer an example of this,
+let us suppose that @file{short1} contains a list
+of numbers with their logarithms
+@verbatim
+0.001          -3
+0.01           -2
+0.1            -1
+1               0
+1000            3
+1000000         6
+1000000000      9
+@end verbatim
+
+@noindent
+and @file{short2} the same list of numbers and logarithms, but
+with differences in the numeric format:
+@verbatim
+******************
+0.0010000       -3
+.0100           -2
+0000.10         -1
+1.               0
+1,000.000        3
+1,000,000.       6
+1,000,000,000    9
+@end verbatim
+
+@noindent
+Then @samp{numdiff -f -z 2- short1 short2} displays
+@example
+                             >  ******************
+0.001          -3               0.0010000       -3
+0.01           -2               .0100           -2
+0.1            -1               0000.10         -1
+1               0               1.               0
+1000            3               1,000.000        3
+1000000         6               1,000,000.       6
+1000000000      9               1,000,000,000    9
+
+
++++  File "short1" differs from file "short2"
+@end example
+
+@noindent
+showing that the filter has matched 
+the lines in the right way.
+
+The filter can even handle the case
+when the same numerical value is written in
+decimal notation in one file and in scientific
+notation in the other one.
+If the files @file{decimal} and @file{scientific} contain
+@verbatim
+.001           -3
+.01            -2
+.1             -1
+* * * * * * * * *
+1               0
+1000            3
+1000000         6
+1000000000      9
+@end verbatim
+
+@noindent
+and
+@verbatim
+*****************
+1.0e-3         -3
+1.0e-2         -2
+1.0e-1         -1
+1.0e0           0
+1.0e3           3
+1.0e6           6
+1.0e9           9
+*****************
+@end verbatim
+
+@noindent
+respectively, then @samp{numdiff -f -z 2- decimal scientific}
+shows
+@example
+                             >  *****************
+.001           -3               1.0e-3         -3
+.01            -2               1.0e-2         -2
+.1             -1               1.0e-1         -1
+* * * * * * * * *            < 
+1               0               1.0e0           0
+1000            3               1.0e3           3
+1000000         6               1.0e6           6
+1000000000      9               1.0e9           9
+                             >  *****************
+
+
++++  File "decimal" differs from file "scientific"
+@end example
+
+@noindent
+proving that the filter does not get confused.
+
+No problems come out also in the case when for the same not blurred field
+the scientific notation is used in both files.
+If the files @file{sc1} and @file{sc2} contain
+@verbatim
+  1.E-3          -3
+  1.00E-2        -2
+  1.0E-1         -1
+  1.0000E0        0
+001.0E3           3
++01.000E6         6
+  1.0E+09         9
+  1.0E+10        10
+* * * * * * * * * *
+@end verbatim
+
+@noindent
+and
+@verbatim
+*****************
+ 1.0e-003      -3
+ 1.0e-2        -2
+ 1.0e-1        -1
+ 1.0e0          0
++1.0e3          3
+ 1.0e+6         6
+ 1.0e9          9
+@end verbatim
+
+@noindent
+respectively, then @samp{numdiff -f -z 2- sc1 sc2}
+correctly displays
+@example
+                             >  *****************
+  1.E-3          -3              1.0e-003      -3
+  1.00E-2        -2              1.0e-2        -2
+  1.0E-1         -1              1.0e-1        -1
+  1.0000E0        0              1.0e0          0
+001.0E3           3             +1.0e3          3
++01.000E6         6              1.0e+6         6
+  1.0E+09         9              1.0e9          9
+  1.0E+10        10          <
+* * * * * * * * * *          <
+
+
++++  File "sc1" differs from file "sc2"
+@end example
+
+@noindent
+
+The filter can even handle an improper use
+of the scientific notation, meaning for example that 
+it can recognize @samp{123.456E+2}
+and @samp{1.23456E+4} as equal.
+
+We can see this in the case of the files @file{Scnot1}:
+@verbatim
+-------------------------
+1.2E0             *     1
+2.45E-1           *     2
+-3.678E-2         *     3
+@end verbatim
+
+@noindent
+and @file{Scnot2}:
+@verbatim
+12E-1             *     1
+245E-3            *     2
+-0.003678E+1      *     3
+@end verbatim
+
+@noindent
+@samp{numdiff -f -z 3- Scnot1 Scnot2}
+displays the report:
+@example
+-------------------------    <
+1.2E0             *     1       12E-1             *     1
+2.45E-1           *     2       245E-3            *     2
+-3.678E-2         *     3       -0.003678E+1      *     3
+
+
++++  File "Scnot1" differs from file "Scnot2"
+@end example
+
+@noindent
+which is exactly what you would expect in such a case.
+Also pretty hard cases do not confuse the filter.
+If @file{Scnot1} is given by
+@verbatim
+ 1.2000e0         *     1
+02.4500e-1        *     2
+-003.678E-2       *     3
+@end verbatim
+
+@noindent
+and @file{Scnot2} is the same file as before, the output of
+the command @samp{numdiff -f -z 3- Scnot1 Scnot2} is still right:
+@example
+ 1.2000e0         *     1       12E-1             *     1
+02.4500e-1        *     2       245E-3            *     2
+-003.678E-2       *     3       -0.003678E+1      *     3
+
+
++++  Files "Scnot1" and "Scnot2" have the same structure
+@end example
+
+Till now we have always used the option @option{-f}
+with no argument. 
+@anchor{Use of the option -f}
+
+But @option{-f} accepts an optional argument,
+which can be used to
+control how @option{-f} displays its output.
+If you provide an argument, care not to leave any space
+between the option and the argument:
+@samp{-f60} is correct while @samp{-f 60}
+makes Numdiff terminate after printing an error message.
+
+If the argument is a positive number @var{NUM}, then
+the side-by-side output produced by @option{-f}
+will be @var{NUM} columns wide. The default value
+for the width of the output is 130, which can fit onto a
+traditional printer line, and is the one used
+when @option{-f} has no argument, or the supplied argument is zero.
+In other words, @samp{-f} and @samp{-f0} are just easier to remind
+versions of @samp{-f130}. 
+
+A negative argument has the same
+effect as the positive number with the same absolute value,
+but it causes in addition the removal of
+common lines from the output. 
+For example, the command @samp{numdiff -z 1:2 -Z 2:2 -f-130 Table1 Table2}
+displays the following text
+@example
+-5       2.236068            <
+-3       1.732051            <
+-1       1.000000            <
+- - - - - - - - -            <
+1        1.000000            <
+3        1.732051            <
+- - - - - - - - -            <
+5        2.236068            <
+7        2.645751            <
+- - - - - - - - -            <
+9        3.000000            <
+11       3.316625            <
+- - - - - - - - -            <
+- - - - - - - - -            <
+13       3.605551            <
+                             >  ********************END
+
+
++++  File "Table1" differs from file "Table2"
+@end example
+
+In conjunction with the option @option{-f} or @option{-O} you can use
+@option{-T} to expand tabs to spaces in the output
+produced by @option{-f} / @option{-O}. This is useful to preserve the 
+alignment of tabs in the input files, if it is
+thrown off by the presence of the gutter.
+
+The options @option{-H} and @option{-m} affect the
+performance of the filter of Numdiff.
+But performance has more than one dimension and  
+these options improve one aspect of performance at
+the cost of another, or they improve performance in some cases while
+hurting it in others.
+
+The way that the filter re-synchronizes two files to compare always
+comes up with a near-minimal set of deletions/insertions of lines.  
+Usually it is good enough for practical purposes.  
+If the filter displays a large set of line deletions/insertions, you
+might want it to use a modified algorithm that sometimes produces a
+smaller set of differences.  The @option{-m} option does this;
+however, it can also cause the filter to run more slowly than usual, 
+so it is not the default behavior.
+
+If the files you are comparing are large and have small groups of
+changes scattered throughout them, you can use the
+@option{-H} option to make a different modification to the
+algorithm that the filter uses.  If the input files have a constant small
+density of changes, where change means deletion/insertion of lines,
+this option speeds up the comparisons without
+changing the output or in the worst case introducing minor modifications.  
+
+@node Warnings, Index, Filtering, Top
+@chapter Warnings
+
+@cindex Warnings
+@cindex Notes
+@cindex Caveats
+
+@itemize
+@item Bug reports have to be sent to the address
+@email{ivprimi(at)libero(dot)it} . Please, put Numdiff
+in the subject and indicate the version of the operating system you
+are running (in particular, do not forget to specify if
+it is a 32- or a 64-bit system), and, if you know it, 
+the version of the compiler used to build Numdiff. 
+Please write also whether your version
+of Numdiff uses the GNU MP library or not.
+Before writing an email be sure to run the latest
+stable version of Numdiff, I do not provide
+support for older versions.
+
+@item Numdiff does not accept numbers in scientific notation
+whose exponents lie outside the range -1073741824, @dots{}, +1073741824.
+If such a number is found in any of the files to compare,
+the execution of the program is stopped
+after printing a suitable error message on stderr.
+Under the assumption that the numeric format in use is the default one,
+with "1.0001e-2147483640" the displayed error messages is
+@example
+numdiff: A number with a too small exponent has been found,
+namely "1.0001e-2147483640".
+Exponents smaller than -1073741824 are not accepted,
+the execution of the program ends now
+@end example
+
+@item @anchor{with GNU MP is better}
+If Numdiff has been built with its own internal support 
+for multiple precision arithmetic instead of being linked
+against the GNU MP Library,
+then performance degradation and memory exhaustion can already make 
+impossible to handle exponents of magnitude @math{10^6 = 1000000}.
+This is what I obtained on my laptop, equipped with a dual core processor @@1.50 GHz
+and with 1GB of RAM, when I tried to compare
+the numbers 1.101e1000000000 and 1.0e1000000000:
+@example
+numdiff: Insufficient memory for new allocation,
+the execution of the program ends now
+@end example
+In addition, you can overload the processor with numbers
+whose exponents lie outside the range -1000000, @dots{}, 1000000.
+But at least on my machine, everything works fine and quick enough
+as long as exponent and size of the mantissa of the numbers
+are in the range -1000, @dots{}, 1000.
+Be careful and remember that Numdiff is distributed 
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+Consider also that, if you have numeric data with exponents
+outside the range -300, @dots{}, 300, probably there is something
+wrong with your data: either you are using the wrong scale,
+or you should replace very small numbers, like 1e-100, by zero,
+or it is quite likely that the machine/program/algorithm which
+produced these data is not working right.
+
+@item If Numdiff has been linked against the 
+GNU Multiple Precision Arithmetic Library (also called GNU MP), 
+then the precision it uses is typically higher
+than the specified one. On my machine the actual value
+of the precision is 20 if the user gives a value between 0 and 20,
+30 if the user specifies a precision between 21 and 30,
+40 for a user-specified value between 31 and 40, and so on.
+Anyway, the actual precision is never less than
+the one required by the user.
+
+@item After reading a numeric field, Numdiff truncates its value
+if this number has @i{too much} digits with respect
+to the current precision. 
+To be precise, denoted by
+@var{P} the current value of the precision, the following
+rules apply.
+
+If @command{numdiff} has been built with
+its own internal support for multiple precision arithmetic, then
+@itemize
+@item if the number is written in ordinary decimal notation, @command{numdiff}
+will consider, in addition to all digits of the integer part, only
+the first @var{P} digits of the fractional part;
+@item if the value is written in scientific notation, then @command{numdiff}
+will only consider the first @var{P} digits of the fractional part
+of the mantissa.
+@end itemize
+
+If @command{numdiff} uses the GNU MP library
+to perform its computations, the value of a numeric
+field is first translated into scientific notation and then 
+only the first @var{P} digits of the fractional part
+of the mantissa are considered.
+
+By current value of the precision I mean the integer value
+specified by the option @option{-#}, or the default one (35)
+when this option is not in use. 
+
+@item You can find out whether your local version of @command{numdiff}
+is relying on GNU MP or not by executing the command @samp{numdiff -v}.
+If @command{numdiff} uses GNU MP, then this command will display
+the following message or similar (possibly translated
+into your mother language) among other information:
+@example
+The software has been linked against
+the GNU Multiple Precision Arithmetic Library,
+version number 4.2.4.
+@end example
+
+@noindent
+If @command{numdiff} does not rely on GNU MP, then
+the displayed message will be (up to translation into
+your mother language)
+@example
+The software has been built with
+its own internal support for multiple precision arithmetic.
+@end example
+
+@item Numdiff can only be used on text files:
+the program terminates after printing a suitable error message
+if one of the files to compare turns out to be a binary file.
+To detect if a file is binary or not, @command{numdiff} checks
+for the presence of null bytes (0x00) in the file.
+
+@item If you are not including the so called white-space characters
+(usually @samp{ }, @samp{\t}, @samp{\f}, @samp{\v} and @samp{\r})
+in the set of field delimiters, then a real and an imaginary number
+which are separated just by white-spaces can be coupled together
+and considered as a whole complex number.
+For example, if you are using only @strong{colon} (@samp{:}) and
+@strong{newline} as field delimiters and Numdiff finds a line
+like that
+@verbatim
+::::3.0-5.6e-356i::::-12.9   +4.34i::::-12.9    4.34i::::New York::::
+@end verbatim
+
+@noindent
+then it will consider this line as formed by four fields, the first two
+are numeric and given by the complex numbers @i{3.0-5.6e-356i} and
+@i{-12.9+4.34i}, the last two ones are the strings @verb{|New York|}
+and @verb{|-12.9    4.34i|}.
+I still do not know if I will modify this in the next version
+of Numdiff, so that the program recognizes only @verb{|3.0-5.6e-356i|}
+as numeric field and treats @verb{|-12.9   +4.34i|} as non-numeric
+due to the presence of spaces in the middle.
+@verb{|-12.9    4.34i|} is already considered as non-numeric
+due to the absence of a leading sign in the imaginary value.
+
+@item We have seen that one of the two files passed to @command{numdiff}
+can be @verb{|-|}, which refers to stdin (standard input). In this way one of
+the two files to compare can be the output produced by another
+command, like in @samp{cat file2 | numdiff -a 1.0e-3 file1 -}.
+However, if you activate the filter by means of the options @option{-z} or/and
+@option{-Z}, Numdiff can not work with the standard input unless you
+use also the option @option{-f}. Therefore, the command
+@samp{cat file2 | numdiff -a 1.0e-3 -z @@ file1 -}
+displays only the error message
+@verbatim
+numdiff: -: Illegal seek
+@end verbatim
+(or maybe the translation of this message in the language
+ you are using on your computer)
+but @samp{cat file2 | numdiff -a 1.0e-3 -z @@ -f file1 -}
+works as expected.
+
+@item This manual describes the version 5.8 of Numdiff.
+Prior 5.x versions did not recognize all the options that are
+currently accepted, versions 4.0.0 and 3.x used even a
+different format for the output. 
+@end itemize
+
+@node GNU Free Documentation License,  ,  , Top
+@appendix GNU Free Documentation License
+
+@cindex GNU Free Documentation License
+@cindex GNU FDL
+@cindex FDL
+
+@include fdl.texi
+
+@node Index,  , Warnings, Top
+@unnumbered Index
+
+@printindex cp
+
+@bye

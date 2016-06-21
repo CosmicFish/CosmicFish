@@ -1,0 +1,38 @@
+   Copyright (C)  2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013  Ivano Primi  <ivprimi@libero.it>    
+
+   Copying and distribution of this file, with or without modification,
+   are permitted in any medium without royalty provided the copyright
+   notice and this notice are preserved.
+
+***********************************************************************************
+
+Numdiff
+~~~~~~~
+
+This README file is distributed together with the source code
+of Numdiff, a program which compares 
+putatively similar files line by line and field by field,
+ignoring small numeric differences or/and different numeric formats.
+
+Numdiff is Copyright (C) of Ivano Primi  <ivprimi(at)libero(dot)it>,
+which is also its author.
+
+Numdiff (also written numdiff) is free software; 
+you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+Numdiff is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program in a file called COPYING.
+If not, see <http://www.gnu.org/licenses/>.
+
+Detailed instructions on how to install Numdiff can be found in the
+file INSTALL.
+
+The full documentation of Numdiff can be found in the directory ./docs .

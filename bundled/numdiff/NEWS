@@ -1,0 +1,238 @@
+5.8.0 --> 5.8.1 (Ivano Primi <ivprimi(at)libero(dot)it>) :
+
+*   The distribution terms of the documentation have been slightly changed
+    to comply with Debian policies.
+
+5.6.1 --> 5.8.0 (Ivano Primi <ivprimi(at)libero(dot)it>) :
+
+*   Ndselect recognizes now the following additional options:
+
+    # -O to specify the string to use as separator 
+         while writing the selected fields to the standard output,
+    # -D to specify the set of strings to use as delimiters
+         while splitting the input lines into fields. 
+
+*   The long option --separator of Numdiff/Ndselect has been
+    changed to --separators and its help message has been improved.
+
+*   The options -s of Numdiff and -S of Ndselect recognize and accept
+    now a larger set of escape sequences. 
+
+*   Numdiff can detect now if any of the files to compare is binary
+    and return a suitable error message.
+
+*   The short form of Numdiff option --dummy is not -D anymore, but -U.
+
+*   Numdiff accepts now the option --delimiters (short form: -D) to  
+    specify the set of strings to use as delimiters
+    while splitting the input lines into fields. 
+
+*   The option --currency of Numdiff now recognizes and accepts escape 
+    sequences in its argument.
+
+5.6.0 --> 5.6.1 (Ivano Primi <ivprimi(at)libero(dot)it>) :
+
+*   Added instruction to Makefile.in to create the directory
+    for the man pages in case it does not exist yet.
+
+5.2.1 --> 5.6.0 (Ivano Primi <ivprimi(at)libero(dot)it>) :
+
+*   Several bugs have been corrected:
+
+    # Fixed improper handling of the last line of a file
+      when no trailing newline is present at its end.
+    # Array overrun in function find_and_hash_each_file.
+    # Fixed two bugs which prevented Numdiff to be built on Cygwin.
+      Thanks to Satish Balay for the report.
+    # Numdiff is not linked anymore against the
+      GNU Multiple Precision Arithmetic Library if --disable-gmp 
+      is passed to the configure script.
+
+*   Numdiff recognizes now the following additional options:
+
+    # -O for the "overview" mode,
+    # -B to treat the compared files as binary files 
+         (only meaningful  under  MSDog/MSWindog),
+    # -c to set the currency name for the two files to compare,
+    # -F to change the formula used to compute the relative errors.
+
+*   Added new entries to Numdiff help which explain how to use the new options.
+
+*   The options -a and -r accept now an extended syntax which allows
+    to specify to which fields the given threshold applies.
+    The option -r does not accept anymore the prefixes 1: and 2: (use
+    -F instead).
+
+*   Several help messages of Numdiff have been improved.
+
+*   Several error and warning messages of Numdiff have been improved. 
+
+*   ndselect allows now to select not only the lines but also
+    the fields that have to be printed. 
+    It recognizes then the following additional options:
+
+    # -F to set the number of the first field to print,
+    # -L to set the number of the last field that can be printed,
+    # -I to set the increment to use when selecting the fields to print,
+    # -S to specify the set of characters to use to split 
+         the input lines into fields,
+    # -x to avoid to print empty lines.
+
+*   Added new entries to ndselect help which explain how to use the new options.
+
+*   Several help messages of ndselect have been improved.
+
+*   Added man pages for numdiff and ndselect.
+
+*   Documentation, i18n and italian l10n have been updated.
+
+5.2.0 --> 5.2.1 (Ivano Primi <ivprimi(at)libero(dot)it>) :
+
+*   Corrected a bug which prevented Numdiff to be built on MacOS X(R).
+    Thanks to Antoine Dechaume for the report.
+
+5.0.0 --> 5.2.0 (Ivano Primi <ivprimi(at)libero(dot)it>) :
+
+*   Numdiff uses now the GNU Multiple Precision Arithmetic Library
+    (also called GNU MP or GMP) if this library is available 
+    at build-time.
+    The old internal support for multiple precision arithmetic
+    is a fall-back in case GNU MP is absent.
+    However it is possible to use the internal support for 
+    multiple precision arithmetic even when GNU MP is available:
+    it is sufficient to pass the option --disable-gmp
+    (or --enable-gmp=no) to the  configure  script
+    before building the program.
+    After building and installing Numdiff,
+    it is possible to know whether it has been
+    linked against GNU MP or not just by calling the program
+    with the option -v. In case of link against GMP
+    the program tells also which version of
+    GNU MP it uses to perform its computations.
+
+5.0.0 beta4 --> 5.0.0 (Ivano Primi <ivprimi(at)libero(dot)it>) :
+
+*   The filter has been improved, now it gets no more confused if
+    the same value is represented in scientific notation in one file
+    and in common decimal notation in the other file.
+
+*   The Makefile.in (and consequently the Makefile) has
+    been modified to conform to the GNU Coding Standards.
+
+*   Now numdiff and ndselect accept long options too
+    (for instance --separator='\n\t %' instead of -s '\n\t %').
+
+*   The option -r accepts now an additional parameter which tells 
+    to compute the relative differences always with respect 
+    to the values in one file, instead of using the classic 
+    formula for the relative error. 
+
+*   The argument of the option -f has been made optional.
+
+*   Documentation, i18n and italian l10n have been updated.
+
+5.0.0 beta1 --> 5.0.0 beta4 (Ivano Primi <ivprimi(at)libero(dot)it>) : 
+
+*   Added additional information to the report printed by
+    the option -S.
+
+*   Now the program can accept the options with argument
+
+    -z INT, -Z INT, -X INT
+
+    as short equivalent forms of 
+
+    -z 1:INT -z 2:INT, 
+    -Z 1:INT -Z 2:INT  and
+    -X 1:INT -X 2:INT  respectively.
+
+*   The option  -R  has been removed since not useful.
+	
+*   The option  -s  has now an extended syntax allowing to specify
+different sets of field delimiters for the two files to compare.
+
+*   Adoption of the version 1.3 of the GNU Free Documentation License
+for the TeXinfo documentation.
+	
+*   Now the test programs are not anymore distributed together with
+    the source code of Numdiff.    
+	
+4.2.0 --> 5.0.0 beta1 (Ivano Primi <ivprimi(at)libero(dot)it>) : 
+
+*   Removed the support for double, long double 
+    and high precision arithmetic. Now only multiple
+    precision arithmetic is available (but it is not a limitation :) ).
+
+*   Removed the option -L, since the tool ndselect made it obsolete.
+
+*   Implemented a synchronization procedure to detect insertions/deletions
+    of lines. To accomplish this, source code from GNU diff (diffutils 2.8.1)
+    has been used (with the necessary modifications).
+    Added the options -f, -z, -Z, -R, -m, -H, -T.
+
+*   Removed the option -F, -X is now used in place of it.	
+
+*   Added new entries to the help which explain how to use the new options.
+
+*   The output format has been slightly changed.
+
+*   Makefile and configuration scripts have been changed, since
+    the code has become much more complex than it was.
+
+*   Added more tests to check that the new features are correctly working.
+	
+*   Change of the license: from GPL version 2 or later to GPL version 3 or later.
+    The copyright statement of my files has been consequently updated.
+    Also the message shown by 'numdiff -v'.
+
+4.0.0 --> 4.2.0 (Ivano Primi <ivprimi(at)libero(dot)it>) : 
+
+*   Changed the way the options -V and -b interact when they are both set.
+
+*   Added new tests.
+
+*   Now, when the options -v and -h are both set, Numdiff displays before
+    the information about version, Copyright and NO-Warranty and then
+    the help message.
+
+*   The Copyright has been updated.
+
+*   Added the tools `ndfilter' and `ndselect'.
+
+*   i18n and italian l10n updated.  
+
+*   The documentation has been consequently updated.
+
+3.0.2 --> 4.0.0 (Ivano Primi <ivprimi(at)libero(dot)it>) : 
+
+*   New output format. 
+    At the same time the code printing the output has been cleaned.
+
+*   Added the -V option for the "verbose" mode.
+
+*   Better handling of the last line of a file.
+
+*   i18n, l10n and documentation have been consequently
+    updated.
+
+3.0.1 --> 3.0.2 (Ivano Primi <ivprimi(at)libero(dot)it>) : 
+
+*   The code of the function Cabs() has been improved
+    for both double and long-double precision.
+
+*   Fixed a compilation error which occurred when one
+    chose to activate the double, the long-double or the high
+    precision instead of the multiple precision arithmetic.
+    This compilation error was introduced just before releasing
+    the version 3.0 of Numdiff .
+
+3.0   --> 3.0.1 (Ivano Primi <ivprimi(at)libero(dot)it>) : 
+
+*   The code of the function Cabs() has been modified
+    in order to speed up the execution when working with
+    real numbers (the change concerned only the code
+    for multiple precision arithmetic).
+
+3.0 (Ivano Primi <ivprimi(at)libero(dot)it>) : 
+
+*   First public release

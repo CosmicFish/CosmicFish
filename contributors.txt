@@ -1,0 +1,13 @@
+Principal developers:
+
+  Marco Raveri (mraveri@sissa.it), SISSA, TS, Italy
+
+  Matteo Martinelli (m.martinelli@thphys.uni-heidelberg.de), Institute of theoretical physics, University of Heidelberg, Heidelberg, Germany
+
+  Gongbo Zhao (gbzhao@nao.cas.cn), National Astronomy Observatories, Chinese Academy of Science, Beijing, P.R.China
+
+  Yuting Wang (ytwang@nao.cas.cn), National Astronomy Observatories, Chinese Academy of Science, Beijing, P.R.China
+
+Developers:
+
+Contributors:
