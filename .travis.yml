@@ -6,7 +6,10 @@ branches:
   only:
     - master
     
-before_install:
+before_install
+  -sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+  -sudo apt-get update
+  -sudo apt-get install gcc-5 g++-5 gfortran-5
 
 install:
   - make all
