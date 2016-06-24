@@ -1,0 +1,16 @@
+language: sh
+
+sudo: required
+
+branches:
+  only:
+    - master
+    
+before_install:
+
+install:
+  - make all
+      
+script:
+
+after_script:
