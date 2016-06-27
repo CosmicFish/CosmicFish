@@ -13,5 +13,5 @@ services:
 before_install:
   - docker pull mraveri/cosmicfishbowl
 
-script:
+script: travis_wait 30 mvn script
   - docker run -v $(pwd):/cosmicfish -t mraveri/cosmicfishbowl /bin/sh -c "cd cosmicfish ; make all"

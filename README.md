@@ -1,6 +1,8 @@
 CosmicFish: a cosmology forecasting tool
 ========================================
 
+[![Build Status](https://travis-ci.org/CosmicFish/CosmicFish.svg?branch=master)](https://travis-ci.org/CosmicFish/CosmicFish)
+
 This library contains a set of tools and applications to
 perform forecast of the accuracy of future cosmological
 experiments.
