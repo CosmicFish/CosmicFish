@@ -16,4 +16,7 @@ before_install:
   - docker pull mraveri/cosmicfishbowl
 
 script: 
-  - travis_wait 30 docker run -v $(pwd):/cosmicfish -t mraveri/cosmicfishbowl /bin/sh -c "cd cosmicfish ; make all"
+  - while true; do echo 'Travis do not sleep!'; sleep 300s; done &
+  - TIME_PID=$! 
+  - docker run -v $(pwd):/cosmicfish -t mraveri/cosmicfishbowl /bin/sh -c "cd cosmicfish ; make all"
+  - kill $TIME_PID
