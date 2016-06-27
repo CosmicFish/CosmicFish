@@ -22,4 +22,5 @@ script:
   - docker run -v $(pwd):/cosmicfish -t mraveri/cosmicfishbowl /bin/sh -c "cd cosmicfish ; make test"
   - docker run -v $(pwd):/cosmicfish -t mraveri/cosmicfishbowl /bin/sh -c "cd cosmicfish ; make documentation"
   - docker run -v $(pwd):/cosmicfish -t mraveri/cosmicfishbowl /bin/sh -c "cd cosmicfish ; make examples"
+  - docker run -v $(pwd):/cosmicfish -t mraveri/cosmicfishbowl /bin/sh -c "cd cosmicfish ; make run_test"
   - kill $TIME_PID
