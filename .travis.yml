@@ -25,10 +25,9 @@ install:
 script: 
   - while true; do echo 'Travis do not sleep!'; sleep 300s; done &
   - TIME_PID=$! 
-  - docker run -v $(pwd):/cosmicfish -t mraveri/cosmicfishbowl /bin/sh -c "cd cosmicfish ; make apps"
-  - docker run -v $(pwd):/cosmicfish -t mraveri/cosmicfishbowl /bin/sh -c "cd cosmicfish ; make test"
-  - docker run -v $(pwd):/cosmicfish -t mraveri/cosmicfishbowl /bin/sh -c "cd cosmicfish ; make documentation"
-  - docker run -v $(pwd):/cosmicfish -t mraveri/cosmicfishbowl /bin/sh -c "cd cosmicfish ; make examples"
+  - docker run -v $(pwd):/cosmicfish -t mraveri/cosmicfishbowl /bin/sh -c "cd cosmicfish ; make python_test"
   - kill $TIME_PID
 
-after_success: coveralls
+after_success: 
+  - coveralls debug
+  - coveralls
