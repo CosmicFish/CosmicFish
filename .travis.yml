@@ -20,7 +20,7 @@ before_install:
   - docker pull mraveri/cosmicfishbowl
 
 install:
-  - pip install coveralls
+  - sudo pip install coveralls
 
 script: 
   - while true; do echo 'Travis do not sleep!'; sleep 300s; done &
