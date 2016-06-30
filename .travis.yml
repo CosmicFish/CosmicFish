@@ -28,7 +28,10 @@ script:
   #- docker run -v $(pwd):/cosmicfish -t mraveri/cosmicfishbowl /bin/sh -c "cd cosmicfish ; make apps"
   #- docker run -v $(pwd):/cosmicfish -t mraveri/cosmicfishbowl /bin/sh -c "cd cosmicfish ; make test"
   #- docker run -v $(pwd):/cosmicfish -t mraveri/cosmicfishbowl /bin/sh -c "cd cosmicfish ; make documentation"
-  - docker run -v $(pwd):$(pwd) -t mraveri/cosmicfishbowl /bin/sh -c "cd $(pwd) ; make examples"
+  #- docker run -v $(pwd):$(pwd) -t mraveri/cosmicfishbowl /bin/sh -c "cd $(pwd) ; make examples"
+  - docker run -v $(pwd):/cosmicfish -t mraveri/cosmicfishbowl /bin/sh -c "cd cosmicfish ; make python_test"
   - kill $TIME_PID
 
-after_success: coveralls
+after_success:
+  - coveralls debug 
+  - coveralls
