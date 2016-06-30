@@ -21,4 +21,4 @@ camb/mgcamb/camb
 build
 
 # ignore python test products:
-#*.coverage
+*.coverage
