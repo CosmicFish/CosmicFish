@@ -34,3 +34,5 @@ exclude_paths:
   - test/
   - bundled/
   - camb/
+  - python/apps
+  - python/cosmicfish_pylib_test
