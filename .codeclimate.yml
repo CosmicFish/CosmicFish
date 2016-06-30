@@ -9,6 +9,7 @@ engines:
       - javascript
       - python
       - php
+      - fortran
   eslint:
     enabled: true
   fixme:
@@ -38,3 +39,4 @@ exclude_paths:
   - camb/
   - python/apps
   - python/cosmicfish_pylib_test
+  - documentation/
