@@ -1,5 +1,9 @@
 language: 
   sh
+  python
+
+python:
+  - "2.7"
 
 sudo: required
 
@@ -15,6 +19,9 @@ services:
 before_install:
   - docker pull mraveri/cosmicfishbowl
 
+install:
+  - pip install coveralls
+
 script: 
   - while true; do echo 'Travis do not sleep!'; sleep 300s; done &
   - TIME_PID=$! 
@@ -23,3 +30,5 @@ script:
   - docker run -v $(pwd):/cosmicfish -t mraveri/cosmicfishbowl /bin/sh -c "cd cosmicfish ; make documentation"
   - docker run -v $(pwd):/cosmicfish -t mraveri/cosmicfishbowl /bin/sh -c "cd cosmicfish ; make examples"
   - kill $TIME_PID
+
+after_success: coveralls
