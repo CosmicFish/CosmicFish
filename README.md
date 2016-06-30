@@ -3,6 +3,7 @@ CosmicFish: a cosmology forecasting tool
 
 [![Build Status](https://travis-ci.org/CosmicFish/CosmicFish.svg?branch=master)](https://travis-ci.org/CosmicFish/CosmicFish)
 [![Coverage Status](https://coveralls.io/repos/github/CosmicFish/CosmicFish/badge.svg?branch=master)](https://coveralls.io/github/CosmicFish/CosmicFish?branch=master)
+[![Code Climate](https://codeclimate.com/github/CosmicFish/CosmicFish/badges/gpa.svg)](https://codeclimate.com/github/CosmicFish/CosmicFish)
 
 This library contains a set of tools and applications to
 perform forecast of the accuracy of future cosmological
