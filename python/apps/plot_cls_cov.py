@@ -15,22 +15,22 @@
 
 """
 
-Simple Python code to compare two cls covariance.
+Simple Python code to plot a set of cls covariance.
 
 The CosmicFish Cls Fisher matrix calculator outputs Cls covariance files and this Python
-script compares two of them.
+script plots them.
 
 The ouput will be a pdf file with the plot.
 
-Invoking the help option ``compare_cls_cov.py -h`` will result in::
+Invoking the help option ``plot_cls_cov.py -h`` will result in::
 
-    usage: compare_cls_cov.py [-h] [-o OUTROOT] [-l LABELS [LABELS ...]] [-v] [-q]
-                              files files
+    usage: plot_cls_cov.py [-h] [-o OUTROOT] [-l LABELS [LABELS ...]] [-v] [-q]
+                           files [files ...]
 
-    Cls covariance comparison plotter
+    Cls covariance plotter
 
     positional arguments:
-      files                 two files with the Cls covariances to compare
+      files                 a list of files with Cls covariances
 
     optional arguments:
       -h, --help            show this help message and exit
@@ -54,15 +54,15 @@ __version__ = '1.0' #: version of the application
 
 """ Hard coded options """
 
-do_abs        = True              #: wether to plot the absolute value of the Cls or not
-cutoff        = 10.0**(-16)       #: lower bound where the values of the Cls is flattened
-x_spacing     = 1.0               #: x spacing between plots on the grid. In cm.
-y_spacing     = 1.0               #: y spacing between plots on the grid. In cm.
-x_size        = 4.0               #: x dimension of the single subplot. In cm.
-y_size        = 4.0               #: y dimension of the single subplot. In cm.
-do_lin        = False             #: wether to do linear or log plots.
-main_fontsize = 10.0              #: fontsize for the plots
-color         = (42.0/255.0, 46.0/255.0, 139.0/255.0) #: color to use for the plot
+do_abs        = True          #: wether to plot the absolute value of the Cls or not
+cutoff        = 10.0**(-16)   #: lower bound where the values of the Cls is flattened
+x_spacing     = 1.0           #: x spacing between plots on the grid. In cm.
+y_spacing     = 1.0           #: y spacing between plots on the grid. In cm.
+x_size        = 4.0           #: x dimension of the single subplot. In cm.
+y_size        = 4.0           #: y dimension of the single subplot. In cm.
+adjust_l      = True          #: wether to plot l(l+1)Cls/2pi or Cls.
+do_lin        = False         #: wether to do linear or log plots.
+main_fontsize = 10.0          #: fontsize for the plots
 
 # ***************************************************************************************
 
@@ -77,7 +77,6 @@ import argparse
 import math
 import sys
 import os
-from scipy import interpolate
 
 # get the path of the application and the CosmicFish library:
 here = os.path.dirname(os.path.abspath(__file__))
@@ -94,10 +93,10 @@ import cosmicfish_pylib.colors    as fc
 if __name__ == "__main__":
     
     # parse command line arguments:
-    parser = argparse.ArgumentParser(description='Cls covariance comparison plotter')
+    parser = argparse.ArgumentParser(description='Cls covariance plotter')
     # parse file names:
-    parser.add_argument('files', metavar='files', type=str, nargs=2,
-                         help='two files with the Cls covariances to compare')
+    parser.add_argument('files', metavar='files', type=str, nargs='+',
+                         help='a list of files with Cls covariances')
     # parse the output root:
     parser.add_argument('-o','--outroot', dest='outroot', type=str,
                          help='path and name of the output file')
@@ -113,7 +112,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     # print the CosmicFish header:
     if not args.quiet:
-        fu.CosmicFish_write_header(' Cls covariance comparison plotter')
+        fu.CosmicFish_write_header(' Cls covariance plotter')
     # process input arguments:
     files          = args.files
     number_cls_cov = len(files)
@@ -125,7 +124,6 @@ if __name__ == "__main__":
     data = []
     for i in files:
         data.append( np.loadtxt(i) )
-    # extract the names:
     # extract the names:
     names = []
     if args.labels is None:
@@ -162,62 +160,31 @@ if __name__ == "__main__":
     
             plotrange_x = []
             plotrange_y = []
-            
-            # perform interpolation of the Cls:
-            Cls_1  = interpolate.InterpolatedUnivariateSpline(data[0][:,0], data[0][:,col])
-            Cls_2  = interpolate.InterpolatedUnivariateSpline(data[1][:,0], data[1][:,col])
-            
-            # get the x minimum and maximum values for the plots:
-            x_min = np.amax( np.array([np.amin(data[0][:,0]), np.amin(data[1][:,0])]) )
-            x_max = np.amin( np.array([np.amax(data[0][:,0]), np.amax(data[1][:,0])]) )
-            
-            # get the x values:
-            x_values = np.linspace( x_min, x_max, x_max-x_min )
-            
-            # get the comparison values:
-            yvalues_1 = Cls_1(x_values)
-            yvalues_2 = Cls_2(x_values)
-            
-            # protect against zeroes:
-            yvalues_1_temp = np.abs( yvalues_1 )
-            yvalues_2_temp = np.abs( yvalues_2 )
-            try:
-                min2val_1      = np.amin(yvalues_1_temp[np.nonzero(yvalues_1_temp)])
-                min2val_2      = np.amin(yvalues_2_temp[np.nonzero(yvalues_2_temp)])
-            except:
-                min2val_1      = cutoff
-                min2val_2      = cutoff
-            np.place(yvalues_1, yvalues_1 == 0.0, min2val_1)
-            np.place(yvalues_2, yvalues_2 == 0.0, min2val_2)
-            # computation of the percentual comparison:
-            yvalues_comp = (yvalues_1 - yvalues_2)/abs(yvalues_1)*100.0
-            # protection against values too small:
-            np.place(yvalues_comp, abs(yvalues_comp)<cutoff, [cutoff])
-            # get the Cls values:
-            if do_abs:
-                yvalues_comp = np.abs( yvalues_comp )
-            
-            # get the plot bounds:
-            try: lower_y = 0.9*np.amin(yvalues_comp[np.abs(yvalues_comp)>cutoff])
-            except: lower_y = cutoff
-            try: upper_y = 1.1*np.amax(yvalues_comp[np.abs(yvalues_comp)>cutoff])
-            except: upper_y = cutoff
-            plotrange_x.append( [ x_min  , x_max  ] )
-            plotrange_y.append( [ lower_y,upper_y ] )
-                
-            # do the plot:
-            ax.plot( x_values, yvalues_comp, color=color )
-            
-            # plot cosmic variance:
-            cosmic_variance = np.array( [ math.sqrt(2.0/(2.0*l + 1.0))*100.0 for l in x_values ] )
-            ax.plot( x_values, cosmic_variance, color='k' )
-            # get the plot bounds for cosmic variance:
-            try: lower_y = 0.9*np.amin(cosmic_variance[np.abs(cosmic_variance)>cutoff])
-            except: lower_y = cutoff
-            try: upper_y = 1.1*np.amax(cosmic_variance[np.abs(cosmic_variance)>cutoff])
-            except: upper_y = cutoff
-            plotrange_y.append( [ lower_y,upper_y ] )
-            
+            for k in xrange(0, number_cls_cov):
+    
+                # grab the x values:
+                x_values = data[k][:,0]
+                # convert the bare Cls to l(l+1)/2piCls
+                if adjust_l:
+                    factor   = (x_values*(x_values+1))/(2.0*math.pi)
+                else:
+                    factor   = 1.0
+                # get the Cls values:
+                if do_abs:
+                    y_values = np.abs( factor*data[k][:,col] )
+                else:
+                    y_values = factor*data[k][:,col]
+                # protect against zeroes:
+                np.place(y_values, y_values==0.0, [cutoff])
+                # get the plot bounds:
+                try: lower_y = 0.9*np.amin(y_values[np.abs(y_values)>cutoff])
+                except: lower_y = cutoff
+                try: upper_y = 1.1*np.amax(y_values[np.abs(y_values)>cutoff])
+                except: upper_y = cutoff
+                plotrange_x.append( [ np.amin(x_values), np.amax(x_values) ] )
+                plotrange_y.append( [ lower_y,upper_y ] )
+                # do the plot:
+                ax.plot( x_values, y_values, color=fc.nice_colors(k) )
             # now set the appearence of the plot:
             plotrange_x = np.array( plotrange_x )
             plotrange_y = np.array( plotrange_y )
@@ -240,24 +207,24 @@ if __name__ == "__main__":
             if ( ind == num ):
                 ax.set_xlabel('$\ell$')
             if ( ind2 == 1):
-                ax.set_ylabel( '$ \Delta C_{\ell} \,\, / \,\, C_{\ell} \,\, \%$' )
+                if adjust_l:
+                    ax.set_ylabel( '$\ell(\ell+1) \, C_{\ell} \,\, / \,\, 2\pi $' )
+                else:
+                    ax.set_ylabel( '$C_{\ell}$' )
             
     # create legend handlers
     leg_handlers = []
-    # add the comparison
-    names = [ names[0]+'\n VS \n'+names[1] ]
-    leg_handlers.append( mlines.Line2D([], [], color=color ) )
-    # add cosmic variance to the legend:
-    names.append('Cosmic Variance')
-    leg_handlers.append( mlines.Line2D([], [], color='k' ) )
+    for k in xrange(0, num):
+        leg_handlers.append( mlines.Line2D([], [], color=fc.nice_colors(k)) )
     # create the legend
     legend_anchor =  plot_grid[0,num-1].get_position(fig)
     lgd = fig.legend( handles=leg_handlers, labels=names, fancybox=True,
                       bbox_to_anchor=legend_anchor, borderaxespad=0.0, fontsize=main_fontsize)
+    
     # apply tight layout:
     plot_grid.tight_layout( fig )
     # global title of the plot
-    tit = plt.suptitle('Cls comparison matrix', 
+    tit = plt.suptitle('Cls matrix', 
                         fontsize=1.5*main_fontsize,
                         x=legend_anchor.corners()[3][0], 
                         y=legend_anchor.corners()[3][1],
@@ -265,10 +232,10 @@ if __name__ == "__main__":
                         verticalalignment='bottom',
                         )
     # save the figure and close
-    plt.savefig(outroot+'_compCovCls.pdf', bbox_extra_artists=(lgd,tit))
+    plt.savefig(outroot+'_plotCovCls.pdf', bbox_extra_artists=(lgd,tit))
     plt.clf()
     # print some final feedback:
     if not args.quiet:
-        print 'Done. Saved results in: ', outroot+'_compCovCls.pdf'
+        print 'Done. Saved results in: ', outroot+'_plotCovCls.pdf'
     # exit without error:
     exit(0)

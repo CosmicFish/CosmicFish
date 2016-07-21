@@ -32,3 +32,11 @@ The library comes with a set of already made applications that can be used and c
 This library has a separate documentation that can be found at:
 
 http://cosmicfish.github.io/documentation/CosmicFishPyLib/index.html
+
+
+4. How to:
+==========
+
+**Add an application**: to add an application that exploits the CosmicFish python library just code it following the style of the ones already present in the apps folder.
+Then add it to the list in COSMICFISH_DIR/documentation/python/cosmicfish_pylib_apps.rst to make sure that it is included in the documentation. 
+

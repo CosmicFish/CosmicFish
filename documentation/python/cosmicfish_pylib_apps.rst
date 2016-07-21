@@ -9,6 +9,7 @@ These are the CosmicFish Python applications with their documentation.
    :toctree: _summaries
    :nosignatures:
    
+   plot_cls_cov <apps.plot_cls_cov>
    compare_cls_cov <apps.compare_cls_cov>
    compare_SN_mocks <apps.compare_SN_mocks>
    plot_1D  <apps.plot_1D>
