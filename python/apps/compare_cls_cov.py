@@ -39,6 +39,7 @@ Invoking the help option ``compare_cls_cov.py -h`` will result in::
       -l LABELS [LABELS ...], --label LABELS [LABELS ...]
                             set the labels for the legend. If empty will use the
                             file names.
+      -f, --filling         whether to fill the curves. Default does not fill.
       -v, --version         show program's version number and exit
       -q, --quiet           decides wether something gets printed to screen or not
 
@@ -104,6 +105,9 @@ if __name__ == "__main__":
     # parse the plot legend labels:
     parser.add_argument('-l','--label', dest='labels', type=str, nargs='+',
                          help='set the labels for the legend. If empty will use the file names.')
+    # whether we want filling:
+    parser.add_argument('-f','--filling', dest='filling', action='store_true', 
+                         help='whether to fill the curves. Default does not fill.')
     # version:
     parser.add_argument('-v','--version', action='version', version='%(prog)s '+__version__)
     # quiet mode:
@@ -190,23 +194,36 @@ if __name__ == "__main__":
             np.place(yvalues_1, yvalues_1 == 0.0, min2val_1)
             np.place(yvalues_2, yvalues_2 == 0.0, min2val_2)
             # computation of the percentual comparison:
-            yvalues_comp = (yvalues_1 - yvalues_2)/abs(yvalues_1)*100.0
+            yvalues_comp_1 = (yvalues_1 - yvalues_2)/np.abs(yvalues_1)*100.0
+            yvalues_comp_2 = (yvalues_1 - yvalues_2)/np.abs(yvalues_2)*100.0
             # protection against values too small:
-            np.place(yvalues_comp, abs(yvalues_comp)<cutoff, [cutoff])
+            np.place(yvalues_comp_1, abs(yvalues_comp_1)<cutoff, [cutoff])
+            np.place(yvalues_comp_2, abs(yvalues_comp_2)<cutoff, [cutoff])
             # get the Cls values:
             if do_abs:
-                yvalues_comp = np.abs( yvalues_comp )
+                yvalues_comp_1 = np.abs( yvalues_comp_1 )
+                yvalues_comp_2 = np.abs( yvalues_comp_2 )
             
-            # get the plot bounds:
-            try: lower_y = 0.9*np.amin(yvalues_comp[np.abs(yvalues_comp)>cutoff])
+            # get the plot bounds for comp 1:
+            try: lower_y = 0.9*np.amin(yvalues_comp_1[np.abs(yvalues_comp_1)>cutoff])
             except: lower_y = cutoff
-            try: upper_y = 1.1*np.amax(yvalues_comp[np.abs(yvalues_comp)>cutoff])
+            try: upper_y = 1.1*np.amax(yvalues_comp_1[np.abs(yvalues_comp_1)>cutoff])
             except: upper_y = cutoff
-            plotrange_x.append( [ x_min  , x_max  ] )
-            plotrange_y.append( [ lower_y,upper_y ] )
+            plotrange_x.append( [ x_min  , x_max   ] )
+            plotrange_y.append( [ lower_y, upper_y ] )
+            # get the plot bounds for comp 2:
+            try: lower_y = 0.9*np.amin(yvalues_comp_2[np.abs(yvalues_comp_2)>cutoff])
+            except: lower_y = cutoff
+            try: upper_y = 1.1*np.amax(yvalues_comp_2[np.abs(yvalues_comp_2)>cutoff])
+            except: upper_y = cutoff
+            plotrange_x.append( [ x_min  , x_max   ] )
+            plotrange_y.append( [ lower_y, upper_y ] )
                 
             # do the plot:
-            ax.plot( x_values, yvalues_comp, color=color )
+            ax.plot( x_values, yvalues_comp_1, color=color )
+            ax.plot( x_values, yvalues_comp_2, color=color )
+            if args.filling:
+                ax.fill_between(x_values, yvalues_comp_1, yvalues_comp_2, facecolor=color, interpolate=True)
             
             # plot cosmic variance:
             cosmic_variance = np.array( [ math.sqrt(2.0/(2.0*l + 1.0))*100.0 for l in x_values ] )
