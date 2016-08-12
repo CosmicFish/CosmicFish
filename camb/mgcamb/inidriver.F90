@@ -259,6 +259,20 @@ program driver
     else if ( P%MGC_model ==10 ) then
         P%beta0 = Ini_Read_Double('beta0', 0.d0)
         P%A_2   = Ini_Read_Double('A2',0.d0)
+    else if ( P%MGC_model ==11 ) then
+        P%E11_mg= Ini_Read_Double('E11', 0.d0)
+        P%E22_mg= Ini_Read_Double('E22', 0.d0)
+        P%c1_mg = Ini_Read_Double('c1', 0.d0)
+        P%c2_mg = Ini_Read_Double('c2', 0.d0)
+        P%lam_mg= Ini_Read_Double('lambda', 0.d0)
+    else if ( P%MGC_model ==12 ) then
+        P%E11_mg= Ini_Read_Double('E11', 0.d0)
+        P%E22_mg= Ini_Read_Double('E22', 0.d0)
+        P%E12_mg= Ini_Read_Double('E12', 0.d0)
+        P%E21_mg= Ini_Read_Double('E21', 0.d0)
+        P%c1_mg = Ini_Read_Double('c1', 0.d0)
+        P%c2_mg = Ini_Read_Double('c2', 0.d0)
+        P%lam_mg= Ini_Read_Double('lambda', 0.d0)
     else if ( P%MGC_model /= 0 ) then
         print*, '***MGCAMB: please choose a model***'
         stop

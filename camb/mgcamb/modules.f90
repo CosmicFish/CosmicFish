@@ -333,6 +333,10 @@
         real(dl) :: F_R0, FRn
         ! model 10:
         real(dl) :: A_2
+        ! model 11:
+        real(dl) :: E11_mg, E22_mg, c1_mg, c2_mg, lam_mg
+        ! model 12:
+        real(dl) :: E12_mg, E21_mg
         ! MGCAMB MOD END.
 
     end type CAMBparams

@@ -85,6 +85,20 @@ contains
             write(*,*) 'FRn = ', P%FRn
         else if ( P%MGC_model == 10 ) then
             write(*,*) 'A_2 = ', P%A_2
+        else if ( P%MGC_model == 11 ) then
+            write(*,*) 'E_11 = ', P%E11_mg
+            write(*,*) 'E_22 = ', P%E22_mg
+            write(*,*) 'c_1 = ', P%c1_mg
+            write(*,*) 'c_2 = ', P%c2_mg
+            write(*,*) 'lambda = ', P%lam_mg
+        else if ( P%MGC_model == 12 ) then
+            write(*,*) 'E_11 = ', P%E11_mg
+            write(*,*) 'E_22 = ', P%E22_mg
+            write(*,*) 'E_12 = ', P%E12_mg
+            write(*,*) 'E_21 = ', P%E21_mg
+            write(*,*) 'c_1 = ', P%c1_mg
+            write(*,*) 'c_2 = ', P%c2_mg
+            write(*,*) 'lambda = ', P%lam_mg
         end if
 
     end subroutine MGCAMB_feedback
@@ -102,6 +116,7 @@ contains
         real(dl) :: LKA2 ! \lambda_1^2 k^2 a^s
         real(dl) :: t1, t2, t1dot, t2dot
         real(dl) :: omm, ommdot
+        real(dl) :: omde, omdedot 
 
         MGMu = 1._dl
 
@@ -131,6 +146,17 @@ contains
 
             MGMu = (k2 + t1 + t2)/(k2 + t2)
 
+        else if (model == 11) then
+
+            omde = (1-CP%omegab+CP%omegac)/((1-CP%omegab+CP%omegac)+(1-CP%omegab-CP%omegac)*a**(-3))
+            omdedot = 3.d0*omde*((CP%omegab+CP%omegac)/((CP%omegab+CP%omegac)+(1-CP%omegab-CP%omegac)*a**3))*adotoa
+
+            MGMu = 1+CP%E11_mg*omde*(1+CP%c1_mg*((CP%lam_mg*adotoa)**2.)/k2)/(1+((CP%lam_mg*adotoa)**2.)/k2)
+
+        else if (model == 12) then
+
+            MGMu = 1 + (CP%E11_mg+CP%E12_mg*(1-a))*(1+CP%c1_mg*((CP%lam_mg*adotoa)**2/k2))/(1+((CP%lam_mg*adotoa)**2/k2))
+
         end if
 
     end function MGMu
@@ -148,6 +174,7 @@ contains
         real(dl) :: LKA2 ! \lambda_1^2 k^2 a^s
         real(dl) :: t1,t2,t1dot,t2dot
         real(dl) :: omm, ommdot
+        real(dl) :: omde, omdedot
 
         MGMuDot = 0._dl
 
@@ -181,6 +208,18 @@ contains
 
             MGMuDot = (t1dot*(k2 + t2) - t1*t2dot)/((k2 + t2)**2.d0)
 
+        else if (model == 11) then
+
+            omde = (1-CP%omegab+CP%omegac)/((1-CP%omegab+CP%omegac)+(1-CP%omegab-CP%omegac)*a**(-3))
+            omdedot = 3.d0*omde*((CP%omegab+CP%omegac)/((CP%omegab+CP%omegac)+(1-CP%omegab-CP%omegac)*a**3))*adotoa
+
+            MGMudot = (omdedot/omde)*(MGMu(a,adotoa,k2,model)-1.d0)+CP%E11_mg*omde*(2*CP%lam_mg*adotoa*Hdot*(CP%c1_mg-1)/k2)/(1+((CP%lam_mg*adotoa)**2/k2))**2.
+
+        else if (model == 12) then
+
+            MGMudot = -CP%E12_mg*adotoa*a*(1+CP%c1_mg*((CP%lam_mg*adotoa)**2/k2))/(1+((CP%lam_mg*adotoa)**2/k2)) + &
+                      (CP%E11_mg+CP%E12_mg*(1-a))*2*(CP%lam_mg/k2)*adotoa*Hdot*(CP%c1_mg-1)/(1+((CP%lam_mg*adotoa)**2/k2))**2.
+
         end if
 
     end function MGMuDot
@@ -197,6 +236,7 @@ contains
         real(dl) :: LKA1 ! \lambda_1^2 k^2 a^s
         real(dl) :: LKA2 ! \lambda_1^2 k^2 a^s
         real(dl) :: t1,t2, t1dot, t2dot
+        real(dl) :: omde, omdedot
 
         MGGamma = 1._dl
 
@@ -217,6 +257,17 @@ contains
 
             MGGamma = (k2 - t1 + t2)/(k2 + t1 + t2)
 
+        else if (model == 11) then
+
+             omde = (1-CP%omegab+CP%omegac)/((1-CP%omegab+CP%omegac)+(1-CP%omegab-CP%omegac)*a**(-3))
+             omdedot = 3.d0*omde*((CP%omegab+CP%omegac)/((CP%omegab+CP%omegac)+(1-CP%omegab-CP%omegac)*a**3))*adotoa
+
+             MGGamma =  1 + CP%E22_mg*omde*(1+CP%c2_mg*((CP%lam_mg*adotoa)**2.)/k2)/(1+((CP%lam_mg*adotoa)**2.)/k2)
+
+        else if (model == 12) then
+
+             MGGamma = 1 + (CP%E22_mg+CP%E21_mg*(1-a))*(1+CP%c1_mg*((CP%lam_mg*adotoa)**2/k2))/(1+((CP%lam_mg*adotoa)**2/k2))
+
         end if
 
     end function MGGamma
@@ -234,6 +285,7 @@ contains
         real(dl) :: LKA2 ! \lambda_1^2 k^2 a^s
         real(dl) :: t1,t2,t1dot,t2dot
         real(dl) :: Hdot
+        real(dl) :: omde, omdedot
 
         MGGammaDot = 0._dl
 
@@ -255,6 +307,21 @@ contains
             t2dot = (2.d0*a**2.d0)*(MGM(a,adotoa, model)*MGMDot(a,adotoa, Hdot, model) + (MGM(a,adotoa, model)**2.d0) *adotoa)
 
             MGGammaDot = 2.d0*(t1*t2dot-t1dot*(k2 + t2))/((k2 + t1 + t2)**2.d0)
+
+        else if (model == 11) then
+
+            omde = (1-CP%omegab+CP%omegac)/((1-CP%omegab+CP%omegac)+(1-CP%omegab-CP%omegac)*a**(-3))
+            omdedot = 3.d0*omde*((CP%omegab+CP%omegac)/((CP%omegab+CP%omegac)+(1-CP%omegab-CP%omegac)*a**3))*adotoa
+            Hdot = -(3/2)*(CP%omegab+CP%omegac)*CP%H0**2.*a**(-3.)
+
+            MGGammadot = (omdedot/omde)*(MGGamma(a,adotoa,k2,model)-1.d0)+CP%E22_mg*omde*(2*CP%lam_mg*adotoa*Hdot*(CP%c2_mg-1)/k2)/(1+((CP%lam_mg*adotoa)**2/k2))**2.
+
+        else if (model == 12) then
+
+            Hdot = -(3/2)*(CP%omegab+CP%omegac)*CP%H0**2.*a**(-3.)
+
+            MGGammadot = -CP%E21_mg*adotoa*a*(1+CP%c2_mg*((CP%lam_mg*adotoa)**2/k2))/(1+((CP%lam_mg*adotoa)**2/k2)) + &
+                       (CP%E22_mg+CP%E21_mg*(1-a))*2*(CP%lam_mg/k2)*adotoa*Hdot*(CP%c2_mg-1)/(1+((CP%lam_mg*adotoa)**2/k2))**2.
 
         end if
 
@@ -2058,7 +2125,8 @@ contains
             ! MU, GAMMA parametrization
             if ( CP%MGC_model==1 .or.CP%MGC_model==4 .or.CP%MGC_model==5.or. &
                 &CP%MGC_model==6 .or.CP%MGC_model==7 .or.CP%MGC_model==8.or. &
-                &CP%MGC_model == 9 .or. CP%MGC_model == 10 ) then
+                &CP%MGC_model == 9 .or. CP%MGC_model == 10 .or. CP%MGC_model == 11 .or. &
+                CP%MGC_model == 12) then
 
                 MG_mu = MGMu(a,adotoa,k2,CP%MGC_model)
                 MG_mudot = MGMuDot(a,adotoa,k2,Hdot,CP%MGC_model)
@@ -3342,7 +3410,8 @@ contains
             ! mu, gamma parametrization
             if ( CP%MGC_model==1 .or. CP%MGC_model==4 .or. CP%MGC_model==5 .or. &
                 & CP%MGC_model==6 .or. CP%MGC_model==7 .or. CP%MGC_model==8 .or. &
-                & CP%MGC_model==9 .or. CP%MGC_model==10 ) then
+                & CP%MGC_model==9 .or. CP%MGC_model==10 .or. CP%MGC_model==11 .or. &
+                CP%MGC_model==12) then
 
                 MG_mu = MGMu(a,adotoa,k2,CP%MGC_model)
                 MG_mudot = MGMuDot(a,adotoa,k2,Hdot, CP%MGC_model)
