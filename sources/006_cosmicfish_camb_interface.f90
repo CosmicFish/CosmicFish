@@ -256,9 +256,9 @@ contains
             num_param = num_param + 2
         else if ( P%MGC_model ==10 ) then
             num_param = num_param + 2
-        else if ( P%MGC_model ==10 ) then
+        else if ( P%MGC_model ==11 ) then
             num_param = num_param + 5
-        else if ( P%MGC_model ==10 ) then
+        else if ( P%MGC_model ==12 ) then
             num_param = num_param + 7
         end if
 #endif
