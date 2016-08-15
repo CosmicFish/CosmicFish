@@ -587,6 +587,12 @@ contains
         FP%fisher_par%want_cs_ppf                  = Ini_Read_Logical( 'param[cs_ppf]'   ,.false. )
 #endif
 
+#ifdef COSMICFISH_MGCAMB
+        FP%fisher_par%want_c1                      = Ini_Read_Logical( 'param[c1]'       ,.false. )
+        FP%fisher_par%want_c2                      = Ini_Read_Logical( 'param[c2]'       ,.false. )
+        FP%fisher_par%want_lambda                  = Ini_Read_Logical( 'param[lambda]'   ,.false. )
+#endif
+
         ! read Cls parameters:
         if ( FP%cosmicfish_want_cls ) then
 

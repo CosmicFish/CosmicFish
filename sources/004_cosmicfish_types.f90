@@ -60,6 +60,11 @@ module cosmicfish_types
         logical   :: want_wa_ppf                 !< Decide wether to include wa_ppf in the Fisher parameters.
         logical   :: want_cs_ppf                 !< Decide wether to include cs_ppf in the Fisher parameters.
 #endif
+#ifdef COSMICFISH_MGCAMB
+        logical   :: want_c1                     !< Decide wether to include c1 in the Fisher parameters.
+        logical   :: want_c2                     !< Decide wether to include c2 in the Fisher parameters.
+        logical   :: want_lambda                 !< Decide wether to include lambda in the Fisher parameters.
+#endif
 
     end type cosmicfish_param_fisher
 

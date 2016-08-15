@@ -257,9 +257,15 @@ contains
         else if ( P%MGC_model ==10 ) then
             num_param = num_param + 2
         else if ( P%MGC_model ==11 ) then
-            num_param = num_param + 5
+            num_param = num_param + 2
+            if ( FP%fisher_par%want_c1 ) num_param = num_param + 1 ! c1
+            if ( FP%fisher_par%want_c2 ) num_param = num_param + 1 ! c2
+            if ( FP%fisher_par%want_lambda ) num_param = num_param + 1 ! lambda
         else if ( P%MGC_model ==12 ) then
-            num_param = num_param + 7
+            num_param = num_param + 4
+            if ( FP%fisher_par%want_c1 ) num_param = num_param + 1 ! c1
+            if ( FP%fisher_par%want_c2 ) num_param = num_param + 1 ! c2
+            if ( FP%fisher_par%want_lambda ) num_param = num_param + 1 ! lambda
         end if
 #endif
 
@@ -787,13 +793,13 @@ contains
             num_param = num_param + 1 ! E22
             if ( num_param == param_number ) then; param_name = 'E22' ; if ( present(param_name_latex) ) param_name_latex = 'E_{22}'; return ;
             end if
-            num_param = num_param + 1 ! c1
+            if ( FP%fisher_par%want_c1 ) num_param = num_param + 1 ! c1
             if ( num_param == param_number ) then; param_name = 'c1' ; if ( present(param_name_latex) )  param_name_latex = 'c_{1}'; return ;
             end if
-            num_param = num_param + 1 ! c2
+            if ( FP%fisher_par%want_c2 ) num_param = num_param + 1 ! c2
             if ( num_param == param_number ) then; param_name = 'c2' ; if ( present(param_name_latex) )  param_name_latex = 'c_{2}'; return ;
             end if
-            num_param = num_param + 1 ! lambda
+            if ( FP%fisher_par%want_lambda ) num_param = num_param + 1 ! lambda
             if ( num_param == param_number ) then; param_name = 'lambda' ; if ( present(param_name_latex) ) param_name_latex = '\lambda'; return ;
             end if
          else if ( P%MGC_model ==12 ) then
@@ -809,13 +815,13 @@ contains
             num_param = num_param + 1 ! E21
             if ( num_param == param_number ) then; param_name = 'E21' ; if ( present(param_name_latex) ) param_name_latex = 'E_{21}'; return ;
             end if
-            num_param = num_param + 1 ! c1
+            if ( FP%fisher_par%want_c1 ) num_param = num_param + 1 ! c1
             if ( num_param == param_number ) then; param_name = 'c1' ; if ( present(param_name_latex) )  param_name_latex = 'c_{1}';  return ;
             end if
-            num_param = num_param + 1 ! c2
+            if ( FP%fisher_par%want_c2 ) num_param = num_param + 1 ! c2
             if ( num_param == param_number ) then; param_name = 'c2' ; if ( present(param_name_latex) )  param_name_latex = 'c_{2}';  return ;
             end if
-            num_param = num_param + 1 ! lambda
+            if ( FP%fisher_par%want_lambda ) num_param = num_param + 1 ! lambda
             if ( num_param == param_number ) then; param_name = 'lambda' ; if ( present(param_name_latex) ) param_name_latex = '\lambda'; return ;
             end if
         end if
@@ -1217,19 +1223,36 @@ contains
         else if ( P%MGC_model ==11 ) then
             params_array(ind)   = P%E11_mg
             params_array(ind+1) = P%E22_mg
-            params_array(ind+2) = P%c1_mg
-            params_array(ind+3) = P%c2_mg
-            params_array(ind+4) = P%lam_mg
-            ind = ind +5
+            ind = ind +2
+            if ( FP%fisher_par%want_c1   ) then
+               params_array(ind) = P%c1_mg
+               ind = ind +1
+            end if
+            if ( FP%fisher_par%want_c2   ) then
+               params_array(ind) = P%c2_mg
+               ind = ind +1
+            end if
+            if ( FP%fisher_par%want_lambda   ) then
+               params_array(ind) = P%lam_mg
+               ind = ind +1
+            end if
         else if ( P%MGC_model ==12 ) then
             params_array(ind)   = P%E11_mg
             params_array(ind+1) = P%E22_mg
             params_array(ind+2) = P%E12_mg
             params_array(ind+3) = P%E21_mg
-            params_array(ind+4) = P%c1_mg
-            params_array(ind+5) = P%c2_mg
-            params_array(ind+6) = P%lam_mg
-            ind = ind +7
+            if ( FP%fisher_par%want_c1   ) then
+               params_array(ind) = P%c1_mg
+               ind = ind +1
+            end if
+            if ( FP%fisher_par%want_c2   ) then
+               params_array(ind) = P%c2_mg
+               ind = ind +1
+            end if
+            if ( FP%fisher_par%want_lambda   ) then
+               params_array(ind) = P%lam_mg
+               ind = ind +1
+            end if
         end if
 #endif
 
@@ -1654,19 +1677,37 @@ contains
         else if ( P%MGC_model == 11 ) then
             P%E11_mg   = params_array(ind)
             P%E22_mg   = params_array(ind+1)
-            P%c1_mg    = params_array(ind+2)
-            P%c2_mg    = params_array(ind+3)
-            P%lam_mg   = params_array(ind+4)
-            ind = ind +5
+            ind = ind +2
+            if ( FP%fisher_par%want_c1   ) then
+               P%c1_mg = params_array(ind)
+               ind = ind +1
+            end if
+            if ( FP%fisher_par%want_c2   ) then
+               P%c2_mg = params_array(ind)
+               ind = ind +1
+            end if
+            if ( FP%fisher_par%want_lambda   ) then
+               P%lam_mg = params_array(ind)
+               ind = ind +1
+            end if
         else if ( P%MGC_model == 12 ) then
             P%E11_mg   = params_array(ind)
             P%E22_mg   = params_array(ind+1)
             P%E12_mg   = params_array(ind+2)
             P%E21_mg   = params_array(ind+3)
-            P%c1_mg    = params_array(ind+4)
-            P%c2_mg    = params_array(ind+5)
-            P%lam_mg= params_array(ind+6)
-            ind = ind +7
+            ind = ind +4
+            if ( FP%fisher_par%want_c1   ) then
+               P%c1_mg = params_array(ind)
+               ind = ind +1
+            end if
+            if ( FP%fisher_par%want_c2   ) then
+               P%c2_mg = params_array(ind)
+               ind = ind +1
+            end if
+            if ( FP%fisher_par%want_lambda   ) then
+               P%lam_mg = params_array(ind)
+               ind = ind +1
+            end if
         end if
 #endif
 
