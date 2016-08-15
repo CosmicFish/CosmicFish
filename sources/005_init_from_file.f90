@@ -771,6 +771,11 @@ contains
                 FP%fisher_der%FD_redshift(i) = Ini_Read_Double( 'FD_redshift('//trim(numstr)//')', 0._dl )
             end do
 
+#ifdef COSMICFISH_MGCAMB
+            FP%fisher_der%want_mu0 = Ini_Read_Logical( 'param[mu0]'    ,.false. )
+            FP%fisher_der%want_gam0 = Ini_Read_Logical( 'param[gamma0]'    ,.false. )
+#endif
+
         end if
 
         ! read Mpk parameters:

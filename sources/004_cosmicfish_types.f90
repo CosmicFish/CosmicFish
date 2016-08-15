@@ -211,6 +211,12 @@ module cosmicfish_types
         integer                             :: FD_num_redshift  !< Number of tomographic redshifts
         real(dl), dimension(:), allocatable :: FD_redshift      !< The values of the redshifts
 
+#ifdef COSMICFISH_MGCAMB
+        !derived parameters for planck parametrization
+        logical   :: want_mu0                   !< Decide wether to include mu0 in the Fisher parameters.
+        logical   :: want_gam0                  !< Decide wether to include gamma0 in the Fisher parameters.
+#endif
+
     end type cosmicfish_fisher_derived
 
     !----------------------------------------------------------------------------------------

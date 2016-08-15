@@ -142,6 +142,16 @@ contains
             num = num + FP%fisher_der%FD_num_redshift
         end if
 
+#ifdef COSMICFISH_MGCAMB
+        if ( FP%fisher_der%want_mu0 ) then
+            num = num + 1
+        end if
+
+        if ( FP%fisher_der%want_gam0 ) then
+            num = num + 1
+        end if
+#endif
+
     end subroutine dimension_derived_parameters
 
     ! ---------------------------------------------------------------------------------------------
@@ -277,6 +287,20 @@ contains
             end do
         end if
 
+#ifdef COSMICFISH_MGCAMB
+        if ( FP%fisher_der%want_mu0 ) then
+            ind = ind + 1
+            if (CP%MGC_model ==11) derived(ind) = 1 + CP%E11_mg * CP%omegav
+            if (CP%MGC_model ==12) derived(ind) = 1 + CP%E11_mg 
+        end if
+
+        if ( FP%fisher_der%want_gam0 ) then
+            ind = ind + 1
+            if (CP%MGC_model ==11) derived(ind) = 1 + CP%E11_mg * CP%omegav
+            if (CP%MGC_model ==12) derived(ind) = 1 + CP%E11_mg
+        end if
+#endif
+
         if ( num/=ind ) then
             write(*,*) 'ERROR: Compute_Derived_Parameters num is not: ', num
             write(*,*) 'If you added a parameter change also dimension_derived_parameters'
@@ -335,6 +359,15 @@ contains
         if ( FP%fisher_der%want_neff            )  num_param  = num_param + 1 ! neff
         if ( param_number == num_param          )  then; param_name = 'Neff'; if ( present(param_name_latex) ) param_name_latex = 'N_{\rm eff}'; return ;
         end if
+
+#ifdef COSMICFISH_MGCAMB
+        if ( FP%fisher_der%want_mu0            )  num_param  = num_param + 1 ! mu(z=0)
+        if ( param_number == num_param          )  then; param_name = 'mu0'; if ( present(param_name_latex) ) param_name_latex='\mu_0'; return ;
+        end if
+        if ( FP%fisher_der%want_gam0            )  num_param  = num_param + 1 ! gamma(z=0)
+        if ( param_number == num_param          )  then; param_name = 'gamma0'; if ( present(param_name_latex) ) param_name_latex='\gamma_0'; return ;
+        end if
+#endif
 
         ind = num_param
         ! add sigma8 if wanted:
