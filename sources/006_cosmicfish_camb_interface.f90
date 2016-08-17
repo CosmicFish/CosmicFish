@@ -1241,6 +1241,7 @@ contains
             params_array(ind+1) = P%E22_mg
             params_array(ind+2) = P%E12_mg
             params_array(ind+3) = P%E21_mg
+            ind = ind +4
             if ( FP%fisher_par%want_c1   ) then
                params_array(ind) = P%c1_mg
                ind = ind +1

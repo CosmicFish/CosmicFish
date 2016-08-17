@@ -268,8 +268,8 @@ contains
 
         if ( FP%fisher_der%want_gam0 ) then
             ind = ind + 1
-            if (CP%MGC_model ==11) derived(ind) = 1 + CP%E11_mg * CP%omegav
-            if (CP%MGC_model ==12) derived(ind) = 1 + CP%E11_mg
+            if (CP%MGC_model ==11) derived(ind) = 1 + CP%E22_mg * CP%omegav
+            if (CP%MGC_model ==12) derived(ind) = 1 + CP%E22_mg
         end if
 #endif
 
