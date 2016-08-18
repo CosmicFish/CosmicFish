@@ -50,7 +50,7 @@ contains
         implicit none
 
         Type(CAMBparams)                       :: P                !< CAMBparams object to be filled with the parameters
-        Type(cosmicfish_params)                 :: FP               !< CosmicFish parameter object
+        Type(cosmicfish_params)                :: FP               !< CosmicFish parameter object
         character(len=*), intent(in)           :: filename         !< name of the file frow which parameters are read
         character(len=*), intent(in), optional :: param_out_name   !< name of the file to which to write the parameters
 
