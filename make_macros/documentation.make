@@ -40,7 +40,7 @@ clean_doxydoc:
 ############################### python documentation targets ################################
 
 ipydoc:
-	@cd $(DOCUMENTATION_DIR)/python && ipython nbconvert --ExecutePreprocessor.enabled=True --to html --template full example.ipynb
+	@ipython nbconvert --ExecutePreprocessor.enabled=True --output $(DOCUMENTATION_DIR)/python/example --to html --template full index.ipynb && rm test.png
 
 pydoc: ipydoc
 	@cd $(DOCUMENTATION_DIR)/python && make html SPHINXOPTS=-v
