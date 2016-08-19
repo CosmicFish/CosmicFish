@@ -383,8 +383,6 @@ contains
             P%beta0 = Ini_Read_Double('beta0', 0.d0)
             P%A_2   = Ini_Read_Double('A2',0.d0)
         else if ( P%MGC_model ==11 ) then
-        write(0,*) 'TEMPORARY'
-        write(0,*) 'are we reading parameters?'
             P%E11_mg= Ini_Read_Double('E11', 0.d0)
             P%E22_mg= Ini_Read_Double('E22', 0.d0)
             P%c1_mg = Ini_Read_Double('c1', 0.d0)
