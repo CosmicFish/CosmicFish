@@ -21,6 +21,7 @@ This Python package is meant to have all the relevant tools to analyse and plot 
 
    Introduction <introduction>
    Examples and tutorial <example.html#://>
+   Live examples and tutorial <http://mybinder.org/repo/cosmicfish/cosmicfish>
 
 There are also some applications already implemented:
 
