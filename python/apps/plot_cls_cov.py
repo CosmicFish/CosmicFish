@@ -214,7 +214,7 @@ if __name__ == "__main__":
             
     # create legend handlers
     leg_handlers = []
-    for k in xrange(0, num):
+    for k in xrange(0, len(names)):
         leg_handlers.append( mlines.Line2D([], [], color=fc.nice_colors(k)) )
     # create the legend
     legend_anchor =  plot_grid[0,num-1].get_position(fig)
