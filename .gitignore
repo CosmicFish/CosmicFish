@@ -22,3 +22,9 @@ build
 
 # ignore python test products:
 *.coverage
+
+# ignore stuff to run on clusters:
+*.pbs
+*.sbatch
+*.out
+*.err
