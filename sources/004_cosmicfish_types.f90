@@ -92,6 +92,10 @@ module cosmicfish_types
         integer   :: l_max_EE                !< Maximum multipole considered for CMB E mode polarization
         integer   :: l_max_BB                !< Maximum multipole considered for CMB B mode polarization
 
+        integer   :: l_min_TT                !< Minimum multipole considered for CMB temperature
+        integer   :: l_min_EE                !< Minimum multipole considered for CMB E mode polarization
+        integer   :: l_min_BB                !< Minimum multipole considered for CMB B mode polarization
+
         real(dl), dimension(:), allocatable :: CMB_temp_sens !< Temperature sensitivity in each frequency channel
         real(dl), dimension(:), allocatable :: CMB_pol_sens  !< Polarization sensitivity in each frequency channel
         real(dl), dimension(:), allocatable :: CMB_fwhm      !< Beam fwhm in each frequency channel
@@ -103,6 +107,7 @@ module cosmicfish_types
         real(dl), dimension(:), allocatable :: LSS_intrinsic_ellipticity !< Intrinsic ellipticity in  each window, relevant only for lensing
         real(dl), dimension(:), allocatable :: LSS_fsky                  !< Sky fraction in each window
         integer , dimension(:), allocatable :: LSS_lmax                  !< Maximum multipole in each window
+        integer , dimension(:), allocatable :: LSS_lmin                  !< Minimum multipole in each window
 
         ! other window specifications:
         integer  :: window_type                  !< Specifies the window type:

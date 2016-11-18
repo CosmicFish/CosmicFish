@@ -106,7 +106,7 @@ contains
         real(dl) :: ell
         real(dl), dimension(:,:), allocatable :: outarr
         integer , dimension(:)  , allocatable :: array_select
-        integer , dimension(cl_dim) :: l_maxes
+        integer , dimension(cl_dim) :: l_maxes, l_mins
 
         integer  :: i, j, k, l, m, temp, stat, ind
         real(dl) :: temp_factor
@@ -306,7 +306,7 @@ contains
             end do
         end if
 
-        ! apply the l_max cut:
+        ! prepare the l_max cut:
 
         l_maxes = 1
         ind     = 1
@@ -337,12 +337,43 @@ contains
             ind = ind + 1
         end do
 
+        ! prepare the l_min cut:
+
+         l_mins  = 1
+         ind     = 1
+
+         if ( FP%fisher_cls%Fisher_want_CMB_T ) then
+             l_mins(ind) = FP%fisher_cls%l_min_TT
+             ind = ind + 1
+         end if
+
+         if ( FP%fisher_cls%Fisher_want_CMB_E ) then
+             l_mins(ind) = FP%fisher_cls%l_min_EE
+             ind = ind + 1
+         end if
+
+         if ( FP%fisher_cls%Fisher_want_CMB_lensing ) then
+             l_mins(ind) = max( FP%fisher_cls%l_min_TT, &
+                 & FP%fisher_cls%l_min_EE, &
+                 & FP%fisher_cls%l_min_BB  )
+             ind = ind + 1
+         end if
+
+         if ( FP%fisher_cls%Fisher_want_CMB_B ) then
+             l_mins(cl_dim) = FP%fisher_cls%l_min_BB
+         end if
+
+         do k = 1, FP%fisher_cls%LSS_number_windows
+             l_mins(ind) = FP%fisher_cls%LSS_lmin(k)
+             ind = ind + 1
+         end do
+
         ! apply the l cut:
         do i=l_min, l_max
             do j=1, cl_dim
                 do k=1, j
 
-                    if ( i <= min(l_maxes(j), l_maxes(k)) ) then
+                    if ( i <= min(l_maxes(j), l_maxes(k)) .and. i >= max(l_mins(j), l_mins(k)) ) then
                         cl_out( k, j, i-l_min+1) = cl_out( k, j, i-l_min+1)
                     else
                         cl_out( k, j, i-l_min+1) = 0._dl

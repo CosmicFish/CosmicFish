@@ -611,6 +611,10 @@ contains
             FP%fisher_cls%l_max_EE = Ini_Read_Int( 'l_max_EE' , 0 )
             FP%fisher_cls%l_max_BB = Ini_Read_Int( 'l_max_BB' , 0 )
 
+            FP%fisher_cls%l_min_TT = Ini_Read_Int( 'l_min_TT' , 2 )
+            FP%fisher_cls%l_min_EE = Ini_Read_Int( 'l_min_EE' , 2 )
+            FP%fisher_cls%l_min_BB = Ini_Read_Int( 'l_min_BB' , 2 )
+
             allocate( FP%fisher_cls%CMB_temp_sens( FP%fisher_cls%CMB_n_channels ), &
                 & FP%fisher_cls%CMB_pol_sens( FP%fisher_cls%CMB_n_channels ), &
                 & FP%fisher_cls%CMB_fwhm( FP%fisher_cls%CMB_n_channels ) )
@@ -628,7 +632,8 @@ contains
             allocate( FP%fisher_cls%LSS_num_galaxies( FP%fisher_cls%LSS_number_windows ), &
                 & FP%fisher_cls%LSS_intrinsic_ellipticity( FP%fisher_cls%LSS_number_windows ), &
                 & FP%fisher_cls%LSS_fsky( FP%fisher_cls%LSS_number_windows ), &
-                & FP%fisher_cls%LSS_lmax( FP%fisher_cls%LSS_number_windows ) )
+                & FP%fisher_cls%LSS_lmax( FP%fisher_cls%LSS_number_windows ), &
+                & FP%fisher_cls%LSS_lmin( FP%fisher_cls%LSS_number_windows ) )
 
             do i=1, FP%fisher_cls%LSS_number_windows
                 write (numstr,*) i
@@ -636,7 +641,8 @@ contains
                 FP%fisher_cls%LSS_num_galaxies(i) = Ini_Read_Double('LSS_num_galaxies('//trim(numstr)//')', 0._dl )
                 FP%fisher_cls%LSS_intrinsic_ellipticity(i) = Ini_Read_Double('LSS_intrinsic_ellipticity('//trim(numstr)//')', 0._dl )
                 FP%fisher_cls%LSS_fsky(i)         = Ini_Read_Double('LSS_fsky('//trim(numstr)//')', 0._dl )
-                FP%fisher_cls%LSS_lmax(i)         = Ini_Read_Double('LSS_lmax('//trim(numstr)//')', 0._dl )
+                FP%fisher_cls%LSS_lmax(i)         = Ini_Read_Int('LSS_lmax('//trim(numstr)//')', 0 )
+                FP%fisher_cls%LSS_lmin(i)         = Ini_Read_Int('LSS_lmin('//trim(numstr)//')', 2 )
             end do
 
             FP%fisher_cls%window_type   = Ini_Read_Int( 'window_type' , 1 )
