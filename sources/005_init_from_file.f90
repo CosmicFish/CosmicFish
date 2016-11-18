@@ -748,7 +748,7 @@ contains
 
         ! read derived parameters:
         if ( FP%cosmicfish_want_derived )  then
-
+            ! fixed parameters:
             FP%fisher_der%want_omegab = Ini_Read_Logical( 'param[omegab]'    ,.false. )
             FP%fisher_der%want_omegac = Ini_Read_Logical( 'param[omegac]'    ,.false. )
             FP%fisher_der%want_omegan = Ini_Read_Logical( 'param[omegan]'    ,.false. )
@@ -759,10 +759,11 @@ contains
             FP%fisher_der%want_mnu    = Ini_Read_Logical( 'param[mnu]'       ,.false. )
             FP%fisher_der%want_zre    = Ini_Read_Logical( 'param[zre]'       ,.false. )
             FP%fisher_der%want_neff   = Ini_Read_Logical( 'param[neff]'      ,.false. )
-
+            ! tomographic parameters:
             FP%fisher_der%want_sigma8     = Ini_Read_Logical( 'param[sigma8]'    ,.false. )
             FP%fisher_der%want_loghubble  = Ini_Read_Logical( 'param[loghubble]' ,.false. )
             FP%fisher_der%want_logDA      = Ini_Read_Logical( 'param[logDA]'     ,.false. )
+            FP%fisher_der%want_S8         = Ini_Read_Logical( 'param[S8]'        ,.false. )
 
             FP%fisher_der%FD_num_redshift = Ini_Read_Int( 'FD_num_redshift', 0 )
 

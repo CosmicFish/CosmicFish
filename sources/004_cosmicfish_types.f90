@@ -211,6 +211,7 @@ module cosmicfish_types
         logical   :: want_sigma8                !< Decide wether to include sigma8(z) (tomography) in the Fisher parameters.
         logical   :: want_loghubble             !< Decide wether to include H(z) (tomography) in the Fisher parameters.
         logical   :: want_logDA                 !< Decide wether to include DA(z) (tomography) in the Fisher parameters.
+        logical   :: want_S8                    !< Decide wether to include S8(z) (tomography) in the Fisher parameters.
 
         ! derived parameters tomography:
         integer                             :: FD_num_redshift  !< Number of tomographic redshifts

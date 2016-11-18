@@ -151,6 +151,10 @@ contains
         if ( FP%fisher_der%want_logDA ) then
             num = num + FP%fisher_der%FD_num_redshift
         end if
+        ! add S8 if wanted:
+        if ( FP%fisher_der%want_S8 ) then
+            num = num + FP%fisher_der%FD_num_redshift
+        end if
 
 
     end subroutine dimension_derived_parameters
@@ -301,7 +305,14 @@ contains
                 end if
             end do
         end if
-
+        ! add S8 if wanted:
+        if ( FP%fisher_der%want_S8 ) then
+            do i=1, FP%fisher_der%FD_num_redshift
+                ind = ind + 1
+                j = P%Transfer%PK_redshifts_index(i)
+                derived(ind) = OutData%MTrans%sigma_8(i,1)*sqrt( (P%omegab +P%omegac +P%omegan)/0.3_dl )
+            end do
+        end if
 
         if ( num/=ind ) then
             write(*,*) 'ERROR: Compute_Derived_Parameters num is not: ', num
@@ -421,7 +432,22 @@ contains
                 end if
             end do
         end if
-
+        ! add S8 if wanted:
+        if ( FP%fisher_der%want_S8 ) then
+            do i=1, FP%fisher_der%FD_num_redshift
+                ind = ind + 1
+                if ( param_number == ind )  then
+                    j = P%Transfer%PK_redshifts_index(i)
+                    write (str, *) i
+                    str = adjustl(str)
+                    param_name = 'S8_'//trim(str)
+                    write (str,'(F20.2)') P%Transfer%redshifts(j)
+                    str = adjustl(str)
+                    if ( present(param_name_latex) ) param_name_latex = '\S_{8}('//trim(str)//')'
+                    return
+                end if
+            end do
+        end if
 
     end subroutine Fisher_derived_param_names
 
