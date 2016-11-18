@@ -80,6 +80,11 @@ contains
 
         P%cs2_lam     = Ini_Read_Double_File(Ini,'cs2_lam', 1.d0)
 
+        ! COSMICFISH MOD START: modify gravitational waves propagation
+        P%csT2 = Ini_Read_Double_File(Ini,'csT2', 1.d0)
+        if (Feedback > 3) write(*,*) 'c_T^2= ', P%csT2
+        ! COSMICFISH MOD END.
+
         call setcgammappf( P )
 
     end subroutine DarkEnergy_ReadParams
@@ -3547,11 +3552,13 @@ contains
 
         !  Get the propagation equation for the shear
 
+        ! COSMICFISH MOD START: modify gravitational waves propagation
         if (CP%flat) then
-            aytprime(3)=-2*adotoa*shear+k*Hchi-rhopi/k
+            aytprime(3)=-2*adotoa*shear+CP%csT2*k*Hchi-rhopi/k
         else
-            aytprime(3)=-2*adotoa*shear+k*Hchi*(1+2*CP%curv/k2)-rhopi/k
+            aytprime(3)=-2*adotoa*shear+CP%csT2*k*Hchi*(1+2*CP%curv/k2)-rhopi/k
         endif
+        ! COSMICFISH MOD END.
 
         aytprime(2)=-k*shear
 

@@ -583,6 +583,7 @@ contains
         FP%fisher_par%want_w0_ppf                  = Ini_Read_Logical( 'param[w0_ppf]'   ,.false. )
         FP%fisher_par%want_wa_ppf                  = Ini_Read_Logical( 'param[wa_ppf]'   ,.false. )
         FP%fisher_par%want_cs_ppf                  = Ini_Read_Logical( 'param[cs_ppf]'   ,.false. )
+        FP%fisher_par%want_cT                      = Ini_Read_Logical( 'param[cT]'       ,.false. )
 #endif
 
 #ifdef COSMICFISH_MGCAMB

@@ -313,7 +313,7 @@
         ! COSMICFISH MOD END.
 
         ! COSMICFISH MOD END: promote ppf parameters to CAMBparams
-        real(dl) w_lam, cs2_lam, wa_ppf, c_Gamma_ppf
+        real(dl) w_lam, cs2_lam, wa_ppf, c_Gamma_ppf, csT2
         ! COSMICFISH MOD END.
 
     end type CAMBparams

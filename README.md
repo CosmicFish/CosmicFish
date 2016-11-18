@@ -45,7 +45,7 @@ bundled package like (https://www.continuum.io/downloads). Just in case here's a
 dependencies:
 
 	python 2.7
-	python library matplotlib
+	python library matplotlib ( working with v>=1.5.1, not working with v=<1.4.3)
 	python library os
 	python library scipy
 	python library numpy

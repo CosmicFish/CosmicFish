@@ -89,6 +89,7 @@ contains
         if ( FP%fisher_par%want_w0_ppf   ) num_param = num_param + 1 ! w0_ppf
         if ( FP%fisher_par%want_wa_ppf   ) num_param = num_param + 1 ! wa_ppf
         if ( FP%fisher_par%want_cs_ppf   ) num_param = num_param + 1 ! cs_ppf
+        if ( FP%fisher_par%want_cT       ) num_param = num_param + 1 ! cT
 #endif
 
 #ifdef COSMICFISH_EFTCAMB
@@ -374,6 +375,10 @@ contains
         end if
         if ( FP%fisher_par%want_cs_ppf   ) num_param = num_param + 1 ! cs_ppf
         if ( num_param == param_number   )  then; param_name = 'cs_ppf'; if ( present(param_name_latex) ) param_name_latex = 'c_{s}^{\rm ppf}'; return ;
+        end if
+        ! speed of gravitational waves:
+        if ( FP%fisher_par%want_cT       ) num_param = num_param + 1 ! cT
+        if ( num_param == param_number   )  then; param_name = 'cT'; if ( present(param_name_latex) ) param_name_latex = 'c_{\rm GW}^{2}'; return ;
         end if
 #endif
 
@@ -954,6 +959,11 @@ contains
             params_array(ind) = P%cs2_lam
             ind = ind +1
         end if
+        ! cT
+        if ( FP%fisher_par%want_cT       ) then
+            params_array(ind) = P%csT2
+            ind = ind +1
+        end if
 #endif
 
 #ifdef COSMICFISH_EFTCAMB
@@ -1397,6 +1407,11 @@ contains
         if ( FP%fisher_par%want_cs_ppf   ) then
             P%cs2_lam = params_array(ind)
             call setcgammappf( P )
+            ind = ind +1
+        end if
+        ! cT
+        if ( FP%fisher_par%want_cT       ) then
+            P%csT2 = params_array(ind)
             ind = ind +1
         end if
 #endif
