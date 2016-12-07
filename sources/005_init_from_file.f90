@@ -737,7 +737,7 @@ contains
                     FP%fisher_RD%RD_redshift(i)  = Ini_Read_Double( 'RD_redshift('//trim(adjustl(red_ind))//')',0._dl)
                     FP%fisher_RD%RD_number(i)    = Ini_Read_Int( 'RD_source_number('//trim(adjustl(red_ind))//')', 0 ) !MM can be improved
                 end do
-                FP%fisher_RD%obs_time            = Ini_Read_Int( 'delta_time', 0 )
+                FP%fisher_RD%obs_time            = Ini_Read_Double( 'delta_time', 0._dl )
                 FP%fisher_RD%signoise            = Ini_Read_Int( 'RD_sig_to_noise', 0 )
             else if (FP%fisher_RD%exptype.eq.2) then
                 allocate(FP%fisher_RD%deltav_error(FP%fisher_RD%number_RD_redshifts),FP%fisher_RD%RD_redshift(FP%fisher_RD%number_RD_redshifts))
@@ -746,7 +746,7 @@ contains
                     FP%fisher_RD%RD_redshift(i)  = Ini_Read_Double( 'RD_redshift('//trim(adjustl(red_ind))//')',0._dl)
                     FP%fisher_RD%deltav_error(i) = Ini_Read_Double( 'RD_deltav_error('//trim(adjustl(red_ind))//')',0._dl)
                 end do
-                FP%fisher_RD%obs_time            = Ini_Read_Int( 'delta_time', 0 )
+                FP%fisher_RD%obs_time            = Ini_Read_Double( 'delta_time', 0._dl )
             else if (FP%fisher_RD%exptype.eq.3) then
                 write(0,*)'not implemented yet'
                 stop
