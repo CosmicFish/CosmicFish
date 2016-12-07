@@ -184,9 +184,10 @@ module cosmicfish_types
         integer :: number_RD_redshifts
         integer, dimension(:), allocatable  :: RD_number         !< Number of observations in each bin
         real(dl), dimension(:), allocatable :: RD_redshift       !< center of redshift bins
-        integer                             :: exptype           !< type of survey (will be 1=E-ELT, 2=SKA, 3=SKA second derivative? 4=CHIME?)
+        integer                             :: exptype           !< type of survey (will be 1=E-ELT, 2=user defined errors, 3=?)
         real(dl)                            :: obs_time          !< time interval for RD observations
         real(dl)                            :: signoise          !< signal to noise of redshift observations
+        real(dl), dimension(:), allocatable :: deltav_error      !< user defined delta v errors (in cm/s)
 
 
     end type cosmicfish_fisher_RD

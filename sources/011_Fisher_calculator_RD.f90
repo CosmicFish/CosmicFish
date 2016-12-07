@@ -493,7 +493,14 @@ contains
         ! computation of the fiducial model:
         time_1 = omp_get_wtime()
         call RD_Theo_Calc(P, FP, rd_fiducial, err)
-        call RD_error_Calc(P, FP, rd_error, err)
+        if (FP%fisher_RD%exptype.eq.1) then
+           call RD_error_Calc(P, FP, rd_error, err)
+        else if (FP%fisher_RD%exptype.eq.2) then
+           rd_error(:) = FP%fisher_RD%deltav_error(:)
+        else if (FP%fisher_RD%exptype.ge.3) then
+            write(0,*) 'You should not even be here! How did you get here man?'
+            stop
+        end if
         time_2 = omp_get_wtime() - time_1
 
         if ( present(outroot) ) call save_RD_mock_to_file(FP, FP%fisher_RD%number_RD_redshifts, rd_fiducial, rd_error, filename=TRIM(outroot)//'fiducial.dat')

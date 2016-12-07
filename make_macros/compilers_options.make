@@ -26,9 +26,9 @@ ifeq "$(HAS_IFORT)" "0"
     export F90C := ifort
     export F90CRLINK := -cxxlib
     # release options:
-	FFLAGS_RELEASE   := -openmp -mkl=parallel -O3 -W0 -WB -fpp -qopt-report=0 
+	FFLAGS_RELEASE   := -qopenmp -mkl=parallel -O3 -W0 -WB -fpp -qopt-report=0 
 	# debug options:
-	FFLAGS_DEBUG     := -openmp -mkl=parallel -fpp -g -qopt-report=0 -fp-stack-check -O0 -traceback -check all -check bounds -check uninit -check noarg_temp_created
+	FFLAGS_DEBUG     := -qopenmp -mkl=parallel -fpp -g -qopt-report=0 -fp-stack-check -O0 -traceback -check all -check bounds -check uninit -check noarg_temp_created
 	# module flag:
 	MODULE_FLAG      := -module 
 	# lapack linking

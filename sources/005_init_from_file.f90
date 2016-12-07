@@ -728,19 +728,25 @@ contains
         ! read RD parameters:
         if ( FP%cosmicfish_want_RD ) then
             FP%fisher_RD%exptype = Ini_Read_Int( 'RD_exptype', 0 )
+            FP%fisher_RD%number_RD_redshifts = Ini_Read_Int( 'number_RD_redshifts', 0 )
             if (FP%fisher_RD%exptype.eq.1) then
                 FP%fisher_RD%number_RD_redshifts = Ini_Read_Int( 'number_RD_redshifts', 0 )
                 allocate(FP%fisher_RD%RD_redshift(FP%fisher_RD%number_RD_redshifts),FP%fisher_RD%RD_number(FP%fisher_RD%number_RD_redshifts))
                 do i=1,FP%fisher_RD%number_RD_redshifts
                     write(red_ind,*) i
-                    FP%fisher_RD%RD_redshift(i) = Ini_Read_Double( 'RD_redshift('//trim(adjustl(red_ind))//')',0._dl)
-                    FP%fisher_RD%RD_number(i)   = Ini_Read_Int( 'RD_source_number('//trim(adjustl(red_ind))//')', 0 ) !MM can be improved
+                    FP%fisher_RD%RD_redshift(i)  = Ini_Read_Double( 'RD_redshift('//trim(adjustl(red_ind))//')',0._dl)
+                    FP%fisher_RD%RD_number(i)    = Ini_Read_Int( 'RD_source_number('//trim(adjustl(red_ind))//')', 0 ) !MM can be improved
                 end do
                 FP%fisher_RD%obs_time            = Ini_Read_Int( 'delta_time', 0 )
                 FP%fisher_RD%signoise            = Ini_Read_Int( 'RD_sig_to_noise', 0 )
             else if (FP%fisher_RD%exptype.eq.2) then
-                write(0,*)'not implemented yet'
-                stop
+                allocate(FP%fisher_RD%deltav_error(FP%fisher_RD%number_RD_redshifts),FP%fisher_RD%RD_redshift(FP%fisher_RD%number_RD_redshifts))
+                do i=1,FP%fisher_RD%number_RD_redshifts
+                    write(red_ind,*) i
+                    FP%fisher_RD%RD_redshift(i)  = Ini_Read_Double( 'RD_redshift('//trim(adjustl(red_ind))//')',0._dl)
+                    FP%fisher_RD%deltav_error(i) = Ini_Read_Double( 'RD_deltav_error('//trim(adjustl(red_ind))//')',0._dl)
+                end do
+                FP%fisher_RD%obs_time            = Ini_Read_Int( 'delta_time', 0 )
             else if (FP%fisher_RD%exptype.eq.3) then
                 write(0,*)'not implemented yet'
                 stop
