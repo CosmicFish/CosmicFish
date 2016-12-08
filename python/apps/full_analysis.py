@@ -130,6 +130,7 @@ if __name__ == "__main__":
     derived   = Config.getboolean("General Options", "derived")
     sum_fish  = Config.getboolean("General Options", "sum_fish")
     eliminate = Config.getboolean("General Options", "eliminate")
+    compare   = Config.getboolean("General Options", "compare")
 
     #General screen output
     if not args.quiet:
@@ -138,6 +139,7 @@ if __name__ == "__main__":
        print ' Using derived parameters='+str(derived)
        print ' Summing fishers='+str(sum_fish)
        print ' Eliminate rather than marginalize='+str(eliminate)
+       print ' Comparing Fishers='+str(compare)
        print
 
     if derived is not False:
@@ -145,14 +147,26 @@ if __name__ == "__main__":
     else:
        fishers = fpa.CosmicFish_FisherAnalysis(fisher_path=files, with_derived=False)
 
-    if sum_fish is not False:
-        fishers_temp = fpa.CosmicFish_FisherAnalysis()
-        fisher_list = fishers.get_fisher_matrix()
-        for fish in fisher_list[1:]:
-            fisher_list[0] = fisher_list[0]+fish
-        fisher_list[0].name = outroot
-        fishers_temp.add_fisher_matrix( fisher_list[0] )
-        fishers = fishers_temp
+    if compare is not False:
+       fishers_temp = fpa.CosmicFish_FisherAnalysis()
+       fisher_list = fishers.get_fisher_matrix()
+       for fish in fisher_list[1:]:
+           sumfish = fisher_list[0]+fish
+       fisher_list.append(sumfish)
+       fisher_list[len(fisher_list)-1].name = outroot
+       fishers_temp.add_fisher_matrix( fisher_list[:] )
+       fishers = fishers_temp
+
+    else:
+       if sum_fish is not False:
+          fishers_temp = fpa.CosmicFish_FisherAnalysis()
+          fisher_list = fishers.get_fisher_matrix()
+          for fish in fisher_list[1:]:
+              fisher_list[0] = fisher_list[0]+fish
+          fisher_list[0].name = outroot
+          fishers_temp.add_fisher_matrix( fisher_list[0] )
+          fishers = fishers_temp
+          
 
     #producing 1D plots
     num1D = Config.items( "1Dplot" )
