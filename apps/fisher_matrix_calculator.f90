@@ -37,7 +37,7 @@ program fisher_matrix_calculator
 
     implicit none
 
-    Type(CAMBparams)       :: P
+    Type(CAMBparams)        :: P
     Type(cosmicfish_params) :: FP
     character(LEN=Ini_max_string_len) paramfile
 
