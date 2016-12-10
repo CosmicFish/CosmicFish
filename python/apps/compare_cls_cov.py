@@ -33,15 +33,15 @@ Invoking the help option ``compare_cls_cov.py -h`` will result in::
       files                 two files with the Cls covariances to compare
 
     optional arguments:
-      -h, --help            show this help message and exit
-      -o OUTROOT, --outroot OUTROOT
-                            path and name of the output file
-      -l LABELS [LABELS ...], --label LABELS [LABELS ...]
-                            set the labels for the legend. If empty will use the
-                            file names.
-      -f, --filling         whether to fill the curves. Default does not fill.
-      -v, --version         show program's version number and exit
-      -q, --quiet           decides wether something gets printed to screen or not
+          -h, --help            show this help message and exit
+          -o OUTROOT, --outroot OUTROOT
+                                path and name of the output file
+          -l LABELS [LABELS ...], --label LABELS [LABELS ...]
+                                set the labels for the legend. If empty will use the
+                                file names.
+          -f, --filling         whether to fill the curves. Default does not fill.
+          -v, --version         show program's version number and exit
+          -q, --quiet           decides wether something gets printed to screen or not
 
 Developed by Marco Raveri (mraveri@sissa.it) for the CosmicFish code.
 
@@ -49,7 +49,7 @@ Developed by Marco Raveri (mraveri@sissa.it) for the CosmicFish code.
 
 # ***************************************************************************************
 
-__version__ = '1.0' #: version of the application
+__version__ = '1.1' #: version of the application
 
 # ***************************************************************************************
 
@@ -64,6 +64,7 @@ y_size        = 4.0               #: y dimension of the single subplot. In cm.
 do_lin        = False             #: wether to do linear or log plots.
 main_fontsize = 10.0              #: fontsize for the plots
 color         = (42.0/255.0, 46.0/255.0, 139.0/255.0) #: color to use for the plot
+dpi           = 300               #: dpi for non-vector figure export
 
 # ***************************************************************************************
 
@@ -79,6 +80,8 @@ import math
 import sys
 import os
 from scipy import interpolate
+
+matplotlib.rcParams['savefig.dpi'] = dpi
 
 # get the path of the application and the CosmicFish library:
 here = os.path.dirname(os.path.abspath(__file__))
@@ -117,7 +120,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     # print the CosmicFish header:
     if not args.quiet:
-        fu.CosmicFish_write_header(' Cls covariance comparison plotter')
+        fu.CosmicFish_write_header(' Cls covariance comparison plotter v'+__version__)
     # process input arguments:
     files          = args.files
     number_cls_cov = len(files)
@@ -157,7 +160,7 @@ if __name__ == "__main__":
     # setup the plot:
     fig.set_size_inches( x_size, y_size )
     plot_grid = gridspec.GridSpec( num, num, wspace=x_spacing, hspace=y_spacing )
-    
+    # loop over th Cls grid:
     for ind in xrange(1, num+1):
         for ind2 in xrange(1, ind+1):
     
@@ -282,10 +285,10 @@ if __name__ == "__main__":
                         verticalalignment='bottom',
                         )
     # save the figure and close
-    plt.savefig(outroot+'_compCovCls.pdf', bbox_extra_artists=(lgd,tit))
+    plt.savefig(outroot, bbox_extra_artists=(lgd,tit))   
     plt.clf()
     # print some final feedback:
     if not args.quiet:
-        print 'Done. Saved results in: ', outroot+'_compCovCls.pdf'
+        print 'Done. Saved results in: ', outroot
     # exit without error:
     exit(0)

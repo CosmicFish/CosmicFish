@@ -48,7 +48,7 @@ Developed by Marco Raveri (mraveri@sissa.it) for the CosmicFish code.
 
 # ***************************************************************************************
 
-__version__ = '1.0' #: version of the application
+__version__ = '1.1' #: version of the application
 
 # ***************************************************************************************
 
@@ -63,6 +63,7 @@ y_size        = 4.0           #: y dimension of the single subplot. In cm.
 adjust_l      = True          #: wether to plot l(l+1)Cls/2pi or Cls.
 do_lin        = False         #: wether to do linear or log plots.
 main_fontsize = 10.0          #: fontsize for the plots
+dpi           = 300               #: dpi for non-vector figure export
 
 # ***************************************************************************************
 
@@ -77,6 +78,8 @@ import argparse
 import math
 import sys
 import os
+
+matplotlib.rcParams['savefig.dpi'] = dpi
 
 # get the path of the application and the CosmicFish library:
 here = os.path.dirname(os.path.abspath(__file__))
@@ -112,7 +115,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     # print the CosmicFish header:
     if not args.quiet:
-        fu.CosmicFish_write_header(' Cls covariance plotter')
+        fu.CosmicFish_write_header(' Cls covariance plotter v'+__version__)
     # process input arguments:
     files          = args.files
     number_cls_cov = len(files)
@@ -151,7 +154,7 @@ if __name__ == "__main__":
     # setup the plot:
     fig.set_size_inches( x_size, y_size )
     plot_grid = gridspec.GridSpec( num, num, wspace=x_spacing, hspace=y_spacing )
-    
+    # loop over the Cls grid:
     for ind in xrange(1, num+1):
         for ind2 in xrange(1, ind+1):
     
@@ -232,10 +235,10 @@ if __name__ == "__main__":
                         verticalalignment='bottom',
                         )
     # save the figure and close
-    plt.savefig(outroot+'_plotCovCls.pdf', bbox_extra_artists=(lgd,tit))
+    plt.savefig(outroot, bbox_extra_artists=(lgd,tit))
     plt.clf()
     # print some final feedback:
     if not args.quiet:
-        print 'Done. Saved results in: ', outroot+'_plotCovCls.pdf'
+        print 'Done. Saved results in: ', outroot
     # exit without error:
     exit(0)

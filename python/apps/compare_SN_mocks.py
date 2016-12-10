@@ -45,7 +45,7 @@ Developed by Marco Raveri (mraveri@sissa.it) for the CosmicFish code.
 
 # ***************************************************************************************
 
-__version__ = '1.0' #: version of the application
+__version__ = '1.1' #: version of the application
 
 # ***************************************************************************************
 
@@ -57,6 +57,7 @@ x_size        = 10.0           #: x dimension of the single subplot. In cm.
 y_size        = 5.0           #: y dimension of the single subplot. In cm.
 main_fontsize = 10.0          #: fontsize for the plots
 errorevery    = 5             #: plot error bars on a sub sample of points
+dpi           = 300           #: dpi for non-vector figure export
 
 # ***************************************************************************************
 
@@ -71,6 +72,8 @@ import argparse
 import math
 import sys
 import os
+
+matplotlib.rcParams['savefig.dpi'] = dpi
 
 from matplotlib.patches import Rectangle
 
@@ -105,7 +108,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     # print the CosmicFish header:
     if not args.quiet:
-        fu.CosmicFish_write_header(' SN Mock plotter')
+        fu.CosmicFish_write_header(' SN Mock plotter v'+__version__)
     # process input arguments:
     files          = args.files
     number_SN_mock = len(files)
@@ -220,10 +223,10 @@ if __name__ == "__main__":
     # apply tight layout:
     plot_grid.tight_layout( fig )
     # save the figure and close
-    plt.savefig(outroot+'_compMockSN.pdf', bbox_extra_artists=(lgd,tit))
+    plt.savefig(outroot, bbox_extra_artists=(lgd,tit))
     plt.clf()
     # print some final feedback:
     if not args.quiet:
-        print 'Done. Saved results in: ', outroot+'_compMockSN.pdf'
+        print 'Done. Saved results in: ', outroot
     # exit without error:
     exit(0)
