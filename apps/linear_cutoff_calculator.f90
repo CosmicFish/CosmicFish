@@ -65,5 +65,7 @@ program linear_cutoff_calculator
         stop 1
     end if
 
+    ! exit with error: the application is yet not fully developed
+    write(*,*) 'ERROR: the application is yet not fully developed.'
 
 end program linear_cutoff_calculator

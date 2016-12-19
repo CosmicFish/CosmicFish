@@ -17,7 +17,7 @@
 
 Simple Python code to perform analysis of Fisher matrices (plot_1D, plot_2D, bounds...)
 
-The ouput will be a set of pdf with 1D, 2D, triangular plots and a file with bounds
+The ouput will be a set of plots with 1D, 2D, triangular plots and a file with bounds
 
 
 Invoking the help option ``full_analysis.py -h`` will result in::
@@ -41,7 +41,7 @@ and Marco Raveri (mraveri@sissa.it) for the CosmicFish code.
 
 # ***************************************************************************************
 
-__version__ = '1.0' #: version of the application
+__version__ = '1.1' #: version of the application
 
 # ***************************************************************************************
 
@@ -79,7 +79,6 @@ import cosmicfish_pylib.fisher_plot_settings as fps
 import cosmicfish_pylib.fisher_plot_analysis as fpa
 import cosmicfish_pylib.fisher_plot          as fp
 
-
 # ***************************************************************************************
 
 # protection against importing:
@@ -97,11 +96,10 @@ if __name__ == "__main__":
                         help='decides wether something gets printed to screen or not')
     # do the parsing:
     args = parser.parse_args()
- 
 
     # print the CosmicFish header:
     if not args.quiet:
-        fu.CosmicFish_write_header('Global analysis app version '+__version__)
+        fu.CosmicFish_write_header('Global analysis app v'+__version__)
 
     # process input arguments:
     inifile          = args.inifile
@@ -126,6 +124,7 @@ if __name__ == "__main__":
 
     #Reading general options
     outroot   = ConfigSectionMap("General Options")['outroot']
+    format    = ConfigSectionMap("General Options")['format']
     files     = Config.get("General Options", "fishers").split("\n")
     derived   = Config.getboolean("General Options", "derived")
     sum_fish  = Config.getboolean("General Options", "sum_fish")
@@ -136,6 +135,7 @@ if __name__ == "__main__":
     if not args.quiet:
        print 'GENERAL OPTIONS:'
        print ' Output root='+outroot
+       print ' Output format='+format
        print ' Using derived parameters='+str(derived)
        print ' Summing fishers='+str(sum_fish)
        print ' Eliminate rather than marginalize='+str(eliminate)
@@ -167,7 +167,6 @@ if __name__ == "__main__":
           fishers_temp.add_fisher_matrix( fisher_list[0] )
           fishers = fishers_temp
           
-
     #producing 1D plots
     num1D = Config.items( "1Dplot" )
         
@@ -187,11 +186,11 @@ if __name__ == "__main__":
         plotter.new_plot()
         plotter.plot1D( params=params )
 
-        plotter.export( outroot+'_1Dplot_'+str(key)+'.pdf' )
+        plotter.export( outroot+'_1Dplot_'+str(key)+'.'+format )
         plotter.close_plot()
         if not args.quiet:
            print ' 1D plots done for parameters '+str(params)
-           print ' Saved results in: ', outroot+'_1Dplot_'+str(key)+'.pdf'
+           print ' Saved results in: ', outroot+'_1Dplot_'+str(key)+'.'+format
 
     if not args.quiet and len(num1D)>0:
         print '1D plots done!'
@@ -219,11 +218,11 @@ if __name__ == "__main__":
         plotter.new_plot()
         plotter.plot2D( params=params )
 
-        plotter.export( outroot+'_2Dplot_'+str(key)+'.pdf' )
+        plotter.export( outroot+'_2Dplot_'+str(key)+'.'+format )
         plotter.close_plot()
         if not args.quiet:
            print ' 2D plots done for parameters '+str(params)
-           print ' Saved results in: ', outroot+'_2Dplot_'+str(key)+'.pdf'
+           print ' Saved results in: ', outroot+'_2Dplot_'+str(key)+'.'+format
 
     if not args.quiet and len(num2D)>0:
         print '2D plots done!'
@@ -246,11 +245,11 @@ if __name__ == "__main__":
         plotter.new_plot()
         plotter.plot_tri( params=params )
 
-        plotter.export( outroot+'_triplot_'+str(key)+'.pdf' )
+        plotter.export( outroot+'_triplot_'+str(key)+'.'+format )
         plotter.close_plot()
         if not args.quiet:
            print ' Triangular plots done for parameters '+str(params)
-           print ' Saved results in: ', outroot+'_triplot_'+str(key)+'.pdf'
+           print ' Saved results in: ', outroot+'_triplot_'+str(key)+'.'+format
 
     if not args.quiet and len(numtri)>0:
         print 'Triangular plots done!'
@@ -371,5 +370,6 @@ if __name__ == "__main__":
        print
        print 'It seems everything is done...'
        print 'It was nice working with you. See you soon!'
+
     # everything's fine, exit without error:
     exit(0)

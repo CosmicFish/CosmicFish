@@ -74,4 +74,7 @@ program window_function_printer
 
     ! close the file:
 
+    ! exit with error: the application is yet not fully developed
+    write(*,*) 'ERROR: the application is yet not fully developed.'
+
 end program window_function_printer

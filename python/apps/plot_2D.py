@@ -22,14 +22,14 @@ The ouput will be a pdf file with the plot.
 Invoking the help option ``plot_2D.py -h`` will result in::
 
     usage: plot_2D.py [-h] [-o OUTROOT] [-p PARAMS [PARAMS ...]] [-s SUM_FISH]
-                  [-e] [-d] [-i INI_FILE] [-v] [-q]
+                  [-e] [-f FORMAT] [-d] [-i INI_FILE] [-v] [-q]
                   files [files ...]
 
     2D confidence level plotter
-
+    
     positional arguments:
       files                 a list of files with Fisher matrices
-
+    
     optional arguments:
       -h, --help            show this help message and exit
       -o OUTROOT, --outroot OUTROOT
@@ -45,6 +45,8 @@ Invoking the help option ``plot_2D.py -h`` will result in::
                             Fisher matrices combination.
       -e, --eliminate       If parameters are passed from the command line, this
                             option avoids marginalization over the others.
+      -f FORMAT, --format FORMAT
+                            format for the output plot.
       -d, --derived         decides wether to look for derived parameters when
                             importing the Fisher matrix
       -i INI_FILE, --ini INI_FILE
@@ -59,7 +61,7 @@ and Marco Raveri (mraveri@sissa.it) for the CosmicFish code.
 
 # ***************************************************************************************
 
-__version__ = '1.0' #: version of the application
+__version__ = '1.1' #: version of the application
 
 # ***************************************************************************************
 
@@ -111,23 +113,21 @@ if __name__ == "__main__":
     # parse parameters if wanted
     parser.add_argument('-p','--params', dest='params', type=str, nargs='+',
                          help='names of the parameters to plot. If this option is not present all parameters will be used.')
-
     # parse a sum argument to sum all Fisher matrices:
     parser.add_argument('-s','--sum', dest='sum_fish', type=str,
                         help='decides wether to sum all the input Fisher matrices. If selected the argument will be the label of the Fisher matrices combination.')
-
     # parse an optional argument to avoid marginalization
     parser.add_argument('-e','--eliminate', dest='eliminate', action='store_true',
                         help='If parameters are passed from the command line, this option avoids marginalization over the others.')
-
+    # parse format argument:
+    parser.add_argument('-f','--format', dest='format', type=str,
+                         help='format for the output plot.')
     # parse to look for derived parameters:
     parser.add_argument('-d','--derived', dest='derived', action='store_true',
                         help='decides wether to look for derived parameters when importing the Fisher matrix')
-
     # parse the name of a parameter input file:
     parser.add_argument('-i','--ini', dest='ini_file', type=str,
                         help='path and name of file with options')
-
     # version:
     parser.add_argument('-v','--version', action='version', version='%(prog)s '+__version__)
     # quiet mode:
@@ -136,10 +136,9 @@ if __name__ == "__main__":
     # do the parsing:
     args = parser.parse_args()
  
-
     # print the CosmicFish header:
     if not args.quiet:
-        fu.CosmicFish_write_header(' 2D confidence level Fisher matrix plotter version '+__version__)
+        fu.CosmicFish_write_header(' 2D confidence level Fisher matrix plotter v'+__version__)
 
     # process input arguments:
     files          = args.files
@@ -170,12 +169,10 @@ if __name__ == "__main__":
         fishers_temp.add_fisher_matrix( fisher_list[0] )
         fishers = fishers_temp
 
-
     if args.eliminate:
         if params is None:
             raise ValueError('Avoiding marginalization only works if parameters are specified')
         fishers = fishers.reshuffle( params=params )
-
 
     # set up the plot settings
     plot_settings = fps.CosmicFish_PlotSettings()
@@ -191,7 +188,12 @@ if __name__ == "__main__":
     plotter.new_plot()
     plotter.plot2D( params=params )
 
-    plotter.export( outroot+'.pdf' )
+    plotter.export( outroot+'.'+args.format )
     plotter.close_plot()
+    
+    # print some final feedback:
+    if not args.quiet:
+        print 'Done. Saved results in: ', outroot+'.'+args.format
 
+    # exit without error:
     exit(0)

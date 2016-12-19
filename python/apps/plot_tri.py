@@ -59,7 +59,7 @@ and Marco Raveri (mraveri@sissa.it) for the CosmicFish code.
 
 # ***************************************************************************************
 
-__version__ = '1.0' #: version of the application
+__version__ = '1.1' #: version of the application
 
 # ***************************************************************************************
 
@@ -111,23 +111,21 @@ if __name__ == "__main__":
     # parse parameters if wanted
     parser.add_argument('-p','--params', dest='params', type=str, nargs='+',
                          help='names of the parameters to plot. If this option is not present all parameters will be used.')
-
     # parse a sum argument to sum all Fisher matrices:
     parser.add_argument('-s','--sum', dest='sum_fish', type=str,
                         help='decides wether to sum all the input Fisher matrices. If selected the argument will be the label of the Fisher matrices combination.')
-
     # parse an optional argument to avoid marginalization
     parser.add_argument('-e','--eliminate', dest='eliminate', action='store_true',
                         help='If parameters are passed from the command line, this option avoids marginalization over the others.')
-
+    # parse format argument:
+    parser.add_argument('-f','--format', dest='format', type=str,
+                         help='format for the output plot.')
     # parse to look for derived parameters:
     parser.add_argument('-d','--derived', dest='derived', action='store_true',
                         help='decides wether to look for derived parameters when importing the Fisher matrix')
-
     # parse the name of a parameter input file:
     parser.add_argument('-i','--ini', dest='ini_file', type=str,
                         help='path and name of file with options')
-
     # version:
     parser.add_argument('-v','--version', action='version', version='%(prog)s '+__version__)
     # quiet mode:
@@ -135,11 +133,10 @@ if __name__ == "__main__":
                         help='decides wether something gets printed to screen or not')
     # do the parsing:
     args = parser.parse_args()
- 
 
     # print the CosmicFish header:
     if not args.quiet:
-        fu.CosmicFish_write_header(' Triangular Fisher matrix plotter version '+__version__)
+        fu.CosmicFish_write_header(' Triangular Fisher matrix plotter v'+__version__)
 
     # process input arguments:
     files          = args.files
@@ -169,29 +166,30 @@ if __name__ == "__main__":
         fisher_list[0].name = args.sum_fish
         fishers_temp.add_fisher_matrix( fisher_list[0] )
         fishers = fishers_temp
-
-
+        
+    # emilinate parameters rather than marginalizing if this is required:
     if args.eliminate:
         if params is None:
             raise ValueError('Avoiding marginalization only works if parameters are specified')
         fishers = fishers.reshuffle( params=params )
-
-
+    
     # set up the plot settings
     plot_settings = fps.CosmicFish_PlotSettings()
-
+    
     # set up the plotter
     plotter = fp.CosmicFishPlotter( settings=plot_settings, fishers=fishers)
-
-#    if params is not None:    
-#        params = [ list(i) for i in it.combinations(params, 2)]
-#        if len(params)==0:
-#           raise ValueError('Not enough parameters for 2D plot.')
     
+    # plot:
     plotter.new_plot()
     plotter.plot_tri( params=params )
-
-    plotter.export( outroot+'.pdf' )
+    
+    # export and close:
+    plotter.export( outroot+'.'+args.format )
     plotter.close_plot()
-
+    
+    # print some final feedback:
+    if not args.quiet:
+        print 'Done. Saved results in: ', outroot+'.'+args.format
+    
+    # exit without error:
     exit(0)

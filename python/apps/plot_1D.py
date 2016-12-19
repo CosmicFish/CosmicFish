@@ -22,7 +22,7 @@ The ouput will be a pdf file with the plot.
 Invoking the help option ``plot_1D.py -h`` will result in::
 
     usage: plot_1D.py [-h] [-o OUTROOT] [-p PARAMS [PARAMS ...]] [-s SUM_FISH]
-                  [-e] [-d] [-i INI_FILE] [-v] [-q]
+                  [-e] [-f FORMAT] [-d] [-i INI_FILE] [-v] [-q]
                   files [files ...]
 
     1D posterior Fisher matrix plotter
@@ -45,6 +45,8 @@ Invoking the help option ``plot_1D.py -h`` will result in::
                             Fisher matrices combination
       -e, --eliminate       if parameters are passed from the command line this
                             option avoids marginalization over the others
+      -f FORMAT, --format FORMAT
+                            format for the output plot.
       -d, --derived         decides wether to look for derived parameters when
                             importing the Fisher matrix
       -i INI_FILE, --ini INI_FILE
@@ -59,7 +61,7 @@ and Matteo Martinelli (m.martinelli@thphys.uni-heidelberg.de) for the CosmicFish
 
 # ***************************************************************************************
 
-__version__ = '1.0' #: version of the application
+__version__ = '1.1' #: version of the application
 
 # ***************************************************************************************
 
@@ -116,6 +118,9 @@ if __name__ == "__main__":
     # parse an optional argument to avoid marginalization:
     parser.add_argument('-e','--eliminate', dest='eliminate', action='store_true', 
                         help='if parameters are passed from the command line this option avoids marginalization over the others')
+    # parse format argument:
+    parser.add_argument('-f','--format', dest='format', type=str,
+                         help='format for the output plot.')
     # parse a sum argument to sum all Fisher matrices:
     parser.add_argument('-d','--derived', dest='derived', action='store_true', 
                         help='decides wether to look for derived parameters when importing the Fisher matrix')
@@ -132,7 +137,7 @@ if __name__ == "__main__":
     
     # print the CosmicFish header:
     if not args.quiet:
-        fu.CosmicFish_write_header(' 1D posterior Fisher matrix plotter version '+__version__)
+        fu.CosmicFish_write_header(' 1D posterior Fisher matrix plotter v'+__version__)
         
     # process input arguments:
     files          = args.files
@@ -142,6 +147,7 @@ if __name__ == "__main__":
     else:
         outroot    = os.path.join( os.path.splitext(files[0])[0] )
     params = args.params
+    
     # warning for the ini file:
     if args.ini_file is not None:
         raise ValueError('Not yet implemented.')
@@ -151,6 +157,7 @@ if __name__ == "__main__":
         fishers = fpa.CosmicFish_FisherAnalysis(fisher_path=files, with_derived=True)
     else:
         fishers = fpa.CosmicFish_FisherAnalysis(fisher_path=files, with_derived=False)
+    
     # sum all the fishers if wanted:
     if args.sum_fish is not None:
         fishers_temp = fpa.CosmicFish_FisherAnalysis()
@@ -176,11 +183,15 @@ if __name__ == "__main__":
     # do the plotting:
     plotter.new_plot()
     plotter.plot1D( params = params )
-    plotter.export( outroot+'.pdf' )
+    
+    # export and close:
+    plotter.export( outroot+'.'+args.format )
     plotter.close_plot()
+    
     # print some final feedback:
     if not args.quiet:
-        print 'Done. Saved results in: ', outroot+'.pdf'
+        print 'Done. Saved results in: ', outroot+'.'+args.format
+    
     # exit without error:
     exit(0)
 
