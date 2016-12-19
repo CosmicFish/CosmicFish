@@ -24,7 +24,7 @@
 ! Oct 2013 merge and fix for latest CAMB
 
 !COSMICFISH MOD: include ppf in camb sources.
-! by Marco Raveri ( mraveri@sissa.it ) for the COSMICFISH code
+! by Marco Raveri ( mraveri@uchicago.edu ) for the CosmicFish code
 
 module LambdaGeneral
     use precision

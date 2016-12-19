@@ -18,7 +18,7 @@
    :platform: Unix
    :synopsis: Module that contains the class for plot settings and their default values. 
    
-.. moduleauthor:: Marco Raveri <mraveri@sissa.it> for the CosmicFish code.
+.. moduleauthor:: Marco Raveri <mraveri@uchicago.edu> for the CosmicFish code.
 
 """
 

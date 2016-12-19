@@ -19,7 +19,7 @@
    :synopsis: Module that contains operations that can be performed on Fisher matrices.
               All of them are safeguarded against non-Fisher input.
 
-.. moduleauthor:: Marco Raveri <mraveri@sissa.it> for the CosmicFish code.
+.. moduleauthor:: Marco Raveri <mraveri@uchicago.edu> for the CosmicFish code.
 
 """
 

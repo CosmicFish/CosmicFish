@@ -53,7 +53,7 @@ Invoking the help option ``bounds.py -h`` will result in::
       -v, --version         show program's version number and exit
       -q, --quiet           decides wether something gets printed to screen or not
 
-Developed by Marco Raveri (mraveri@sissa.it) 
+Developed by Marco Raveri (mraveri@uchicago.edu) 
 and Matteo Martinelli (m.martinelli@thphys.uni-heidelberg.de) for the CosmicFish code.
 
 """

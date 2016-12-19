@@ -18,7 +18,7 @@
    :platform: Unix
    :synopsis: A collection of small utilities.
 
-.. moduleauthor:: Marco Raveri <mraveri@sissa.it> for the CosmicFish code.
+.. moduleauthor:: Marco Raveri <mraveri@uchicago.edu> for the CosmicFish code.
 """
 
 # ***************************************************************************************

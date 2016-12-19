@@ -29,7 +29,7 @@
 !           By Alex Zucca azucca@sfu.ca
 
 ! Apr 2016: MGCAMB sources update.
-!           By Marco Raveri mraveri@sissa.it
+!           By Marco Raveri mraveri@uchicago.edu
 
 ! MGCAMB MOD START: core MGCAMB module
 module mgvariables

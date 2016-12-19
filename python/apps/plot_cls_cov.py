@@ -42,7 +42,7 @@ Invoking the help option ``plot_cls_cov.py -h`` will result in::
       -v, --version         show program's version number and exit
       -q, --quiet           decides wether something gets printed to screen or not
 
-Developed by Marco Raveri (mraveri@sissa.it) for the CosmicFish code.
+Developed by Marco Raveri (mraveri@uchicago.edu) for the CosmicFish code.
 
 """
 

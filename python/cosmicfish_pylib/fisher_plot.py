@@ -18,7 +18,7 @@
    :platform: Unix
    :synopsis: Module that contains a set of plotting tools. 
 
-.. moduleauthor:: Marco Raveri <mraveri@sissa.it> for the CosmicFish code.
+.. moduleauthor:: Marco Raveri <mraveri@uchicago.edu> for the CosmicFish code.
 
 """
 

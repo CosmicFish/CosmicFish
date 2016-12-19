@@ -39,7 +39,7 @@ Invoking the help option ``compare_SN_mocks.py -h`` will result in::
       -q, --quiet           decides wether something gets printed to screen or not
 
 
-Developed by Marco Raveri (mraveri@sissa.it) for the CosmicFish code.
+Developed by Marco Raveri (mraveri@uchicago.edu) for the CosmicFish code.
 
 """
 

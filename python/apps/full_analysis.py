@@ -35,7 +35,7 @@ Invoking the help option ``full_analysis.py -h`` will result in::
       -q, --quiet    decides wether something gets printed to screen or not
 
 Developed by Matteo Martinelli (m.martinelli@thphys.uni-heidelberg.de)
-and Marco Raveri (mraveri@sissa.it) for the CosmicFish code.
+and Marco Raveri (mraveri@uchicago.edu) for the CosmicFish code.
 
 """
 

@@ -18,7 +18,7 @@
    :platform: Unix
    :synopsis: Module that contains a set of tools to perform the analysis of a set of Fisher matrices. 
    
-.. moduleauthor:: Marco Raveri <mraveri@sissa.it> for the CosmicFish code.
+.. moduleauthor:: Marco Raveri <mraveri@uchicago.edu> for the CosmicFish code.
 
 """
 

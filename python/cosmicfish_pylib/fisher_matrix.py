@@ -21,7 +21,7 @@
               well defined and safe-guarded once the input matrix is accepted as a Fisher
               matrix.
 
-.. moduleauthor:: Marco Raveri <mraveri@sissa.it> for the CosmicFish code.
+.. moduleauthor:: Marco Raveri <mraveri@uchicago.edu> for the CosmicFish code.
 
 """
 

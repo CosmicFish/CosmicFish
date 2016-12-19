@@ -1,6 +1,6 @@
 Principal developers:
 
-  Marco Raveri (mraveri@sissa.it), SISSA, TS, Italy
+  Marco Raveri (mraveri@uchicago.edu), U. of Chicago and KICP
 
   Matteo Martinelli (m.martinelli@thphys.uni-heidelberg.de), Institute of theoretical physics, University of Heidelberg, Heidelberg, Germany
 
