@@ -396,20 +396,24 @@ class fisher_matrix():
         Equality check operator (==). Ensures equality in all properties of the Fisher matrix.
         Notice that also name, path and indir are checked. 
         """
-        return_value = isinstance( other, fisher_matrix ) and \
-                       np.allclose(self.fisher_cutoff, other.fisher_cutoff) and \
-                       np.allclose(self.fisher_matrix, other.fisher_matrix) and \
-                       self.path == other.path and \
-                       self.name == other.name and \
-                       self.indir == other.indir and \
-                       self.num_params == other.num_params and \
-                       np.allclose(self.fisher_eigenvalues, other.fisher_eigenvalues) and \
-                       np.allclose(self.fisher_eigenvectors,other.fisher_eigenvectors) and \
-                       np.allclose(self.fisher_matrix_inv, other.fisher_matrix_inv) and \
-                       self.param_names == other.param_names and \
-                       self.param_names_latex == other.param_names_latex and \
-                       np.allclose( self.param_fiducial, other.param_fiducial ) and \
-                       self.param_names_dict == other.param_names_dict 
+        try:
+            return_value = isinstance( other, fisher_matrix ) and \
+                           np.allclose(self.fisher_cutoff, other.fisher_cutoff) and \
+                           np.allclose(self.fisher_matrix, other.fisher_matrix) and \
+                           self.path == other.path and \
+                           self.name == other.name and \
+                           self.indir == other.indir and \
+                           self.num_params == other.num_params and \
+                           np.allclose(self.fisher_eigenvalues, other.fisher_eigenvalues) and \
+                           np.allclose(self.fisher_eigenvectors,other.fisher_eigenvectors) and \
+                           np.allclose(self.fisher_matrix_inv, other.fisher_matrix_inv) and \
+                           self.param_names == other.param_names and \
+                           self.param_names_latex == other.param_names_latex and \
+                           np.allclose( self.param_fiducial, other.param_fiducial ) and \
+                           self.param_names_dict == other.param_names_dict 
+        except:
+            return_value = False
+            
         return return_value
     
     # -----------------------------------------------------------------------------------

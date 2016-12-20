@@ -447,7 +447,24 @@ class test_fisher_overload_operations():
         fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names = param_names, fiducial=fiducial )
         
         assert fisher_1 != [0.0]
-
+    
+    def test_equality_except(self):
+        matrix = np.identity(2)
+        for i in xrange(2):
+            matrix[i,i] = i+1
+        param_names = [ 'm'+str(i) for i in xrange(2) ] 
+        fiducial = [ float(i) for i in xrange(2) ]
+        fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names = param_names, fiducial=fiducial )
+        
+        matrix = np.identity(3)
+        for i in xrange(3):
+            matrix[i,i] = i+1
+        param_names = [ 'm'+str(i) for i in xrange(3) ] 
+        fiducial = [ float(i) for i in xrange(3) ]
+        fisher_2 = fm.fisher_matrix( fisher_matrix=matrix, param_names = param_names, fiducial=fiducial )
+        
+        assert fisher_1 != fisher_2
+    
 # ***************************************************************************************
     
 class test_fisher_std_operations():

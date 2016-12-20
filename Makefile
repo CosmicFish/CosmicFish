@@ -234,7 +234,8 @@ mgcamb_test: fisher_mgcamb $(MGCAMB_TEST)
 python_test:
 	@rm -rf .coverage
 	@nosetests -v -s $(PROJECT_DIR)/python/cosmicfish_pylib_test --with-coverage --cover-package=cosmicfish_pylib
-
+	@coverage report -m
+	
 $(TEST_DIR)/test_build/camb_%.x: $(TEST_DIR)/test_source/%.f90  $(CAMB_FISHER_FILES) fisher_camb
 	$(F90C) $(CAMB_FFLAGS) $(TEST_DIR)/test_source/$*.f90 $(CAMB_F90_APP_LINK) $(LAPACK_LINK) $(CAMB_F90_INCLUDE) $(LAPACK_INCLUDE) -o $(TEST_DIR)/test_build/camb_$*.x
 
