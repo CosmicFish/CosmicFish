@@ -148,6 +148,10 @@ if __name__ == "__main__":
     else:
         outroot    = os.path.join( os.path.splitext(files[0])[0] )
     params = args.params
+    
+    output_format = args.format
+    if output_format is None:
+        output_format = 'pdf'
 
     # warning for the ini file:
     if args.ini_file is not None:
@@ -188,12 +192,12 @@ if __name__ == "__main__":
     plotter.new_plot()
     plotter.plot2D( params=params )
 
-    plotter.export( outroot+'.'+args.format )
+    plotter.export( outroot+'.'+output_format )
     plotter.close_plot()
     
     # print some final feedback:
     if not args.quiet:
-        print 'Done. Saved results in: ', outroot+'.'+args.format
+        print 'Done. Saved results in: ', outroot+'.'+output_format
 
     # exit without error:
     exit(0)

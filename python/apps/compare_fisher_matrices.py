@@ -321,7 +321,7 @@ if __name__ == "__main__":
             plt.savefig( outroot+fisher_name_1+'_vs_'+fisher_name_2+'.'+output_format )   
             plt.clf()
             plt.cla()  
-            plt.close()
+            plt.close("all")
             
             # print some final feedback:
             if not args.quiet:
