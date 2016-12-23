@@ -65,6 +65,7 @@ COSMICFISH_SCRIPT_DIR=$COSMICFISH_PATH/script
 
 # import colors:
 source $COSMICFISH_SCRIPT_DIR/colors.sh
-
+# import error checking function:
+source $COSMICFISH_SCRIPT_DIR/error_check.sh
 
 

@@ -36,7 +36,9 @@ source $SCRIPT_PATH/common.sh
 
 for params in $PARAMETERS_ANALYSIS_DIR/*.ini;
 
-do python $PYTHON_APPS/full_analysis.py $params ;
+do 
+	python $PYTHON_APPS/full_analysis.py $params ;
+	valid $params' failed'
 
 done;
 

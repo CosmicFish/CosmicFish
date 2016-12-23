@@ -156,7 +156,6 @@ if __name__ == "__main__":
        fisher_list[len(fisher_list)-1].name = outroot
        fishers_temp.add_fisher_matrix( fisher_list[:] )
        fishers = fishers_temp
-
     else:
        if sum_fish is not False:
           fishers_temp = fpa.CosmicFish_FisherAnalysis()
