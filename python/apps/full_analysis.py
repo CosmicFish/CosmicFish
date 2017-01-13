@@ -17,7 +17,7 @@
 
 Simple Python code to perform analysis of Fisher matrices (plot_1D, plot_2D, bounds...)
 
-The ouput will be a set of plots with 1D, 2D, triangular plots and a file with bounds
+The ouput will be a set of pdf with 1D, 2D, triangular plots and a file with bounds
 
 
 Invoking the help option ``full_analysis.py -h`` will result in::
@@ -34,14 +34,14 @@ Invoking the help option ``full_analysis.py -h`` will result in::
       -v, --version  show program's version number and exit
       -q, --quiet    decides wether something gets printed to screen or not
 
-Developed by Matteo Martinelli (m.martinelli@thphys.uni-heidelberg.de)
-and Marco Raveri (mraveri@uchicago.edu) for the CosmicFish code.
+Developed by Matteo Martinelli (martinelli@lorentz.leidenuniv.nl)
+and Marco Raveri (mraveri@sissa.it) for the CosmicFish code.
 
 """
 
 # ***************************************************************************************
 
-__version__ = '1.1' #: version of the application
+__version__ = '1.0' #: version of the application
 
 # ***************************************************************************************
 
@@ -79,6 +79,8 @@ import cosmicfish_pylib.fisher_plot_settings as fps
 import cosmicfish_pylib.fisher_plot_analysis as fpa
 import cosmicfish_pylib.fisher_plot          as fp
 
+
+
 # ***************************************************************************************
 
 # protection against importing:
@@ -96,10 +98,11 @@ if __name__ == "__main__":
                         help='decides wether something gets printed to screen or not')
     # do the parsing:
     args = parser.parse_args()
+ 
 
     # print the CosmicFish header:
     if not args.quiet:
-        fu.CosmicFish_write_header('Global analysis app v'+__version__)
+        fu.CosmicFish_write_header('Global analysis app version '+__version__)
 
     # process input arguments:
     inifile          = args.inifile
@@ -124,48 +127,68 @@ if __name__ == "__main__":
 
     #Reading general options
     outroot   = ConfigSectionMap("General Options")['outroot']
-    format    = ConfigSectionMap("General Options")['format']
     files     = Config.get("General Options", "fishers").split("\n")
     derived   = Config.getboolean("General Options", "derived")
-    sum_fish  = Config.getboolean("General Options", "sum_fish")
+    sum_fish  = Config.get("General Options", "sum_fish").split("\n")
     eliminate = Config.getboolean("General Options", "eliminate")
-    compare   = Config.getboolean("General Options", "compare")
+    fishnames = Config.get("General Options", "names").split("\n")
 
     #General screen output
     if not args.quiet:
        print 'GENERAL OPTIONS:'
        print ' Output root='+outroot
-       print ' Output format='+format
        print ' Using derived parameters='+str(derived)
-       print ' Summing fishers='+str(sum_fish)
        print ' Eliminate rather than marginalize='+str(eliminate)
-       print ' Comparing Fishers='+str(compare)
+       print ' ---------------------------------'
+       print ' Bounds from these matrices will be computed:'
+       for elem in files:
+           print elem
+       if sum_fish[0]:
+           print 'Also the combination of these will be computed:'
+           for elem in sum_fish:
+               print elem
+       print ' ---------------------------------'
+       print
        print
 
+    if not files[0]:
+       if not sum_fish[0]:
+          print 'NO MATRICES TO WORK WITH!'
+          exit()
+       else:
+          files = sum_fish
+          print 'No fishers to plot, using only the combined one'
+
+
+    #MOD: too much putput here!
     if derived is not False:
        fishers = fpa.CosmicFish_FisherAnalysis(fisher_path=files, with_derived=True)
+       if sum_fish[0]:
+          print 'NOT HERE'
+          summing = fpa.CosmicFish_FisherAnalysis(fisher_path=sum_fish, with_derived=True)
     else:
        fishers = fpa.CosmicFish_FisherAnalysis(fisher_path=files, with_derived=False)
+       if sum_fish[0]:
+          summing = fpa.CosmicFish_FisherAnalysis(fisher_path=sum_fish, with_derived=False)
+   
 
-    if compare is not False:
-       fishers_temp = fpa.CosmicFish_FisherAnalysis()
-       fisher_list = fishers.get_fisher_matrix()
-       for fish in fisher_list[1:]:
-           sumfish = fisher_list[0]+fish
-       fisher_list.append(sumfish)
-       fisher_list[len(fisher_list)-1].name = outroot
-       fishers_temp.add_fisher_matrix( fisher_list[:] )
-       fishers = fishers_temp
-    else:
-       if sum_fish is not False:
-          fishers_temp = fpa.CosmicFish_FisherAnalysis()
-          fisher_list = fishers.get_fisher_matrix()
-          for fish in fisher_list[1:]:
-              fisher_list[0] = fisher_list[0]+fish
-          fisher_list[0].name = outroot
-          fishers_temp.add_fisher_matrix( fisher_list[0] )
-          fishers = fishers_temp
-          
+
+    fishers_temp = fpa.CosmicFish_FisherAnalysis()
+    fisher_list = fishers.get_fisher_matrix()
+    if sum_fish[0]:
+       summing_list = summing.get_fisher_matrix()
+       for fish in summing_list[1:]:
+          summing_list[0] = summing_list[0]+fish
+       fisher_list.append(summing_list[0])
+
+    for i in range(len(fisher_list)):
+       fisher_list[i].name = fishnames[i]
+
+
+    fishers_temp.add_fisher_matrix( fisher_list[:] )
+    fishers = fishers_temp
+
+
     #producing 1D plots
     num1D = Config.items( "1Dplot" )
         
@@ -185,11 +208,11 @@ if __name__ == "__main__":
         plotter.new_plot()
         plotter.plot1D( params=params )
 
-        plotter.export( outroot+'_1Dplot_'+str(key)+'.'+format )
+        plotter.export( outroot+'_1Dplot_'+str(key)+'.pdf' )
         plotter.close_plot()
         if not args.quiet:
            print ' 1D plots done for parameters '+str(params)
-           print ' Saved results in: ', outroot+'_1Dplot_'+str(key)+'.'+format
+           print ' Saved results in: ', outroot+'_1Dplot_'+str(key)+'.pdf'
 
     if not args.quiet and len(num1D)>0:
         print '1D plots done!'
@@ -217,11 +240,11 @@ if __name__ == "__main__":
         plotter.new_plot()
         plotter.plot2D( params=params )
 
-        plotter.export( outroot+'_2Dplot_'+str(key)+'.'+format )
+        plotter.export( outroot+'_2Dplot_'+str(key)+'.pdf' )
         plotter.close_plot()
         if not args.quiet:
            print ' 2D plots done for parameters '+str(params)
-           print ' Saved results in: ', outroot+'_2Dplot_'+str(key)+'.'+format
+           print ' Saved results in: ', outroot+'_2Dplot_'+str(key)+'.pdf'
 
     if not args.quiet and len(num2D)>0:
         print '2D plots done!'
@@ -244,11 +267,11 @@ if __name__ == "__main__":
         plotter.new_plot()
         plotter.plot_tri( params=params )
 
-        plotter.export( outroot+'_triplot_'+str(key)+'.'+format )
+        plotter.export( outroot+'_triplot_'+str(key)+'.pdf' )
         plotter.close_plot()
         if not args.quiet:
            print ' Triangular plots done for parameters '+str(params)
-           print ' Saved results in: ', outroot+'_triplot_'+str(key)+'.'+format
+           print ' Saved results in: ', outroot+'_triplot_'+str(key)+'.pdf'
 
     if not args.quiet and len(numtri)>0:
         print 'Triangular plots done!'
@@ -369,6 +392,5 @@ if __name__ == "__main__":
        print
        print 'It seems everything is done...'
        print 'It was nice working with you. See you soon!'
-
     # everything's fine, exit without error:
     exit(0)
