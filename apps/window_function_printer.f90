@@ -37,9 +37,11 @@ program window_function_printer
 
     integer  :: num_points = 1000
     real(dl) :: z_min      = 0._dl
-    real(dl) :: z_max      = 100._dl
+    real(dl) :: z_max      = 10._dl
 
-    integer :: error, i
+    integer  :: error, i, j
+    real(dl) :: redshift, winamp
+    Type(TRedWin) , pointer :: RedWin
 
     ! feedback:
     call CosmicFish_write_header( name=' CosmicFish survey window function printer. ' )
@@ -60,21 +62,51 @@ program window_function_printer
         stop 1
     end if
 
-    ! compute the window functions on a z grid:
-    do i = 1, num_points
+    ! check whether the user wants the window functions:
+    if  ( .not. FP%cosmicfish_want_cls .or. &
+        & .not. ( FP%fisher_cls%Fisher_want_LSS_lensing .or. FP%fisher_cls%Fisher_want_LSS_counts ).or. &
+        & FP%fisher_cls%LSS_number_windows == 0 ) then
+
+        if ( FP%cosmicfish_feedback > 0 ) then
+            write(*,*) 'No window found in the parameter file. Exiting.'
+        end if
+
+        stop 0
+
+    end if
+
+    ! open the output file:
+    open(unit=666, FILE=FP%outroot//'windows.dat', ACTION="write", STATUS="replace")
+
+    ! write the header:
+    write(666,'(a)') '#'
+    write(666,'(a)') '# This file contains the window function of a CosmicFish survey.'
+    write(666,'(a,F6.1,a,F6.1,a,I6,a)') '# Windows printed from redshift:', z_min, ' to redshift', z_max, ' on ', num_points, ' points.'
+    write(666,'(a)') '#'
+
+    ! write the number of windows:
+    write(666,'(a)', advance='no') '# z'//'    '
+    do i=1, FP%fisher_cls%LSS_number_windows
+        write(666,'(a)', advance='no') 'W_'//TRIM(integer_to_string(i))//'    '
+    end do
+    write(666,'(a)')
+
+
+    ! do the actual window function sampling:
+    do i=1, num_points
+
+        redshift = z_min +REAL( i -1 )/REAL( num_points -1 )*( z_max -z_min )
+
+        write(666, '(E15.5)', advance='no') redshift
+        do j=1, FP%fisher_cls%LSS_number_windows
+            RedWin => Redshift_W(j)
+            write(666,'(E15.5E3)', advance='no') counts_background_z( Win=RedWin, z=redshift )
+        end do
+        write(666,'(a)')
 
     end do
 
-    ! print the file header:
-
-    ! open txt file
-    ! print the header with non-advancing
-
-    ! print the data:
-
     ! close the file:
-
-    ! exit with error: the application is yet not fully developed
-    write(*,*) 'ERROR: the application is yet not fully developed.'
+    close(666)
 
 end program window_function_printer

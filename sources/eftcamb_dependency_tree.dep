@@ -1,4 +1,6 @@
 
+$(EFTCAMB_OBJ_DIR)/010_Fisher_calculator_Mpk.o : 
+
 $(EFTCAMB_OBJ_DIR)/000_Utilities.o : 
 
 $(EFTCAMB_OBJ_DIR)/001_Matrix_utilities.o : 
@@ -13,6 +15,8 @@ $(EFTCAMB_OBJ_DIR)/009_Fisher_calculator_SN.o :  \
 	$(EFTCAMB_OBJ_DIR)/004_cosmicfish_types.o \
 	$(EFTCAMB_OBJ_DIR)/002_Random_utilities.o
 
+$(EFTCAMB_OBJ_DIR)/001_quadpack_double.o : 
+
 $(EFTCAMB_OBJ_DIR)/011_Fisher_calculator_RD.o :  \
 	$(EFTCAMB_OBJ_DIR)/006_cosmicfish_camb_interface.o \
 	$(EFTCAMB_OBJ_DIR)/000_Utilities.o \
@@ -20,7 +24,7 @@ $(EFTCAMB_OBJ_DIR)/011_Fisher_calculator_RD.o :  \
 	$(EFTCAMB_OBJ_DIR)/007_FUTURCMB_lensnoise.o \
 	$(EFTCAMB_OBJ_DIR)/001_Matrix_utilities.o
 
-$(EFTCAMB_OBJ_DIR)/010_Fisher_calculator_Mpk.o : 
+$(EFTCAMB_OBJ_DIR)/001_praxis_minimizer.o : 
 
 $(EFTCAMB_OBJ_DIR)/008_Fisher_calculator_Cls_windows.o :  \
 	$(EFTCAMB_OBJ_DIR)/004_cosmicfish_types.o

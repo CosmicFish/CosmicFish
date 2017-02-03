@@ -1788,7 +1788,7 @@ contains
         implicit none
 
         Type(CAMBparams)                          :: P                        !< Input CAMBparams
-        Type(cosmicfish_params)                    :: FP                       !< Input Cosmicfish params
+        Type(cosmicfish_params)                   :: FP                       !< Input Cosmicfish params
         integer , intent(in)                      :: fish_dim                 !< Dimension of the parameter space
         character(len=*), intent(in)              :: filename                 !< Name of the file where the Fisher matrix paramnames file will be saved
 
