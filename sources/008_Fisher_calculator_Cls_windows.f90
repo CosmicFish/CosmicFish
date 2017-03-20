@@ -60,7 +60,12 @@ contains
             window_function_calc => flat_window
         else if ( FP%fisher_cls%window_type == 4 ) then
             window_function_calc => flat_smooth_window
+        else if ( FP%fisher_cls%window_type == 5 ) then
+            window_function_calc => comparison_window
+        else if ( FP%fisher_cls%window_type == 6 ) then
+            window_function_calc => C2_window
         else
+            write(*,*) 'WARNING! NO WINDOW FUNCTION SPECIFIED!'
             window_function_calc => Null()
         end if
 
@@ -179,5 +184,74 @@ contains
         flat_smooth_window = winamp
 
     end function flat_smooth_window
+
+    function comparison_window(Win, z, winamp)
+
+        implicit none
+
+        Type(TRedWin)        :: Win      !< Window function object
+        real(dl), intent(in) :: z        !< Input redshift
+        real(dl)             :: winamp   !< Output amplitude of the window
+        real(dl) :: comparison_window
+
+        real(dl) :: dz
+
+        real(dl) :: alpha, beta, z0, sigma, total_number_z
+
+        comparison_window = 0._dl
+        winamp = 1.5_dl*exp(-((z-0.7_dl)/0.32_dl)**2._dl)+0.2_dl*exp(-((z-1.2_dl)/0.46_dl)**2._dl)
+
+        winamp = 0.5_dl*winamp*( &
+                 & +Erf( (Win%Redshift + Win%sigma - z)/(sqrt(2._dl))/sigma ) &
+                 & -Erf( (Win%Redshift - z)/(sqrt(2._dl))/sigma ) )
+        if ( winamp<1.d-10 ) winamp = 0._dl
+
+        comparison_window = winamp
+
+    end function comparison_window
+
+
+    function C2_window(Win, z, winamp)
+
+        implicit none
+
+        Type(TRedWin)        :: Win      !< Window function object
+        real(dl), intent(in) :: z        !< Input redshift
+        real(dl)             :: winamp   !< Output amplitude of the window
+
+        real(dl) :: C2_window
+
+        real(dl) :: dz
+
+        real(dl) :: alpha, beta, z0, sigma, total_number_z
+
+        !parameters for C2 photometric redshifts
+        real(dl) :: c0, cb, s0, sb, fout, zf, zi, zb
+        !it might be worth it to promote these to 
+        !experimental parameters for the future
+        c0 = 1._dl
+        cb = 1._dl
+        s0 = 0.05
+        sb = 0.05
+        fout = 0.1
+        z0 = 0.1
+        zb = 0._dl
+        !--------------------------------------
+        !redshift limits
+        zi = Win%Redshift
+        zf = Win%Redshift+Win%sigma
+
+        C2_window = 0._dl
+        winamp = (z/0.636396103)**2._dl*exp(-(z/0.636396103)**3._dl/2._dl)
+
+        winamp = winamp*(-cb*fout*Erf((z-z0-c0*zf)/(s0+z*s0))+cb*fout*Erf((z-z0-c0*zi)/(s0+z*s0))+ &
+                 c0*(fout-1)*(Erf((z-zb-cb*zf)/(sb+z*sb))-Erf((z-zb-cb*zi)/(sb+z*sb))))/(2*sqrt(2._dl)*c0*cb)
+        !    write(0,*)'winamp2=',winamp
+
+        if ( winamp<1.d-10 ) winamp = 0._dl
+
+        C2_window = winamp
+
+   end function C2_window
 
 end module Fisher_calculator_Cls_windows

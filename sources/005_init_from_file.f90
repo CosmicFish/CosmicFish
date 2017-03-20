@@ -27,6 +27,7 @@ module init_from_file
 
     use precision
     use cosmicfish_types
+    use NonLinear !MMmod
     use IniFile
     use ModelParams
 
@@ -195,6 +196,7 @@ contains
         HighAccuracyDefault = Ini_Read_Logical('high_accuracy_default',HighAccuracyDefault)
 
         P%NonLinear = Ini_Read_Int('do_nonlinear',NonLinear_none)
+        if (P%NonLinear/=NonLinear_none) call NonLinear_ReadParams(DefIni) !MMmod: needed to read halofit_version in params.ini
 
         evolve_delta_xe = Ini_read_Logical('evolve_delta_xe', .false.)
 
