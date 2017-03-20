@@ -34,7 +34,7 @@ Invoking the help option ``full_analysis.py -h`` will result in::
       -v, --version  show program's version number and exit
       -q, --quiet    decides wether something gets printed to screen or not
 
-Developed by Matteo Martinelli (m.martinelli@thphys.uni-heidelberg.de)
+Developed by Matteo Martinelli (martinelli@lorentz.leidenuniv.nl)
 and Marco Raveri (mraveri@sissa.it) for the CosmicFish code.
 
 """
@@ -78,6 +78,7 @@ import cosmicfish_pylib.fisher_operations    as fo
 import cosmicfish_pylib.fisher_plot_settings as fps
 import cosmicfish_pylib.fisher_plot_analysis as fpa
 import cosmicfish_pylib.fisher_plot          as fp
+
 
 
 # ***************************************************************************************
@@ -128,47 +129,65 @@ if __name__ == "__main__":
     outroot   = ConfigSectionMap("General Options")['outroot']
     files     = Config.get("General Options", "fishers").split("\n")
     derived   = Config.getboolean("General Options", "derived")
-    sum_fish  = Config.getboolean("General Options", "sum_fish")
+    sum_fish  = Config.get("General Options", "sum_fish").split("\n")
     eliminate = Config.getboolean("General Options", "eliminate")
-    compare   = Config.getboolean("General Options", "compare")
+    fishnames = Config.get("General Options", "names").split("\n")
 
     #General screen output
     if not args.quiet:
        print 'GENERAL OPTIONS:'
        print ' Output root='+outroot
        print ' Using derived parameters='+str(derived)
-       print ' Summing fishers='+str(sum_fish)
        print ' Eliminate rather than marginalize='+str(eliminate)
-       print ' Comparing Fishers='+str(compare)
+       print ' ---------------------------------'
+       print ' Bounds from these matrices will be computed:'
+       for elem in files:
+           print elem
+       if sum_fish[0]:
+           print 'Also the combination of these will be computed:'
+           for elem in sum_fish:
+               print elem
+       print ' ---------------------------------'
+       print
        print
 
+    if not files[0]:
+       if not sum_fish[0]:
+          print 'NO MATRICES TO WORK WITH!'
+          exit()
+       else:
+          files = sum_fish
+          print 'No fishers to plot, using only the combined one'
+
+
+    #MOD: too much putput here!
     if derived is not False:
        fishers = fpa.CosmicFish_FisherAnalysis(fisher_path=files, with_derived=True)
+       if sum_fish[0]:
+          print 'NOT HERE'
+          summing = fpa.CosmicFish_FisherAnalysis(fisher_path=sum_fish, with_derived=True)
     else:
        fishers = fpa.CosmicFish_FisherAnalysis(fisher_path=files, with_derived=False)
+       if sum_fish[0]:
+          summing = fpa.CosmicFish_FisherAnalysis(fisher_path=sum_fish, with_derived=False)
+   
 
-    if compare is not False:
-       fishers_temp = fpa.CosmicFish_FisherAnalysis()
-       fisher_list = fishers.get_fisher_matrix()
-       for fish in fisher_list[1:]:
-           sumfish = fisher_list[0]+fish
-#       fisher_list.append(sumfish)
-       fisher_list[2] = sumfish
-#       fisher_list[len(fisher_list)-1].name = outroot
-       fisher_list[2].name = outroot
-       fishers_temp.add_fisher_matrix( fisher_list[:] )
-       fishers = fishers_temp
 
-    else:
-       if sum_fish is not False:
-          fishers_temp = fpa.CosmicFish_FisherAnalysis()
-          fisher_list = fishers.get_fisher_matrix()
-          for fish in fisher_list[1:]:
-              fisher_list[0] = fisher_list[0]+fish
-          fisher_list[0].name = outroot
-          fishers_temp.add_fisher_matrix( fisher_list[0] )
-          fishers = fishers_temp
-          
+    fishers_temp = fpa.CosmicFish_FisherAnalysis()
+    fisher_list = fishers.get_fisher_matrix()
+    if sum_fish[0]:
+       summing_list = summing.get_fisher_matrix()
+       for fish in summing_list[1:]:
+          summing_list[0] = summing_list[0]+fish
+       fisher_list.append(summing_list[0])
+
+    for i in range(len(fisher_list)):
+       fisher_list[i].name = fishnames[i]
+
+
+    fishers_temp.add_fisher_matrix( fisher_list[:] )
+    fishers = fishers_temp
+
 
     #producing 1D plots
     num1D = Config.items( "1Dplot" )
