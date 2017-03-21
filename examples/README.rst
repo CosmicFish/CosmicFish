@@ -1,6 +1,6 @@
-===================
+====================
 CosmicFish: examples
-===================
+====================
 
 This folder contains the relevant code to produce a set of examples with the
 CosmicFish code.

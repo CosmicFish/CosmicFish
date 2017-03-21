@@ -2,7 +2,7 @@
 !
 ! This file is part of CosmicFish.
 !
-! Copyright (C) 2015-2016 by the CosmicFish authors
+! Copyright (C) 2015-2017 by the CosmicFish authors
 !
 ! The CosmicFish code is free software;
 ! You can use it, redistribute it, and/or modify it under the terms
