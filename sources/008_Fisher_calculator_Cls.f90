@@ -87,19 +87,19 @@ contains
 
         implicit none
 
-        Type(CAMBparams)        :: P                                        !< Input CAMBparams
+        Type(CAMBparams)         :: P                                        !< Input CAMBparams
         Type(cosmicfish_params)  :: FP                                       !< Input Cosmicfish params
-        integer, intent(in)     :: cl_dim                                   !< Input dimension of the Cl matrix
-        integer, intent(in)     :: l_min                                    !< Input min l computed
-        integer, intent(in)     :: l_max                                    !< Input max l computed
+        integer, intent(in)      :: cl_dim                                   !< Input dimension of the Cl matrix
+        integer, intent(in)      :: l_min                                    !< Input min l computed
+        integer, intent(in)      :: l_max                                    !< Input max l computed
 
-        real(dl)                :: cl_out(cl_dim, cl_dim, l_max-l_min+1)  !< Output matrix containing the cls
-        integer, intent(out)    :: err                                      !< Output error code:
-                                                                            !< 0 = all fine
-                                                                            !< 1 = error in input
-                                                                            !< 2 = error in computation
-                                                                            !< 3 = error in quality
-                                                                            !< 4 = routine specific
+        real(dl)                 :: cl_out(cl_dim, cl_dim, l_max-l_min+1)    !< Output matrix containing the cls
+        integer, intent(out)     :: err                                      !< Output error code:
+                                                                             !< 0 = all fine
+                                                                             !< 1 = error in input
+                                                                             !< 2 = error in computation
+                                                                             !< 3 = error in quality
+                                                                             !< 4 = routine specific
 
         ! definitions:
         logical  :: EFTsuccess

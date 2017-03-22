@@ -28,6 +28,8 @@ program linear_cutoff_calculator
     use cosmicfish_utilities
     use cosmicfish_types
     use init_from_file
+    use Fisher_calculator_Cls
+    use Fisher_calculator_Cls_linearization
 
     implicit none
 
@@ -36,7 +38,11 @@ program linear_cutoff_calculator
     character(LEN=Ini_max_string_len) paramfile, command_line_k_cutoff
 
     real(dl) :: k_cutoff
-    integer  :: error
+    integer  :: error, cl_dim, AllocateStatus
+    integer, allocatable, dimension(:) :: l_cut
+
+    real(dl), parameter :: atol = 0.01
+    real(dl), parameter :: rtol = 0.01
 
     ! feedback:
     call CosmicFish_write_header( name=' CosmicFish linear cutoff calculator. ' )
@@ -65,7 +71,28 @@ program linear_cutoff_calculator
         stop 1
     end if
 
-    ! exit with error: the application is yet not fully developed
-    write(*,*) 'ERROR: the application is yet not fully developed.'
+    ! check whether the user wants the Cls Fisher:
+    if  ( .not. FP%cosmicfish_want_cls ) then
+        if ( FP%cosmicfish_feedback > 0 ) then
+            write(*,*) 'No window found in the parameter file. Exiting.'
+        end if
+        stop 0
+    end if
+
+    ! get the dimension of the Cls covariance:
+    call dimension_cl_covariance( P, FP, cl_dim )
+
+    print*, cl_dim
+
+    ! allocate the l cut vector:
+    allocate( l_cut(cl_dim), stat = AllocateStatus)
+    if (AllocateStatus /= 0) stop "Allocation failed: l_cut."
+
+    ! call the linearization:
+    call halofit_linearization( P, FP, rtol, atol, cl_dim, l_cut, error )
+
+    print*, error
+    print*, l_cut
+
 
 end program linear_cutoff_calculator
