@@ -53,7 +53,7 @@ program fiducial_calculator
 
     ! Cls Fisher matrix:
     if ( FP%cosmicfish_want_cls ) then
-        write(*,*) 'WARNING: Cls fiducial printing not yet implemented.'
+        call Fiducial_Cls( P, FP, outroot=FP%outroot )
     end if
 
     if ( FP%cosmicfish_want_SN  ) then

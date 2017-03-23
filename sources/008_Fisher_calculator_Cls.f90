@@ -45,7 +45,7 @@ module Fisher_calculator_Cls
     private
 
     public dimension_cl_covariance, cl_covariance_out, save_cl_covariance_to_file, &
-        & cls_derivative, add_noise_cls_to_fiducial, Fisher_Cls
+        & cls_derivative, add_noise_cls_to_fiducial, Fisher_Cls, Fiducial_Cls
 
 contains
 
@@ -1192,6 +1192,71 @@ contains
         end if
 
     end subroutine Fisher_Cls
+
+    ! ---------------------------------------------------------------------------------------------
+    !> This subroutine prints to file the fiducial cls.
+    subroutine Fiducial_Cls( P, FP, outroot )
+
+        implicit none
+
+        Type(CAMBparams)        , intent(in) :: P       !< Input CAMBparams
+        Type(cosmicfish_params) , intent(in) :: FP      !< Input Cosmicfish params
+        character(len=*)        , intent(in) :: outroot !< Input filename that will be used to dump to file the fiducial Cls.
+
+        real(dl) :: time_1, time_2
+        !real(dl) :: initial_step, temp, temp1, temp2
+        integer  :: cl_dim, l_min, l_max, err, AllocateStatus !, ind, ind2
+        !integer  :: i, j, k, l
+        !real(dl), allocatable :: param_array(:)
+        real(dl), dimension(:,:,:), allocatable :: cl_fiducial
+
+        ! get the size of the cls covariance matrix:
+        call dimension_cl_covariance( P, FP, cl_dim )
+
+        ! protect against errors:
+        if ( cl_dim == 0 ) then
+            write(*,*) 'WARNING: the Cls matrix is of zero dimension'
+            return
+        end if
+
+        ! decide l_min and l_max:
+        l_min = 2
+        l_max = maxval( FP%fisher_cls%LSS_lmax, FP%fisher_cls%LSS_number_windows )
+        l_max = max( l_max, FP%fisher_cls%l_max_TT, &
+            & FP%fisher_cls%l_max_EE, FP%fisher_cls%l_max_BB )
+
+        ! allocation:
+        allocate(cl_fiducial(cl_dim, cl_dim, l_max-l_min+1), stat = AllocateStatus)
+        if (AllocateStatus /= 0) stop "Allocation failed. Not enough memory to allocate cl_fiducial"
+
+        ! computation of the fiducial model:
+        time_1 = omp_get_wtime()
+        call cl_covariance_out( P, FP, cl_dim, l_min, l_max, cl_fiducial, err )
+        time_2 = omp_get_wtime() - time_1
+
+        call save_cl_covariance_to_file( cl_fiducial, cl_dim, l_min, l_max, filename=TRIM(outroot)//'fiducial.dat' )
+
+        if ( err == 0 ) then
+        else if ( err == 4 ) then
+            write(*,*) 'Fiducial model unstable.'
+            stop
+        else
+            write(*,*) 'Error in computing the fiducial.'
+            stop
+        end if
+
+        ! print some feedback
+        if ( FP%cosmicfish_feedback >= 1 ) then
+            write(*,'(a)')         '**************************************************************'
+            write(*,'(a,i10)')         'Dimension of the Cls matrix  : ', cl_dim
+            write(*,'(a,i10)')         'Minimum l                    : ', l_min
+            write(*,'(a,i10)')         'Maximum l                    : ', l_max
+            write(*,'(a,f10.3,a)')     'Time taken for Cl calculation: ', time_2, ' (s)'
+            write(*,'(a,i10)')         'Number of omp processes      : ', OMP_GET_MAX_THREADS()
+            write(*,'(a)')         '**************************************************************'
+        end if
+
+    end subroutine Fiducial_Cls
 
     ! ---------------------------------------------------------------------------------------------
 
