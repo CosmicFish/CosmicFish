@@ -41,8 +41,8 @@ program linear_cutoff_calculator
     integer  :: error, cl_dim, AllocateStatus
     integer, allocatable, dimension(:) :: l_cut
 
-    real(dl), parameter :: atol = 0.01
-    real(dl), parameter :: rtol = 0.01
+    real(dl), parameter :: atol = 0.0_dl
+    real(dl), parameter :: rtol = 1.0_dl
 
     ! feedback:
     call CosmicFish_write_header( name=' CosmicFish linear cutoff calculator. ' )
@@ -82,17 +82,26 @@ program linear_cutoff_calculator
     ! get the dimension of the Cls covariance:
     call dimension_cl_covariance( P, FP, cl_dim )
 
-    print*, cl_dim
-
     ! allocate the l cut vector:
     allocate( l_cut(cl_dim), stat = AllocateStatus)
     if (AllocateStatus /= 0) stop "Allocation failed: l_cut."
 
     ! call the linearization:
-    call halofit_linearization( P, FP, rtol, atol, cl_dim, l_cut, error )
+    call halofit_linearization( P, FP, rtol, atol, cl_dim, l_cut, error, outroot=FP%outroot )
 
-    print*, error
-    print*, l_cut
+    ! call other linearization schemes:
+    ! not yet implemented.
 
+    ! get a conservative estimate:
+    ! not yet implemented.
+
+    ! print feedback:
+    if ( FP%cosmicfish_feedback >= 1 ) then
+        write(*,'(a)') 'Linearization results:'
+    end if
+    ! print to file and screen the l cut:
+    if ( error==0 ) then
+        call print_linearization( P, FP, l_cut, outroot=FP%outroot )
+    end if
 
 end program linear_cutoff_calculator

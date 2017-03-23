@@ -11,8 +11,8 @@ $(CAMB_OBJ_DIR)/003_Fisher_manipulation.o :  \
 
 $(CAMB_OBJ_DIR)/008_Fisher_calculator_Cls_linearization.o :  \
 	$(CAMB_OBJ_DIR)/008_Fisher_calculator_Cls.o \
-	$(CAMB_OBJ_DIR)/000_Utilities.o \
-	$(CAMB_OBJ_DIR)/004_cosmicfish_types.o
+	$(CAMB_OBJ_DIR)/004_cosmicfish_types.o \
+	$(CAMB_OBJ_DIR)/000_Utilities.o
 
 $(CAMB_OBJ_DIR)/009_Fisher_calculator_SN.o :  \
 	$(CAMB_OBJ_DIR)/006_cosmicfish_camb_interface.o \

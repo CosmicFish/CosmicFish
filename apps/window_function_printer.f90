@@ -28,6 +28,7 @@ program window_function_printer
     use cosmicfish_utilities
     use cosmicfish_types
     use init_from_file
+    use Fisher_calculator_Cls_windows
 
     implicit none
 
@@ -74,6 +75,9 @@ program window_function_printer
         stop 0
 
     end if
+
+    ! initialize the window functions:
+    call init_camb_sources_windows( FP )
 
     ! open the output file:
     open(unit=666, FILE=FP%outroot//'windows.dat', ACTION="write", STATUS="replace")
