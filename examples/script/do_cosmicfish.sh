@@ -40,37 +40,52 @@ echo
 
 for params in $PARAMETERS_DIR/*.ini;
 
-do
+	do
+	
+	# get the file name for the Fisher parameters:
+	filename=$(basename "$params")
+	extension="${filename##*.}"
+	filename="${filename%.*}"
+	# get the Boltzmann solver:
+	b_code="${filename##*.}"
+	filename="${filename%.*}"
+	
+	# use camb if none is specified:
+	if [ "$filename" == "$b_code" ]; then
+		BIN_DIR=$FISHER_CAMB_BIN;
+	fi
+	# use camb if specified:
+	if [ "$b_code" == 'camb' ]; then
+		BIN_DIR=$FISHER_CAMB_BIN;
+	fi
+	# use eftcamb if specified:
+	if [ "$b_code" == 'eftcamb' ]; then
+		BIN_DIR=$FISHER_EFTCAMB_BIN;
+	fi	
+	# use mgcamb if specified: 
+	if [ "$b_code" == 'mgcamb' ]; then
+		BIN_DIR=$FISHER_MGCAMB_BIN;
+	fi
+		
+	echo
+	echo -e ${BRed}'Doing: ' $filename 'with' $b_code${Color_Off}
+	echo
+	
+	if [ -z "$APP" ]; then
+	    USE_APP=( fisher_matrix_calculator )
+	else
+		if [ "$APP" == "all" ]; then
+			USE_APP=(${APPLICATIONS[*]})
+		else
+			USE_APP=($APP)
+		fi	
+	fi
 
-# get the file name for the Fisher parameters:
-filename=$(basename "$params")
-extension="${filename##*.}"
-filename="${filename%.*}"
-# get the Boltzmann solver:
-b_code="${filename##*.}"
-filename="${filename%.*}"
-
-if [ "$filename" == "$b_code" ]; then
-	SOLVER=$FISHER_CAMB_CALCULATOR;
-fi
-
-if [ "$b_code" == 'camb' ]; then
-	SOLVER=$FISHER_CAMB_CALCULATOR;
-fi
-
-if [ "$b_code" == 'eftcamb' ]; then
-	SOLVER=$FISHER_EFTCAMB_CALCULATOR;
-fi	
-
-if [ "$b_code" == 'mgcamb' ]; then
-	SOLVER=$FISHER_MGCAMB_CALCULATOR;
-fi	
-
-echo
-echo -e ${BRed}'Doing: ' $filename 'with' $b_code${Color_Off}
-echo
-
-$SOLVER $params ;
+	# cycle over applications:	
+	for run_app in "${USE_APP[@]}"
+	do
+		$BIN_DIR$run_app.x $params;
+	done
 
 done;
 

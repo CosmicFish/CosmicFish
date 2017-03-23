@@ -41,7 +41,7 @@ analysis: targets
 	@bash $(SCRIPT_DIR)/do_analysis.sh 
 
 fisher_matrices: targets
-	@bash $(SCRIPT_DIR)/do_fisher.sh 
+	@bash $(SCRIPT_DIR)/do_cosmicfish.sh
 
 # Target to create a makefile that has all single targets:
 
@@ -65,9 +65,3 @@ deep_clean: clean
 	@rm -rf $(RESULTS_DIR)/*.dat
 	@rm -rf $(RESULTS_DIR)/*.paramnames
 	@rm -rf $(RESULTS_DIR)/*.ini
-
-
-
-
-	
-

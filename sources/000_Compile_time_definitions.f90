@@ -13,13 +13,23 @@
 !
 !----------------------------------------------------------------------------------------
 
-!> @file 010_Fisher_calculator_Mpk.f90
-!! This file contains the code that computes the Fisher matrix for the Matter power spectrum.
+!> @file 000_Compile_time_definitions.f90
+!! This file contains the CosmicFish compile time variables that are used by the code.
 
 !----------------------------------------------------------------------------------------
-!> This module contains the code that computes the Fisher matrix for the Matter power spectrum.
-!> This is not yet implemented.
+!> This module contains the CosmicFish compile time variables that are used by the code.
 
-!> @author Marco Raveri
+!> @author Marco Raveri and Matteo Martinelli
+
+module cosmicfish_def
+
+    use precision
+
+    implicit none
+
+    ! CosmicFish version flag:
+    character(LEN=*), parameter :: CosmicFish_version = 'V1.1 Mar17'
+
+end module cosmicfish_def
 
 !----------------------------------------------------------------------------------------

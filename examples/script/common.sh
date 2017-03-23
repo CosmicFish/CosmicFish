@@ -49,13 +49,20 @@ else
 	COSMICFISH_PATH="$COSMICFISH_DIR"
 fi  
 
-#------ path to the executable of Fisher matrix:
+#------ path to the bin directory:
 # 1- CAMB:
-FISHER_CAMB_CALCULATOR=$COSMICFISH_PATH/build/fisher_camb/bin/fisher_matrix_calculator.x
+FISHER_CAMB_BIN=$COSMICFISH_PATH/build/fisher_camb/bin/
 # 2- EFTCAMB:
-FISHER_EFTCAMB_CALCULATOR=$COSMICFISH_PATH/build/fisher_eftcamb/bin/fisher_matrix_calculator.x
+FISHER_EFTCAMB_BIN=$COSMICFISH_PATH/build/fisher_eftcamb/bin/
 # 3- MGCAMB:
-FISHER_MGCAMB_CALCULATOR=$COSMICFISH_PATH/build/fisher_mgcamb/bin/fisher_matrix_calculator.x
+FISHER_MGCAMB_BIN=$COSMICFISH_PATH/build/fisher_mgcamb/bin/
+
+#------ applications:
+APPLICATIONS=(  fiducial_calculator \
+				window_function_printer \
+				linear_cutoff_calculator \
+				fisher_matrix_calculator \
+				)
 
 # path to the CosmicFish Python library applications:
 PYTHON_APPS=$COSMICFISH_PATH/python/apps

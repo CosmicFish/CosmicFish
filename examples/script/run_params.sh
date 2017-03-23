@@ -37,26 +37,29 @@ source $SCRIPT_PATH/common.sh
 filename=$(basename "$1")
 extension="${filename##*.}"
 filename="${filename%.*}"
+
 # get the Boltzmann solver:
+
 b_code="${filename##*.}"
-
+# use camb if none is specified:
 if [ "$filename" == "$b_code" ]; then
-	SOLVER=$FISHER_CAMB_CALCULATOR;
+	BIN_DIR=$FISHER_CAMB_BIN;
 fi
-
+# use camb if specified:
 if [ "$b_code" == 'camb' ]; then
-	SOLVER=$FISHER_CAMB_CALCULATOR;
+	BIN_DIR=$FISHER_CAMB_BIN;
 fi
-
+# use eftcamb if specified:
 if [ "$b_code" == 'eftcamb' ]; then
-	SOLVER=$FISHER_EFTCAMB_CALCULATOR;
+	BIN_DIR=$FISHER_EFTCAMB_BIN;
 fi	
-
+# use mgcamb if specified: 
 if [ "$b_code" == 'mgcamb' ]; then
-	SOLVER=$FISHER_MGCAMB_CALCULATOR;
-fi	
+	BIN_DIR=$FISHER_MGCAMB_BIN;
+fi
 
 # get the file name for the analysis parameters:
+
 dirname_analysis=$(dirname "$2")
 filename_analysis=$(basename "$2")
 extension_analysis="${filename_analysis##*.}"
@@ -64,9 +67,24 @@ filename_analysis="${filename_analysis%.*}"
 b_code_temp="${filename_analysis##*.}"
 filename_analysis="${filename_analysis%.*}"
 
-#------ create the Fisher matrix ------
+# get the application to use:
 
-$SOLVER  $1 ;
+if [ -z "$APP" ]; then
+    USE_APP=( fisher_matrix_calculator )
+else
+	if [ "$APP" == "all" ]; then
+		USE_APP=(${APPLICATIONS[*]})
+	else
+		USE_APP=($APP)
+	fi	
+fi
+
+#------ run the applications ------
+
+for run_app in "${USE_APP[@]}"
+do
+	$BIN_DIR$run_app.x $1;
+done
 
 #------ run analysis ------
 

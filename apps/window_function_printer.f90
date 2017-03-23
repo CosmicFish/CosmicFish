@@ -72,7 +72,7 @@ program window_function_printer
             write(*,*) 'No window found in the parameter file. Exiting.'
         end if
 
-        stop 0
+        stop
 
     end if
 
