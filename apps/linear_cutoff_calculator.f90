@@ -87,21 +87,43 @@ program linear_cutoff_calculator
     if (AllocateStatus /= 0) stop "Allocation failed: l_cut."
 
     ! call the linearization:
+    if ( FP%cosmicfish_feedback >= 1 ) then
+        write(*,'(a)')
+        write(*,'(a)') 'Halofit linearization:'
+        write(*,'(a)')
+    end if
     call halofit_linearization( P, FP, rtol, atol, cl_dim, l_cut, error, outroot=FP%outroot )
+    ! print to file the output:
+    if ( FP%cosmicfish_feedback >= 1 ) then
+        write(*,'(a)')
+        call print_linearization( P, FP, l_cut, outroot=FP%outroot//'halofit_linearization.ini' )
+    end if
 
-    ! call other linearization schemes:
-    ! not yet implemented.
+    ! apply the l cut:
+    call apply_l_cut( P, FP, l_cut )
 
-    ! get a conservative estimate:
-    ! not yet implemented.
+    ! call the precizion test:
+    if ( FP%cosmicfish_feedback >= 1 ) then
+        write(*,'(a)')
+        write(*,'(a)') 'Precision l cut:'
+        write(*,'(a)')
+    end if
+    call precision_settings_l_cut( P, FP, rtol, atol, cl_dim, l_cut, error, outroot=FP%outroot )
+    ! print to file the output:
+    if ( FP%cosmicfish_feedback >= 1 ) then
+        write(*,'(a)')
+        call print_linearization( P, FP, l_cut, outroot=FP%outroot//'precision_l_cut.ini' )
+    end if
 
     ! print feedback:
     if ( FP%cosmicfish_feedback >= 1 ) then
-        write(*,'(a)') 'Linearization results:'
+        write(*,'(a)')
+        write(*,'(a)') 'Global linearization results:'
+        write(*,'(a)')
     end if
     ! print to file and screen the l cut:
     if ( error==0 ) then
-        call print_linearization( P, FP, l_cut, outroot=FP%outroot )
+        call print_linearization( P, FP, l_cut, outroot=FP%outroot//'linearization.ini' )
     end if
 
 end program linear_cutoff_calculator
