@@ -40,13 +40,6 @@ $(CAMB_OBJ_DIR)/008_Fisher_calculator_Cls_windows.o :  \
 $(CAMB_OBJ_DIR)/005_init_from_file.o :  \
 	$(CAMB_OBJ_DIR)/004_cosmicfish_types.o
 
-$(CAMB_OBJ_DIR)/000_Compile_time_definitions.o : 
-
-$(CAMB_OBJ_DIR)/004_cosmicfish_types.o : 
-
-$(CAMB_OBJ_DIR)/006_cosmicfish_camb_interface.o :  \
-	$(CAMB_OBJ_DIR)/004_cosmicfish_types.o
-
 $(CAMB_OBJ_DIR)/008_Fisher_calculator_Cls.o :  \
 	$(CAMB_OBJ_DIR)/006_cosmicfish_camb_interface.o \
 	$(CAMB_OBJ_DIR)/000_Utilities.o \
@@ -55,11 +48,18 @@ $(CAMB_OBJ_DIR)/008_Fisher_calculator_Cls.o :  \
 	$(CAMB_OBJ_DIR)/008_Fisher_calculator_Cls_windows.o \
 	$(CAMB_OBJ_DIR)/001_Matrix_utilities.o
 
+$(CAMB_OBJ_DIR)/000_Compile_time_definitions.o : 
+
+$(CAMB_OBJ_DIR)/006_cosmicfish_camb_interface.o :  \
+	$(CAMB_OBJ_DIR)/004_cosmicfish_types.o
+
+$(CAMB_OBJ_DIR)/004_cosmicfish_types.o : 
+
+$(CAMB_OBJ_DIR)/007_FUTURCMB_lensnoise.o : 
+
 $(CAMB_OBJ_DIR)/012_Fisher_calculator_derived.o :  \
 	$(CAMB_OBJ_DIR)/006_cosmicfish_camb_interface.o \
 	$(CAMB_OBJ_DIR)/004_cosmicfish_types.o \
 	$(CAMB_OBJ_DIR)/000_Utilities.o
-
-$(CAMB_OBJ_DIR)/007_FUTURCMB_lensnoise.o : 
 
 $(CAMB_OBJ_DIR)/002_Random_utilities.o : 
