@@ -28,7 +28,7 @@ ifeq "$(HAS_IFORT)" "0"
     # release options:
 	FFLAGS_RELEASE   := -qopenmp -mkl=parallel -O3 -W0 -WB -fpp -qopt-report=0 
 	# debug options:
-	FFLAGS_DEBUG     := -qopenmp -mkl=parallel -fpp -g -qopt-report=0 -fp-stack-check -O0 -traceback -check all -check bounds -check uninit -check noarg_temp_created
+	FFLAGS_DEBUG     := -qopenmp -mkl=parallel -fpp -g -qopt-report=0 -fp-stack-check -O0 -traceback -check all -check bounds -check uninit -check noarg_temp_created -DDEBUG
 	# module flag:
 	MODULE_FLAG      := -module 
 	# lapack linking
@@ -41,7 +41,7 @@ else
 	# release options:
 	FFLAGS_RELEASE   := -O3 -fopenmp -ffast-math -fmax-errors=4 -ffree-line-length-none -funroll-loops -cpp -ffpe-summary=none
 	# debug options:
-	FFLAGS_DEBUG     := -O0 -g -fopenmp -fmax-errors=0 -ffree-line-length-none -cpp -fbounds-check -fbacktrace -ffpe-trap=invalid,overflow,zero
+	FFLAGS_DEBUG     := -O0 -g -fopenmp -fmax-errors=0 -ffree-line-length-none -cpp -fbounds-check -fbacktrace -ffpe-trap=invalid,overflow,zero -DDEBUG
 	# module flag:
 	MODULE_FLAG := -J
 	# lapack linking

@@ -28,7 +28,14 @@ module cosmicfish_def
     implicit none
 
     ! CosmicFish version flag:
-    character(LEN=*), parameter :: CosmicFish_version = 'V1.1 Mar17'
+    character(LEN=*), parameter :: CosmicFish_version = 'V1.1 Apr17'  !< CosmicFish version.
+
+    ! Debug compile time flag:
+#ifdef DEBUG
+    logical , parameter :: DebugCosmicFish = .true.   !< CosmicFish debug flag.
+#else
+    logical , parameter :: DebugCosmicFish = .false.  !< CosmicFish debug flag.
+#endif
 
 end module cosmicfish_def
 

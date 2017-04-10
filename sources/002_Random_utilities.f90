@@ -38,6 +38,8 @@ module Random_utilities
 
 contains
 
+    ! ---------------------------------------------------------------------------------------------
+
     subroutine initRandom(i, i2)
         implicit none
         integer, optional, intent(in) :: i

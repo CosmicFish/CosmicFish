@@ -339,34 +339,34 @@ contains
 
         ! prepare the l_min cut:
 
-         l_mins  = 1
-         ind     = 1
+        l_mins  = 1
+        ind     = 1
 
-         if ( FP%fisher_cls%Fisher_want_CMB_T ) then
-             l_mins(ind) = FP%fisher_cls%l_min_TT
-             ind = ind + 1
-         end if
+        if ( FP%fisher_cls%Fisher_want_CMB_T ) then
+            l_mins(ind) = FP%fisher_cls%l_min_TT
+            ind = ind + 1
+        end if
 
-         if ( FP%fisher_cls%Fisher_want_CMB_E ) then
-             l_mins(ind) = FP%fisher_cls%l_min_EE
-             ind = ind + 1
-         end if
+        if ( FP%fisher_cls%Fisher_want_CMB_E ) then
+            l_mins(ind) = FP%fisher_cls%l_min_EE
+            ind = ind + 1
+        end if
 
-         if ( FP%fisher_cls%Fisher_want_CMB_lensing ) then
-             l_mins(ind) = max( FP%fisher_cls%l_min_TT, &
-                 & FP%fisher_cls%l_min_EE, &
-                 & FP%fisher_cls%l_min_BB  )
-             ind = ind + 1
-         end if
+        if ( FP%fisher_cls%Fisher_want_CMB_lensing ) then
+            l_mins(ind) = max( FP%fisher_cls%l_min_TT, &
+                & FP%fisher_cls%l_min_EE, &
+                & FP%fisher_cls%l_min_BB  )
+            ind = ind + 1
+        end if
 
-         if ( FP%fisher_cls%Fisher_want_CMB_B ) then
-             l_mins(cl_dim) = FP%fisher_cls%l_min_BB
-         end if
+        if ( FP%fisher_cls%Fisher_want_CMB_B ) then
+            l_mins(cl_dim) = FP%fisher_cls%l_min_BB
+        end if
 
-         do k = 1, FP%fisher_cls%LSS_number_windows
-             l_mins(ind) = FP%fisher_cls%LSS_lmin(k)
-             ind = ind + 1
-         end do
+        do k = 1, FP%fisher_cls%LSS_number_windows
+            l_mins(ind) = FP%fisher_cls%LSS_lmin(k)
+            ind = ind + 1
+        end do
 
         ! apply the l cut:
         do i=l_min, l_max
@@ -984,7 +984,7 @@ contains
         real(dl), dimension(num_param,num_param), intent(out) :: Fisher_Matrix    !< Output Fisher matrix
         character(len=*), intent(in), optional :: outroot                         !< Optional input: filename that will be used to dump to file optional output if feedback is greater than 1.
 
-        real(dl) :: time_1, time_2
+        real(dl) :: time_1, time_2, global_time_1, global_time_2
         real(dl) :: initial_step, temp, temp1, temp2
         integer  :: cl_dim, l_min, l_max, err, AllocateStatus, ind, ind2
         integer  :: i, j, k, l
@@ -993,6 +993,9 @@ contains
         real(dl), dimension(:,:,:,:), allocatable :: cl_derivative_array
         real(dl), dimension(:,:)    , allocatable :: dummy_matrix_1, dummy_matrix_2
         real(dl), dimension(:,:)    , allocatable :: dummy_matrix_3, dummy_matrix_4, dummy_matrix_5
+
+        ! take global time:
+        global_time_1 = omp_get_wtime()
 
         ! allocate a parameter array:
         allocate( param_array(num_param) )
@@ -1026,8 +1029,10 @@ contains
         call cl_covariance_out( P, FP, cl_dim, l_min, l_max, cl_fiducial, err )
         time_2 = omp_get_wtime() - time_1
 
+        ! save fiducial to file:
         if ( present(outroot) ) call save_cl_covariance_to_file( cl_fiducial, cl_dim, l_min, l_max, filename=TRIM(outroot)//'fiducial.dat' )
 
+        ! check for errors:
         if ( err == 0 ) then
         else if ( err == 4 ) then
             write(*,*) 'Fiducial model unstable. Calculation cannot proceed.'
@@ -1065,35 +1070,35 @@ contains
             write(*,'(a)') 'Computation of the Cls derivatives'
             write(*,'(a)') '**************************************************************'
         end if
-
+        ! allocate the derivative array:
         allocate(cl_derivative_array(num_param,cl_dim, cl_dim, l_max-l_min+1), stat = AllocateStatus)
         if (AllocateStatus /= 0) stop "Allocation failed. Not enough memory to allocate cl_derivative_array"
-
+        ! compute derivatives wrt all parameters:
         time_1 = omp_get_wtime()
         do ind = 1, num_param
-
+            ! - some feedback:
             if ( FP%cosmicfish_feedback >= 1 ) then
                 write(*,'(a,i5,a,E15.5)') 'Doing parameter number: ', ind, ' value: ', param_array(ind)
             end if
-
+            ! - initial stepsize:
             if ( param_array(ind) /= 0._dl ) then
                 initial_step = param_array(ind)*3.0_dl/100._dl
             else
                 initial_step = 3.0_dl/100._dl
             end if
-
+            ! - compute derivative:
             call cls_derivative( P, FP, ind, &
                 & cl_fiducial, cl_derivative, cl_temp, &
                 & initial_step, &
                 & cl_dim, l_min, l_max, num_param, &
                 & err )
-
+            ! - chack for errors:
             if (err /= 0) print*, 'WARNING: something went wrong with the Cls derivative of parameter:', ind
-
+            ! - save feedback to file:
             if ( present(outroot) .and. FP%cosmicfish_feedback >= 2 ) then
                 call save_cl_covariance_to_file( cl_derivative, cl_dim, l_min, l_max, filename=TRIM(outroot)//'derivative_'//trim(adjustl(integer_to_string(ind)))//'.dat' )
             end if
-
+            ! - store the derivative array:
             cl_derivative_array(ind,:,:,:) = cl_derivative(:,:,:)
 
         end do
@@ -1112,14 +1117,14 @@ contains
         end if
 
         time_1 = omp_get_wtime()
-        ! save the fiducial
+        ! save the fiducial into a temporary array:
         cl_temp = cl_fiducial
         ! add noise to the Cls
         call add_noise_cls_to_fiducial( P, FP, cl_fiducial, cl_dim, l_min, l_max, err)
         if ( err /= 0 ) stop 'Something went wrong with the computation of the cls noise'
 
         time_2 = omp_get_wtime() - time_1
-
+        ! save feedback to file:
         if ( present(outroot) .and. FP%cosmicfish_feedback >= 2 ) then
             call save_cl_covariance_to_file( cl_fiducial, cl_dim, l_min, l_max, filename=TRIM(outroot)//'fid_noise.dat' )
         end if
@@ -1128,67 +1133,90 @@ contains
             write(*,'(a,f8.3,a)') 'Time to compute the noise Cls:', time_2, ' (s)'
         end if
 
+        ! take time:
+        time_1 = omp_get_wtime()
         ! compute the Fisher matrix:
-        allocate( dummy_matrix_1(cl_dim, cl_dim), dummy_matrix_2(cl_dim, cl_dim) )
-        allocate( dummy_matrix_3(cl_dim, cl_dim), dummy_matrix_4(cl_dim, cl_dim) )
-        allocate( dummy_matrix_5(cl_dim, cl_dim) )
+        if ( FP%fisher_cls%fisher_mode == 1 ) then
+            ! Assuming likelihood Gaussian in alms.
 
-        ! invert the fiducial + noise:
-        do ind = 1, l_max-l_min+1
+            ! allocate the temporary arrays:
+            allocate( dummy_matrix_1(cl_dim, cl_dim), dummy_matrix_2(cl_dim, cl_dim) )
+            allocate( dummy_matrix_3(cl_dim, cl_dim), dummy_matrix_4(cl_dim, cl_dim) )
+            allocate( dummy_matrix_5(cl_dim, cl_dim) )
 
-            forall ( k = 1:cl_dim, l = 1:cl_dim )
-                dummy_matrix_1(k,l) = cl_fiducial(k,l, ind)
-            end forall
-
-            call Sym_Matrix_Inversion( dummy_matrix_1, err )
-            if ( err /= 0 ) then
-                write(*,*) 'Matrix inversion failed. Calculation cannot proceed. Error at l= ', ind
-                stop
-            end if
-
-            forall ( k = 1:cl_dim, l = 1:cl_dim )
-                cl_fiducial(k,l, ind) = dummy_matrix_1(k,l)
-            end forall
-
-        end do
-
-        ! compute the Fisher:
-        do ind = 1, num_param
-            do ind2 = 1, num_param
-
-                temp2 = 0._dl
-
-                do i = 1, l_max-l_min+1
-                    ! Cosmic variance term:
-                    temp = REAL(i+l_min) -0.5_dl
-                    ! Initialize all the matrix to use:
-                    forall ( j = 1:cl_dim, k = 1:cl_dim )
-                        dummy_matrix_1(j, k) = cl_derivative_array(ind, j, k, i)
-                        dummy_matrix_2(j, k) = cl_derivative_array(ind2, j, k, i)
-                        dummy_matrix_3(j, k) = cl_fiducial(j, k, i)
-                    end forall
-                    ! do the products:
-                    dummy_matrix_1 = MATMUL(dummy_matrix_1, dummy_matrix_3)
-                    dummy_matrix_1 = MATMUL(dummy_matrix_3, dummy_matrix_1)
-                    dummy_matrix_4 = MATMUL(dummy_matrix_2, dummy_matrix_1)
-                    ! take the trace of the result:
-                    temp1 = 0._dl
-                    do j = 1, cl_dim
-                        temp1 = temp1 + dummy_matrix_4(j,j)
-                    end do
-                    ! sum to build up the Fisher matrix entry:
-                    temp2 = temp2 + temp*temp1
-
-                end do
-
-                Fisher_matrix(ind, ind2) = temp2
-
+            ! invert the fiducial + noise:
+            do ind = 1, l_max-l_min+1
+                forall ( k = 1:cl_dim, l = 1:cl_dim )
+                    dummy_matrix_1(k,l) = cl_fiducial(k,l, ind)
+                end forall
+                call Sym_Matrix_Inversion( dummy_matrix_1, err )
+                if ( err /= 0 ) then
+                    write(*,*) 'Matrix inversion failed. Calculation cannot proceed. Error at l= ', ind
+                    stop
+                end if
+                forall ( k = 1:cl_dim, l = 1:cl_dim )
+                    cl_fiducial(k,l, ind) = dummy_matrix_1(k,l)
+                end forall
             end do
-        end do
-        time_2 = omp_get_wtime() - time_1
 
+            ! compute the Fisher:
+            do ind = 1, num_param
+                do ind2 = 1, num_param
+                    temp2 = 0._dl
+                    do i = 1, l_max-l_min+1
+                        ! Cosmic variance term:
+                        temp = REAL(i+l_min) -0.5_dl
+                        ! Initialize all the matrix to use:
+                        forall ( j = 1:cl_dim, k = 1:cl_dim )
+                            dummy_matrix_1(j, k) = cl_derivative_array(ind, j, k, i)
+                            dummy_matrix_2(j, k) = cl_derivative_array(ind2, j, k, i)
+                            dummy_matrix_3(j, k) = cl_fiducial(j, k, i)
+                        end forall
+                        ! do the products:
+                        dummy_matrix_1 = MATMUL(dummy_matrix_1, dummy_matrix_3)
+                        dummy_matrix_1 = MATMUL(dummy_matrix_3, dummy_matrix_1)
+                        dummy_matrix_4 = MATMUL(dummy_matrix_2, dummy_matrix_1)
+                        ! take the trace of the result:
+                        temp1 = 0._dl
+                        do j = 1, cl_dim
+                            temp1 = temp1 + dummy_matrix_4(j,j)
+                        end do
+                        ! sum to build up the Fisher matrix entry:
+                        temp2 = temp2 + temp*temp1
+                    end do
+                    ! store the Fisher matrix:
+                    Fisher_matrix(ind, ind2) = temp2
+                end do
+            end do
+
+        else if ( FP%fisher_cls%fisher_mode == 2 ) then
+
+            print*, 'NOT YET IMPLEMENTED.'
+            stop
+
+        else if ( FP%fisher_cls%fisher_mode == 3 ) then
+
+            print*, 'NOT YET IMPLEMENTED.'
+            stop
+
+        else
+            write(*,'(a)') 'Unknown Fisher matrix calculation mode.'
+            stop
+        end if
+
+        ! take time:
+        time_2 = omp_get_wtime() - time_1
+        ! feedback:
         if ( FP%cosmicfish_feedback >= 1 ) then
-            write(*,'(a,f8.3,a)') 'Time to compute the Fisher matrix:', time_2, ' (s)'
+            write(*,'(a,f8.3,a)') 'Time to assemble the Fisher matrix:', time_2, ' (s)'
+        end if
+
+        ! take global time:
+        global_time_2 = omp_get_wtime() -global_time_1
+        if ( FP%cosmicfish_feedback >= 1 ) then
+            write(*,'(a)') '**************************************************************'
+            write(*,'(a)') 'Total time to compute the Fisher matrix:', global_time_2, ' (s)'
+            write(*,'(a)') '**************************************************************'
         end if
 
     end subroutine Fisher_Cls
