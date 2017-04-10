@@ -83,6 +83,9 @@ module cosmicfish_types
         logical   :: Fisher_want_LSS_counts  !< Decide wether to include LSS number counts windows in the Cls matrix.
         logical   :: Fisher_want_XC          !< Decide wether to include cross correlations between the windows.
 
+        ! Fisher mode selection:
+        integer   :: fisher_mode             !< Decides which formula to use to assemble the Fisher matrix. 1 = Gaussian in alms; 2 = Gaussian in Cls; 3 = Gaussian in Cls with user supplied covariance. Default mode is 1.
+
         ! CMB noise specifications:
         integer   :: CMB_n_channels          !< Number of frequency channels of the CMB experiment
         real(dl)  :: CMB_TT_fsky             !< Sky fraction for CMB temperature

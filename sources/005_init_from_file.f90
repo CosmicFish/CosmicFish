@@ -605,6 +605,8 @@ contains
             FP%fisher_cls%Fisher_want_LSS_counts  = Ini_Read_Logical( 'Fisher_want_LSS_counts'  , .False. )
             FP%fisher_cls%Fisher_want_XC          = Ini_Read_Logical( 'Fisher_want_XC'          , .False. )
 
+            FP%fisher_cls%fisher_mode = Ini_Read_Int( 'fisher_mode' , 1 )
+
             FP%fisher_cls%CMB_n_channels = Ini_Read_Int( 'CMB_n_channels' , 0 )
             FP%fisher_cls%CMB_TT_fsky    = Ini_Read_Double( 'CMB_TT_fsky' , 1._dl )
             FP%fisher_cls%CMB_EE_fsky    = Ini_Read_Double( 'CMB_EE_fsky' , 1._dl )

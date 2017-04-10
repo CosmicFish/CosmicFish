@@ -450,6 +450,14 @@ contains
         real(dl) eta_k
         !Constants in SI units
 
+        ! COSMICFISH MOD START:
+        integer  :: num_points = 1000
+        real(dl) :: z_min      = 0._dl
+        real(dl) :: z_max      = 10._dl
+        real(dl) :: W_value, W_value_buffer, redshift, redshift_min, redshift_max
+        integer  :: ind
+        ! COSMICFISH MOD END.
+
         global_error_flag = 0
 
         if ((P%WantTensors .or. P%WantVectors).and. P%WantTransfer .and. .not. P%WantScalars) then
@@ -589,11 +597,48 @@ contains
         if (CP%WantScalars .and. CP%WantCls .and. num_redshiftwindows>0) then
             eta_k = CP%Max_eta_k
             do nu_i=1,num_redshiftwindows
-                Redshift_w(nu_i)%tau = TimeOfz(Redshift_w(nu_i)%Redshift)
-                Redshift_w(nu_i)%chi0 = CP%tau0-Redshift_w(nu_i)%tau
-                Redshift_w(nu_i)%chimin = min(Redshift_w(nu_i)%chi0,&
-                    CP%tau0 - TimeOfz(max(0.05_dl,Redshift_w(nu_i)%Redshift - 1.5*Redshift_w(nu_i)%sigma)) )
+
+                ! COSMICFISH MOD START: adaptive sampling of arbitrary windows
+
+                ! get the redshift of the maximum of the window
+                redshift_max   = z_min
+                W_value_buffer = 0._dl
+                do ind=1, num_points
+                    redshift = z_min +REAL( ind -1 )/REAL( num_points -1 )*( z_max -z_min )
+                    W_value  = counts_background_z( Win=Redshift_w(nu_i), z=redshift )
+                    if ( W_value>W_value_buffer ) then
+                        redshift_max = redshift
+                    end if
+                    W_value_buffer = W_value
+                end do
+                ! get the value at the max:
+                W_value_buffer = counts_background_z( Win=Redshift_w(nu_i), z=redshift_max )
+                ! get the lower bound:
+                redshift_min = z_min
+                do ind=1, num_points
+                    redshift = z_min +REAL( ind -1 )/REAL( num_points -1 )*( z_max -z_min )
+                    W_value  = counts_background_z( Win=Redshift_w(nu_i), z=redshift )
+                    if ( W_value>=0.13_dl*W_value_buffer ) then
+                        if ( ind>1 ) then
+                            redshift_min = z_min +REAL( ind -2 )/REAL( num_points -1 )*( z_max -z_min )
+                        else
+                            redshift_min = redshift
+                        end if
+                        exit
+                    end if
+                end do
+
+                ! get the corresponding time and store:
+                Redshift_w(nu_i)%tau       = TimeOfz(redshift_max)
+
+                ! Original code:
+                ! Redshift_w(nu_i)%tau = TimeOfz(Redshift_w(nu_i)%Redshift)
+                ! COSMICFISH MOD END.
+
+                Redshift_w(nu_i)%chi0   = CP%tau0 -Redshift_w(nu_i)%tau
+                Redshift_w(nu_i)%chimin = CP%tau0 -TimeOfz(redshift_min)
                 CP%Max_eta_k = max(CP%Max_eta_k, CP%tau0*WindowKmaxForL(Redshift_w(nu_i),CP%max_l))
+
                 ! COSMICFISH MOD START: keep kmax under controll
                 if (FeedbackLevel>0) &
                     write (*,*) 'Window:', nu_i, 'window kmax: ', WindowKmaxForL(Redshift_w(nu_i),CP%max_l)
@@ -3617,11 +3662,11 @@ contains
         end if
         ! COSMICFISH MOD END.
 
+        call SetTimeSteps
+
         do j2 = 1, num_redshiftwindows
             call splder(RW(j2)%awin_lens,RW(j2)%dawin_lens,nthermo,spline_data)
         end do
-
-        call SetTimeSteps
 
         !$OMP PARALLEL DO DEFAULT(SHARED),SCHEDULE(STATIC)
         do j2=1,TimeSteps%npoints
@@ -3752,6 +3797,14 @@ contains
         real(dl) dtauda, keff, win_end
         external dtauda
 
+        ! COSMICFISH MOD START:
+        integer  :: num_points = 1000
+        real(dl) :: z_min      = 0._dl
+        real(dl) :: z_max      = 10._dl
+        real(dl) :: W_value, redshift, redshift_min, redshift_max
+        integer  :: ind
+        ! COSMICFISH MOD END.
+
         call Ranges_Init(TimeSteps)
 
         call Ranges_Add_delta(TimeSteps, taurst, taurend, dtaurec)
@@ -3775,13 +3828,48 @@ contains
         tau_end_redshiftwindows = 0
         if (CP%WantScalars .or. line_reionization) then
             do ix=1, num_redshiftwindows
+
                 Win => Redshift_W(ix)
 
-                Win%sigma_tau = Win%sigma_z*dtauda(1/(1+Win%Redshift))/(1+Win%Redshift)**2
+                ! COSMICFISH MOD START: adaptive sampling of arbitrary windows
+
+                ! get the starting point of the window: strategy sample on a grid the window
+                redshift_min = z_min
+                do ind=1, num_points
+                    redshift = z_min +REAL( ind -1 )/REAL( num_points -1 )*( z_max -z_min )
+                    W_value  = counts_background_z( Win=Win, z=redshift )
+                    if ( W_value>1.d-4 ) then
+                        if ( ind>1 ) then
+                            redshift_min = z_min +REAL( ind -2 )/REAL( num_points -1 )*( z_max -z_min )
+                        else
+                            redshift_min = redshift
+                        end if
+                        exit
+                    end if
+                end do
+                ! get the ending point of the window: strategy sample on a grid the window
+                redshift_max = z_max
+                do ind=1, num_points
+                    redshift = z_max +REAL( ind -1 )/REAL( num_points -1 )*( z_min -z_max )
+                    W_value  = counts_background_z( Win=Win, z=redshift )
+                    if ( W_value>1.d-4 ) then
+                        if ( ind>1 ) then
+                            redshift_max = z_max +REAL( ind -2 )/REAL( num_points -1 )*( z_min -z_max )
+                        else
+                            ! if the window is not decaying at maximum redshift increase it by an order of magnitude:
+                            z_max = 10._dl*z_max
+                        end if
+                        exit
+                    end if
+                end do
+                ! get the corresponding time and store:
+                Win%tau_start = TimeOfz(redshift_max)
+                Win%tau_end   = TimeOfz(redshift_min)
+                Win%sigma_tau = Win%tau_end-Win%tau_start
 
                 if (Win%tau_start==0) then
-                    Win%tau_start = max(Win%tau - Win%sigma_tau*7,taurst)
-                    Win%tau_end = min(CP%tau0,Win%tau + Win%sigma_tau*7)
+                    Win%tau_start = max( Win%tau -Win%sigma_tau , taurst  )
+                    Win%tau_end   = min( Win%tau +Win%sigma_tau , CP%tau0 )
                 end if
 
                 tau_start_redshiftwindows = min(Win%tau_start,tau_start_redshiftwindows)
@@ -3796,13 +3884,14 @@ contains
                     win_end = CP%tau0
                 end if
 
-                if (Win%kind == window_21cm .and. (line_phot_dipole .or. line_phot_quadrupole)) nwindow = nwindow *3
+                if (Win%kind == window_21cm .and. (line_phot_dipole .or. line_phot_quadrupole)) nwindow = 3*nwindow
 
                 L_limb = Win_limber_ell(Win,CP%max_l)
-                keff = WindowKmaxForL(Win,L_limb)
+                keff   = WindowKmaxForL(Win,L_limb)
 
                 !Keep sampling in x better than Nyquist
-                nwindow = max(nwindow, nint(AccuracyBoost *(win_end- Win%tau_start)* keff/3))
+                nwindow = max(nwindow, nint(AccuracyBoost *(win_end- Win%tau_start)*keff/3))
+
                 if (Feedbacklevel > 1) write (*,*) ix, 'nwindow =', nwindow
 
                 call Ranges_Add(TimeSteps, Win%tau_start, win_end, nwindow)
@@ -3811,14 +3900,53 @@ contains
                 if (Win%kind /= window_lensing .and. Win%kind /= window_counts .and. Win%tau_end - Win%tau_start > Win%sigma_tau*7) then
                     call Ranges_Add(TimeSteps, TimeOfZ(Win%Redshift+Win%sigma_z*3), &
                         max(0._dl,TimeOfZ(Win%Redshift-Win%sigma_z*3)), nwindow)
-                    !This should be over peak
                 end if
-                !Make sure line of sight integral OK too
-                ! if (dtau0 > Win%tau_end/300/AccuracyBoost) then
-                !  call Ranges_Add_delta(TimeSteps, Win%tau_end, CP%tau0,  Win%tau_start/300/AccuracyBoost)
-                ! end if
+
+                ! add a some points before the first window to reduce errors in spline interpolation:
+                if (ix==num_redshiftwindows) then
+                    call Ranges_Add(TimeSteps, max(taurend, Win%tau_start-Win%sigma_tau), Win%tau_start, nwindow)
+                    tau_start_redshiftwindows = min( max(taurend, Win%tau_start-Win%sigma_tau),tau_start_redshiftwindows)
+                    if (Feedbacklevel > 1) write (*,*) 'Early window nwindow =', nwindow
+                end if
+
+                ! Original code:
+
+                !Win%sigma_tau = Win%sigma_z*dtauda(1/(1+Win%Redshift))/(1+Win%Redshift)**2
+                !if (Win%tau_start==0) then
+                !    Win%tau_start = max(Win%tau - Win%sigma_tau*7,taurst)
+                !    Win%tau_end = min(CP%tau0,Win%tau + Win%sigma_tau*7)
+                !end if
+                !tau_start_redshiftwindows = min(Win%tau_start,tau_start_redshiftwindows)
+                !if (Win%kind /= window_lensing) then
+                !    !Have to be careful to integrate dwinV as the window tails off
+                !    tau_end_redshiftwindows = max(Win%tau_end,tau_end_redshiftwindows)
+                !    nwindow = nint(150*AccuracyBoost)
+                !    win_end = Win%tau_end
+                !else !lensing
+                !    nwindow = nint(AccuracyBoost*Win%chi0/100)
+                !    win_end = CP%tau0
+                !end if
+                !if (Win%kind == window_21cm .and. (line_phot_dipole .or. line_phot_quadrupole)) nwindow = nwindow *3
+                !L_limb = Win_limber_ell(Win,CP%max_l)
+                !keff = WindowKmaxForL(Win,L_limb)
+                !!Keep sampling in x better than Nyquist
+                !nwindow = max(nwindow, nint(AccuracyBoost *(win_end- Win%tau_start)* keff/3))
+                !if (Feedbacklevel > 1) write (*,*) ix, 'nwindow =', nwindow
+                !call Ranges_Add(TimeSteps, Win%tau_start, win_end, nwindow)
+                !!This should cover whole range where not tiny
+                !if (Win%kind /= window_lensing .and. Win%kind /= window_counts .and. Win%tau_end - Win%tau_start > Win%sigma_tau*7) then
+                !    call Ranges_Add(TimeSteps, TimeOfZ(Win%Redshift+Win%sigma_z*3), &
+                !        max(0._dl,TimeOfZ(Win%Redshift-Win%sigma_z*3)), nwindow)
+                !    !This should be over peak
+                !end if
+                !!Make sure line of sight integral OK too
+                !! if (dtau0 > Win%tau_end/300/AccuracyBoost) then
+                !!  call Ranges_Add_delta(TimeSteps, Win%tau_end, CP%tau0,  Win%tau_start/300/AccuracyBoost)
+                !! end if
+                ! COSMICFISH MOD END.
 
             end do
+
         end if
 
         if (CP%Reion%Reionization) then

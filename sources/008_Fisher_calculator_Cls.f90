@@ -1234,9 +1234,11 @@ contains
         call cl_covariance_out( P, FP, cl_dim, l_min, l_max, cl_fiducial, err )
         time_2 = omp_get_wtime() - time_1
 
+        ! save to file:
         call save_cl_covariance_to_file( cl_fiducial, cl_dim, l_min, l_max, filename=TRIM(outroot)//'fiducial.dat' )
 
         if ( err == 0 ) then
+
         else if ( err == 4 ) then
             write(*,*) 'Fiducial model unstable.'
             stop
