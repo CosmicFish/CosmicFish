@@ -55,14 +55,6 @@ program window_function_printer
     ! initialize parameters:
     call init_cosmicfish_from_file( P, FP, paramfile )
 
-    ! set camb parameters:
-    call CAMBParams_Set(P,error)
-    ! check the parameter set:
-    if ( error /= 0 ) then
-        write(*,*) 'ERROR: cannot set parameters. Calculation cannot proceed.'
-        stop 1
-    end if
-
     ! check whether the user wants the window functions:
     if  ( .not. FP%cosmicfish_want_cls .or. &
         & .not. ( FP%fisher_cls%Fisher_want_LSS_lensing .or. FP%fisher_cls%Fisher_want_LSS_counts ).or. &
@@ -78,6 +70,14 @@ program window_function_printer
 
     ! initialize the window functions:
     call init_camb_sources_windows( FP )
+
+    ! set camb parameters:
+    call CAMBParams_Set(P,error)
+    ! check the parameter set:
+    if ( error /= 0 ) then
+        write(*,*) 'ERROR: cannot set parameters. Calculation cannot proceed.'
+        stop 1
+    end if
 
     ! open the output file:
     open(unit=666, FILE=FP%outroot//'windows.dat', ACTION="write", STATUS="replace")

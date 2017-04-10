@@ -38,8 +38,8 @@ program linear_cutoff_calculator
     character(LEN=Ini_max_string_len) paramfile, command_line_k_cutoff
 
     real(dl) :: k_cutoff
-    integer  :: error, cl_dim, AllocateStatus
-    integer, allocatable, dimension(:) :: l_cut
+    integer  :: error, cl_dim, AllocateStatus, i
+    integer, allocatable, dimension(:) :: l_cut_halofit, l_cut_precision, l_cut_all
 
     real(dl), parameter :: atol = 0.0_dl
     real(dl), parameter :: rtol = 1.0_dl
@@ -63,14 +63,6 @@ program linear_cutoff_calculator
         read(command_line_k_cutoff,*) k_cutoff
     end if
 
-    ! set camb parameters:
-    call CAMBParams_Set(P,error)
-    ! check the parameter set:
-    if ( error /= 0 ) then
-        write(*,*) 'ERROR: cannot set parameters. Calculation cannot proceed.'
-        stop 1
-    end if
-
     ! check whether the user wants the Cls Fisher:
     if  ( .not. FP%cosmicfish_want_cls ) then
         if ( FP%cosmicfish_feedback > 0 ) then
@@ -83,7 +75,7 @@ program linear_cutoff_calculator
     call dimension_cl_covariance( P, FP, cl_dim )
 
     ! allocate the l cut vector:
-    allocate( l_cut(cl_dim), stat = AllocateStatus)
+    allocate( l_cut_halofit(cl_dim), l_cut_precision(cl_dim), l_cut_all(cl_dim), stat = AllocateStatus)
     if (AllocateStatus /= 0) stop "Allocation failed: l_cut."
 
     ! call the linearization:
@@ -92,27 +84,31 @@ program linear_cutoff_calculator
         write(*,'(a)') 'Halofit linearization:'
         write(*,'(a)')
     end if
-    call halofit_linearization( P, FP, rtol, atol, cl_dim, l_cut, error, outroot=FP%outroot )
+    call halofit_linearization( P, FP, rtol, atol, cl_dim, l_cut_halofit, error, outroot=FP%outroot )
     ! print to file the output:
     if ( FP%cosmicfish_feedback >= 1 ) then
         write(*,'(a)')
-        call print_linearization( P, FP, l_cut, outroot=FP%outroot//'halofit_linearization.ini' )
+        call print_linearization( P, FP, l_cut_halofit, outroot=FP%outroot//'halofit_linearization.ini' )
     end if
 
     ! apply the l cut:
-    call apply_l_cut( P, FP, l_cut )
+    call apply_l_cut( P, FP, l_cut_halofit )
 
     ! call the precizion test:
-    if ( FP%cosmicfish_feedback >= 1 ) then
-        write(*,'(a)')
-        write(*,'(a)') 'Precision l cut:'
-        write(*,'(a)')
-    end if
-    call precision_settings_l_cut( P, FP, rtol, atol, cl_dim, l_cut, error, outroot=FP%outroot )
-    ! print to file the output:
-    if ( FP%cosmicfish_feedback >= 1 ) then
-        write(*,'(a)')
-        call print_linearization( P, FP, l_cut, outroot=FP%outroot//'precision_l_cut.ini' )
+    if ( .False. ) then
+        if ( FP%cosmicfish_feedback >= 1 ) then
+            write(*,'(a)')
+            write(*,'(a)') 'Precision l cut:'
+            write(*,'(a)')
+        end if
+        call precision_settings_l_cut( P, FP, rtol, atol, cl_dim, l_cut_precision, error, outroot=FP%outroot )
+        ! print to file the output:
+        if ( FP%cosmicfish_feedback >= 1 ) then
+            write(*,'(a)')
+            call print_linearization( P, FP, l_cut_precision, outroot=FP%outroot//'precision_l_cut.ini' )
+        end if
+    else
+        l_cut_precision = l_cut_halofit
     end if
 
     ! print feedback:
@@ -121,9 +117,13 @@ program linear_cutoff_calculator
         write(*,'(a)') 'Global linearization results:'
         write(*,'(a)')
     end if
+    ! get the most conservative:
+    do i=1, cl_dim
+        l_cut_all(i) = min( l_cut_halofit(i), l_cut_precision(i) )
+    end do
     ! print to file and screen the l cut:
     if ( error==0 ) then
-        call print_linearization( P, FP, l_cut, outroot=FP%outroot//'linearization.ini' )
+        call print_linearization( P, FP, l_cut_all, outroot=FP%outroot//'linearization.ini' )
     end if
 
 end program linear_cutoff_calculator
