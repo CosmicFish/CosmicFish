@@ -1214,9 +1214,9 @@ contains
         ! take global time:
         global_time_2 = omp_get_wtime() -global_time_1
         if ( FP%cosmicfish_feedback >= 1 ) then
-            write(*,'(a)') '**************************************************************'
-            write(*,'(a)') 'Total time to compute the Fisher matrix:', global_time_2, ' (s)'
-            write(*,'(a)') '**************************************************************'
+            write(*,'(a)')        '**************************************************************'
+            write(*,'(a,f8.3,a)') 'Total time to compute the Fisher matrix:', global_time_2, ' (s)'
+            write(*,'(a)')        '**************************************************************'
         end if
 
     end subroutine Fisher_Cls

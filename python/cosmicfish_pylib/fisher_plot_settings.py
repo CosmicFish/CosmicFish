@@ -43,6 +43,7 @@ mm_to_points = 1.0/points_to_mm   #: conversion factor from mm to points
 points_width_to_mm = 0.18
 points_heights_to_mm = 0.30
 
+
 # ***************************************************************************************
 
 class CosmicFish_PlotSettings():
@@ -245,6 +246,9 @@ class CosmicFish_PlotSettings():
         matplotlib.rcParams['axes.labelpad']       = 5.0
         matplotlib.rcParams['savefig.dpi']         = 300
         matplotlib.rcParams['savefig.pad_inches']  = 0.0
+        
+        # latex options:
+        matplotlib.rcParams['text.usetex'] = True
         
         # replace settings with those passed from dictionary:
         if dictionary is not None:

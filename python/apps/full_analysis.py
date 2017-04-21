@@ -17,7 +17,7 @@
 
 Simple Python code to perform analysis of Fisher matrices (plot_1D, plot_2D, bounds...)
 
-The ouput will be a set of pdf with 1D, 2D, triangular plots and a file with bounds
+The ouput will be a set of png with 1D, 2D, triangular plots and a file with bounds
 
 
 Invoking the help option ``full_analysis.py -h`` will result in::
@@ -208,11 +208,11 @@ if __name__ == "__main__":
         plotter.new_plot()
         plotter.plot1D( params=params )
 
-        plotter.export( outroot+'_1Dplot_'+str(key)+'.pdf' )
+        plotter.export( outroot+'_1Dplot_'+str(key)+'.png' )
         plotter.close_plot()
         if not args.quiet:
            print ' 1D plots done for parameters '+str(params)
-           print ' Saved results in: ', outroot+'_1Dplot_'+str(key)+'.pdf'
+           print ' Saved results in: ', outroot+'_1Dplot_'+str(key)+'.png'
 
     if not args.quiet and len(num1D)>0:
         print '1D plots done!'
@@ -240,11 +240,11 @@ if __name__ == "__main__":
         plotter.new_plot()
         plotter.plot2D( params=params )
 
-        plotter.export( outroot+'_2Dplot_'+str(key)+'.pdf' )
+        plotter.export( outroot+'_2Dplot_'+str(key)+'.png' )
         plotter.close_plot()
         if not args.quiet:
            print ' 2D plots done for parameters '+str(params)
-           print ' Saved results in: ', outroot+'_2Dplot_'+str(key)+'.pdf'
+           print ' Saved results in: ', outroot+'_2Dplot_'+str(key)+'.png'
 
     if not args.quiet and len(num2D)>0:
         print '2D plots done!'
@@ -267,11 +267,11 @@ if __name__ == "__main__":
         plotter.new_plot()
         plotter.plot_tri( params=params )
 
-        plotter.export( outroot+'_triplot_'+str(key)+'.pdf' )
+        plotter.export( outroot+'_triplot_'+str(key)+'.png' )
         plotter.close_plot()
         if not args.quiet:
            print ' Triangular plots done for parameters '+str(params)
-           print ' Saved results in: ', outroot+'_triplot_'+str(key)+'.pdf'
+           print ' Saved results in: ', outroot+'_triplot_'+str(key)+'.png'
 
     if not args.quiet and len(numtri)>0:
         print 'Triangular plots done!'
