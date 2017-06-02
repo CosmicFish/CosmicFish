@@ -6,6 +6,13 @@ $(MGCAMB_OBJ_DIR)/000_Utilities.o :  \
 
 $(MGCAMB_OBJ_DIR)/001_Matrix_utilities.o : 
 
+$(MGCAMB_OBJ_DIR)/013_Fisher_calculator_varalpha.o :  \
+	$(MGCAMB_OBJ_DIR)/006_cosmicfish_camb_interface.o \
+	$(MGCAMB_OBJ_DIR)/000_Utilities.o \
+	$(MGCAMB_OBJ_DIR)/004_cosmicfish_types.o \
+	$(MGCAMB_OBJ_DIR)/007_FUTURCMB_lensnoise.o \
+	$(MGCAMB_OBJ_DIR)/001_Matrix_utilities.o
+
 $(MGCAMB_OBJ_DIR)/003_Fisher_manipulation.o :  \
 	$(MGCAMB_OBJ_DIR)/000_Utilities.o \
 	$(MGCAMB_OBJ_DIR)/001_Matrix_utilities.o

@@ -555,11 +555,12 @@ contains
         FP%adaptivity         = Ini_Read_Logical('adaptivity',.false.)
         FP%cosmicfish_feedback = Ini_Read_Int('cosmicfish_feedback',0)
 
-        FP%cosmicfish_want_cls  = Ini_Read_Logical('cosmicfish_want_cls',.false.)
-        FP%cosmicfish_want_SN   = Ini_Read_Logical('cosmicfish_want_SN' ,.false.)
-        FP%cosmicfish_want_Mpk  = Ini_Read_Logical('cosmicfish_want_Mpk',.false.)
-        FP%cosmicfish_want_RD   = Ini_Read_Logical('cosmicfish_want_RD' ,.false.)
-        FP%cosmicfish_want_derived = Ini_Read_Logical('cosmicfish_want_derived',.false.)
+        FP%cosmicfish_want_cls      = Ini_Read_Logical('cosmicfish_want_cls',.false.)
+        FP%cosmicfish_want_SN       = Ini_Read_Logical('cosmicfish_want_SN' ,.false.)
+        FP%cosmicfish_want_Mpk      = Ini_Read_Logical('cosmicfish_want_Mpk',.false.)
+        FP%cosmicfish_want_RD       = Ini_Read_Logical('cosmicfish_want_RD' ,.false.)  !varalpha mod
+        FP%cosmicfish_want_varalpha = Ini_Read_Logical('cosmicfish_want_varalpha',.false.)
+        FP%cosmicfish_want_derived  = Ini_Read_Logical('cosmicfish_want_derived',.false.)
 
         FP%output_factor = Ini_Read_Double('CMB_outputscale',1.d0)
 
@@ -593,6 +594,8 @@ contains
         FP%fisher_par%want_c2                      = Ini_Read_Logical( 'param[c2]'       ,.false. )
         FP%fisher_par%want_lambda                  = Ini_Read_Logical( 'param[lambda]'   ,.false. )
 #endif
+
+        FP%fisher_par%want_alpha_coupling          = Ini_Read_Logical( 'param[alpha_coupling]',.false.) !varalpha mod
 
         ! read Cls parameters:
         if ( FP%cosmicfish_want_cls ) then
@@ -757,6 +760,29 @@ contains
             end if
         end if
 
+        !varalpha mod------------------------------------------------------------------
+        ! reading varalpha parameters
+        if ( FP%cosmicfish_want_varalpha) then
+            write(*,*) '-------------------------'
+            write(*,*) '|WARNING WARNING WARNING|'
+            write(*,*) '-------------------------'
+            write(*,*) 'alpha variation implemented only for direct measurements'
+            write(*,*) 'effects on other observables (e.g. CMB and SN) is not considered'
+            write(*,*) 'Avoid using this in combination with observables affected by alpha'
+
+            FP%fisher_alpha%alpha_coupling  = Ini_Read_Double('alpha_coupling' , 0._dl )
+
+            FP%fisher_alpha%number_alpha_redshifts = Ini_Read_Int( 'number_alpha_redshifts', 0 )
+            allocate(FP%fisher_alpha%alpha_redshift(FP%fisher_alpha%number_alpha_redshifts))
+            allocate(FP%fisher_alpha%alpha_error(FP%fisher_alpha%number_alpha_redshifts))
+            do i =1,FP%fisher_alpha%number_alpha_redshifts
+               write(red_ind,*) i
+               FP%fisher_alpha%alpha_redshift(i) = Ini_Read_Double( 'alpha_redshift('//trim(adjustl(red_ind))//')')
+               FP%fisher_alpha%alpha_error(i)    = Ini_Read_Double( 'alpha_error('//trim(adjustl(red_ind))//')')
+            end do
+        end if
+        !------------------------------------------------------------------------------
+
         ! read derived parameters:
         if ( FP%cosmicfish_want_derived )  then
             ! fixed parameters:
@@ -834,6 +860,7 @@ contains
             & .not. FP%cosmicfish_want_SN  .and. &
             & .not. FP%cosmicfish_want_RD  .and. &
             & .not. FP%cosmicfish_want_Mpk .and. &
+            & .not. FP%cosmicfish_want_varalpha .and. & !varalpha mod
             & .not. FP%cosmicfish_want_derived ) then
             write(*,*) 'WARNING: you want no Fisher!.'
         end if

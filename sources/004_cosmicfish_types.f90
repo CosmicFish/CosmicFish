@@ -54,6 +54,7 @@ module cosmicfish_types
         logical   :: want_alpha_SN               !< Decide wether to include alpha_SN in the Fisher parameters.
         logical   :: want_beta_SN                !< Decide wether to include beta_SN in the Fisher parameters.
         logical   :: want_M0_SN                  !< Decide wether to include M0_SN in the Fisher parameters.
+        logical   :: want_alpha_coupling         !< Decide wether to include alpha_coupling in the Fisher parameters.
         ! ppf parameters (only with camb):
 #ifdef COSMICFISH_CAMB
         logical   :: want_w0_ppf                 !< Decide wether to include w0_ppf in the Fisher parameters.
@@ -195,6 +196,22 @@ module cosmicfish_types
 
     end type cosmicfish_fisher_RD
 
+
+    !----------------------------------------------------------------------------------------
+    !> This derived data type contains all the informations that the cosmicfish code needs to
+    !! compute the Fisher matrix for alpha variation measurements.
+    type cosmicfish_fisher_alpha
+
+        !alpha specifications
+        integer :: number_alpha_redshifts
+        integer, dimension(:), allocatable  :: alpha_error       !< Error on delta alpha/alpha at each redshift
+        real(dl), dimension(:), allocatable :: alpha_redshift    !< center of redshift bins
+
+        ! fiducial alpha variation parameters:
+        real(dl) :: alpha_coupling  !< fiducial value of the alpha coupling
+
+    end type cosmicfish_fisher_alpha
+
     !----------------------------------------------------------------------------------------
     !> This derived data type contains all the informations that the cosmicfish code needs to
     !! compute the Fisher matrix for derived parameters.
@@ -246,21 +263,23 @@ module cosmicfish_types
                                             !! 2 = extended feedback
                                             !! 3 = debug feedback
 
-        logical   :: cosmicfish_want_cls     !< Decide wether to compute the Fisher matrix for cls.
-        logical   :: cosmicfish_want_SN      !< Decide wether to compute the Fisher matrix for supernovae.
-        logical   :: cosmicfish_want_Mpk     !< Decide wether to compute the Fisher matrix for the matter power spectrum.
-        logical   :: cosmicfish_want_RD      !< Decide wether to compute the Fisher matrix for redshift drift.
-        logical   :: cosmicfish_want_derived !< Decide wether to compute derived parameters.
+        logical   :: cosmicfish_want_cls           !< Decide wether to compute the Fisher matrix for cls.
+        logical   :: cosmicfish_want_SN            !< Decide wether to compute the Fisher matrix for supernovae.
+        logical   :: cosmicfish_want_Mpk           !< Decide wether to compute the Fisher matrix for the matter power spectrum.
+        logical   :: cosmicfish_want_RD            !< Decide wether to compute the Fisher matrix for redshift drift.
+        logical   :: cosmicfish_want_varalpha      !< Decide wether to compute the Fisher matrix for alpha variation.
+        logical   :: cosmicfish_want_derived       !< Decide wether to compute derived parameters.
 
         ! other parameters:
         real(dl)  :: output_factor          !< Overall factor for the Cls.
 
         ! Specifications for the Cls Fisher matrix:
-        type(cosmicfish_param_fisher)   :: fisher_par  !< contains what is needed to choose the parameters to run
-        type(cosmicfish_fisher_cls)     :: fisher_cls  !< contains what is needed for Cls Fisher matrix
-        type(cosmicfish_fisher_SN)      :: fisher_SN   !< contains what is needed for SN Fisher matrix
-        type(cosmicfish_fisher_RD)      :: fisher_RD   !< contains what is needed for RD Fisher matrix
-        type(cosmicfish_fisher_derived) :: fisher_der !< contains what is needed for derived Fisher matrix
+        type(cosmicfish_param_fisher)   :: fisher_par     !< contains what is needed to choose the parameters to run
+        type(cosmicfish_fisher_cls)     :: fisher_cls     !< contains what is needed for Cls Fisher matrix
+        type(cosmicfish_fisher_SN)      :: fisher_SN      !< contains what is needed for SN Fisher matrix
+        type(cosmicfish_fisher_RD)      :: fisher_RD      !< contains what is needed for RD Fisher matrix
+        type(cosmicfish_fisher_alpha)   :: fisher_alpha   !< contains what is needed for alpha variation Fisher matrix
+        type(cosmicfish_fisher_derived) :: fisher_der     !< contains what is needed for derived Fisher matrix
 
         ! Output root:
         character(len=:), allocatable :: outroot    !< Root for all the filenames that will be produced by CosmicFish

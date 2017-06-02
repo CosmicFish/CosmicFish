@@ -31,6 +31,7 @@ program fisher_matrix_calculator
     use Fisher_calculator_Cls
     use Fisher_calculator_SN
     use Fisher_calculator_RD
+    use Fisher_calculator_alpha
     use Fisher_calculator_Derived
     use Fisher_manipulation
     use cosmicfish_utilities
@@ -88,6 +89,17 @@ program fisher_matrix_calculator
         ! save the parameter names to file:
         call save_paramnames_to_file( P, FP, num_param, filename=FP%outroot//'fisher_matrix_RD.paramnames' )
     end if
+
+    !varalpha mod ----------------------
+    if ( FP%cosmicfish_want_varalpha  ) then
+        ! compute the Fisher matrix:
+        call Fisher_alpha( P, FP, num_param, Fisher_Matrix, outroot=FP%outroot)
+        ! save it to file:
+        call save_Fisher_to_file( P, FP, num_param, Fisher_Matrix, filename=FP%outroot//'fisher_matrix_varalpha.dat' )
+        ! save the parameter names to file:
+        call save_paramnames_to_file( P, FP, num_param, filename=FP%outroot//'fisher_matrix_varalpha.paramnames' )
+    end if
+    !-----------------------------------
 
     if ( FP%cosmicfish_want_Mpk ) write(*,*) 'Not yet implemented'
 

@@ -84,6 +84,9 @@ contains
         if ( FP%fisher_par%want_beta_SN  ) num_param = num_param + 1 ! beta_SN
         if ( FP%fisher_par%want_M0_SN    ) num_param = num_param + 1 ! M0_SN
 
+        !Coupling parameter for alpha variation
+        if ( FP%fisher_par%want_alpha_coupling ) num_param = num_param + 1 ! alpha coupling 
+
 #ifdef COSMICFISH_CAMB
         ! ppf parameters
         if ( FP%fisher_par%want_w0_ppf   ) num_param = num_param + 1 ! w0_ppf
@@ -363,6 +366,11 @@ contains
         end if
         if ( FP%fisher_par%want_M0_SN    )  num_param  = num_param + 1 ! M0_SN
         if ( num_param == param_number   )  then; param_name = 'M0_SN'; if ( present(param_name_latex) ) param_name_latex = 'M_0^{\rm SN}'; return ;
+        end if
+
+        !Parameter for alpha variation
+        if ( FP%fisher_par%want_alpha_coupling ) num_param  = num_param + 1 ! alpha coupling
+        if ( num_param == param_number   )  then; param_name = 'alpha_coupling'; if ( present(param_name_latex) ) param_name_latex = '\zeta'; return ;
         end if
 
 #ifdef COSMICFISH_CAMB
@@ -942,6 +950,13 @@ contains
             ind = ind +1
         end if
 
+        !Parameter for alpha variation
+        !alpha_coupling
+        if ( FP%fisher_par%want_alpha_coupling ) then
+            params_array(ind) = FP%fisher_alpha%alpha_coupling
+            ind = ind +1
+        end if
+
 #ifdef COSMICFISH_CAMB
         ! ppf parameters:
         ! w0_ppf
@@ -1388,6 +1403,13 @@ contains
         ! M0_SN
         if ( FP%fisher_par%want_M0_SN    ) then
             FP%fisher_SN%M0_SN = params_array(ind)
+            ind = ind +1
+        end if
+
+        ! parameter for alpha variation
+        ! alpha_coupling
+        if ( FP%fisher_par%want_alpha_coupling ) then
+            FP%fisher_alpha%alpha_coupling = params_array(ind)
             ind = ind +1
         end if
 

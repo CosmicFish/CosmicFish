@@ -6,6 +6,13 @@ $(CAMB_OBJ_DIR)/000_Utilities.o :  \
 
 $(CAMB_OBJ_DIR)/001_Matrix_utilities.o : 
 
+$(CAMB_OBJ_DIR)/013_Fisher_calculator_varalpha.o :  \
+	$(CAMB_OBJ_DIR)/006_cosmicfish_camb_interface.o \
+	$(CAMB_OBJ_DIR)/000_Utilities.o \
+	$(CAMB_OBJ_DIR)/004_cosmicfish_types.o \
+	$(CAMB_OBJ_DIR)/007_FUTURCMB_lensnoise.o \
+	$(CAMB_OBJ_DIR)/001_Matrix_utilities.o
+
 $(CAMB_OBJ_DIR)/003_Fisher_manipulation.o :  \
 	$(CAMB_OBJ_DIR)/000_Utilities.o \
 	$(CAMB_OBJ_DIR)/001_Matrix_utilities.o
