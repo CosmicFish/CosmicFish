@@ -40,6 +40,7 @@ module Fisher_calculator_alpha
 
 #ifdef COSMICFISH_EFTCAMB
     use EFTinitialization
+    use EFTdeEOS
 #endif
 
     implicit none
@@ -60,6 +61,9 @@ contains
         Type(cosmicfish_params), intent(in)                                       :: FP           !< Input Cosmicfish params
         real(dl), dimension(FP%fisher_alpha%number_alpha_redshifts), intent(out)  :: varalpha     !< Output array with the
                                                                                                   !< theoretical alpha variation
+        real(dl), dimension(FP%fisher_alpha%number_alpha_redshifts)               :: wde          !< DE EoS obtained from EFTCAMB
+        real(dl), dimension(FP%fisher_alpha%number_alpha_redshifts)               :: rhode        !< DE rho obtained from EFTCAMB
+
         integer, intent(out)                                                      :: err          !< Output error code:
                                                                                                   !< 0 = all fine
                                                                                                   !< 1 = error in input
@@ -93,12 +97,23 @@ contains
 
 
 
+#ifdef COSMICFISH_EFTCAMB
+        !Defining wDE(z) and OmegaDE(z)
+        !For wDE use EFT function EFTw(1/(1+FP%fisher_alpha%alpha_redshift(i)),0)
+        !For OmegaDE vedi foglio
 
-        ! compute the supernova magnitude array:
+        ! compute the delta alpha array:
         do i=1, FP%fisher_alpha%number_alpha_redshifts
+            !need to call function for integration here, it's simpler.
+            !or maybe a nested loop to compute integral
             varalpha(i) = FP%fisher_alpha%alpha_coupling !put equation 9 (generalized) here
             write(*,*) FP%fisher_alpha%alpha_redshift(i), varalpha(i), FP%fisher_alpha%alpha_error(i)
         end do
+#else
+        write(*,*) 'ALPHA VARIATION IMPLEMENTED ONLY WITH EFTCAMB...'
+        write(*,*) '...for the moment!'
+        stop
+#endif
 
     end subroutine alpha_theo_Calc
 
