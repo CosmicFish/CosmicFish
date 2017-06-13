@@ -65,6 +65,7 @@ contains
 
         !MMmod
         character(LEN=Ini_max_string_len) red_ind
+        real(dl) :: alpha_step
 
         ! open the parameter file:
         call Ini_Open(filename, 1, bad, .false.)
@@ -773,13 +774,26 @@ contains
             FP%fisher_alpha%alpha_coupling  = Ini_Read_Double('alpha_coupling' , 0._dl )
 
             FP%fisher_alpha%number_alpha_redshifts = Ini_Read_Int( 'number_alpha_redshifts', 0 )
+            FP%fisher_alpha%alpha_uniform = Ini_Read_Logical('uniform',.true.)
+
             allocate(FP%fisher_alpha%alpha_redshift(FP%fisher_alpha%number_alpha_redshifts))
             allocate(FP%fisher_alpha%alpha_error(FP%fisher_alpha%number_alpha_redshifts))
-            do i =1,FP%fisher_alpha%number_alpha_redshifts
-               write(red_ind,*) i
-               FP%fisher_alpha%alpha_redshift(i) = Ini_Read_Double( 'alpha_redshift('//trim(adjustl(red_ind))//')')
-               FP%fisher_alpha%alpha_error(i)    = Ini_Read_Double( 'alpha_error('//trim(adjustl(red_ind))//')')
-            end do
+            if (FP%fisher_alpha%alpha_uniform) then
+               FP%fisher_alpha%alpha_zmin = Ini_Read_Double( 'alpha_zmin')
+               FP%fisher_alpha%alpha_zmax = Ini_Read_Double( 'alpha_zmax')
+               alpha_step = (FP%fisher_alpha%alpha_zmax-FP%fisher_alpha%alpha_zmin)/FP%fisher_alpha%number_alpha_redshifts
+               FP%fisher_alpha%alpha_redshift(1) = FP%fisher_alpha%alpha_zmin
+               FP%fisher_alpha%alpha_error(:) = Ini_Read_Double( 'alpha_uniform_error' )
+               do i =2,FP%fisher_alpha%number_alpha_redshifts
+                  FP%fisher_alpha%alpha_redshift(i) = FP%fisher_alpha%alpha_zmin + alpha_step
+               end do
+            else
+               do i =1,FP%fisher_alpha%number_alpha_redshifts
+                  write(red_ind,*) i
+                  FP%fisher_alpha%alpha_redshift(i) = Ini_Read_Double( 'alpha_redshift('//trim(adjustl(red_ind))//')')
+                  FP%fisher_alpha%alpha_error(i)    = Ini_Read_Double( 'alpha_error('//trim(adjustl(red_ind))//')')
+               end do
+            end if
         end if
         !------------------------------------------------------------------------------
 
