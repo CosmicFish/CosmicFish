@@ -204,7 +204,7 @@ module cosmicfish_types
 
         !alpha specifications
         integer :: number_alpha_redshifts
-        integer, dimension(:), allocatable  :: alpha_error       !< Error on delta alpha/alpha at each redshift
+        real(dl), dimension(:), allocatable  :: alpha_error       !< Error on delta alpha/alpha at each redshift
         real(dl), dimension(:), allocatable :: alpha_redshift    !< center of redshift bins
         real(dl) :: alpha_zmin, alpha_zmax                       !< limits of uniform data range
         logical  :: alpha_uniform                                !< if T makes uniform distribution of data

@@ -784,8 +784,9 @@ contains
                alpha_step = (FP%fisher_alpha%alpha_zmax-FP%fisher_alpha%alpha_zmin)/FP%fisher_alpha%number_alpha_redshifts
                FP%fisher_alpha%alpha_redshift(1) = FP%fisher_alpha%alpha_zmin
                FP%fisher_alpha%alpha_error(:) = Ini_Read_Double( 'alpha_uniform_error' )
+               
                do i =2,FP%fisher_alpha%number_alpha_redshifts
-                  FP%fisher_alpha%alpha_redshift(i) = FP%fisher_alpha%alpha_zmin + alpha_step
+                  FP%fisher_alpha%alpha_redshift(i) = FP%fisher_alpha%alpha_redshift(i-1) + alpha_step
                end do
             else
                do i =1,FP%fisher_alpha%number_alpha_redshifts

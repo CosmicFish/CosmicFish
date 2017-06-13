@@ -427,13 +427,13 @@ contains
 
         ! allocation:
         allocate(alpha_fiducial(FP%fisher_alpha%number_alpha_redshifts), stat = AllocateStatus)
-        if (AllocateStatus /= 0) stop "Allocation failed. Not enough memory to allocate rd_fiducial"
+        if (AllocateStatus /= 0) stop "Allocation failed. Not enough memory to allocate alpha_fiducial"
         allocate(alpha_temp(FP%fisher_alpha%number_alpha_redshifts), stat = AllocateStatus)
-        if (AllocateStatus /= 0) stop "Allocation failed. Not enough memory to allocate rd_temp"
+        if (AllocateStatus /= 0) stop "Allocation failed. Not enough memory to allocate alpha_temp"
         allocate(alpha_derivative(FP%fisher_alpha%number_alpha_redshifts), stat = AllocateStatus)
-        if (AllocateStatus /= 0) stop "Allocation failed. Not enough memory to allocate rd_derivative"
+        if (AllocateStatus /= 0) stop "Allocation failed. Not enough memory to allocate alpha_derivative"
         allocate(alpha_error(FP%fisher_alpha%number_alpha_redshifts), stat = AllocateStatus)
-        if (AllocateStatus /= 0) stop "Allocation failed. Not enough memory to allocate rd_derivative"
+        if (AllocateStatus /= 0) stop "Allocation failed. Not enough memory to allocate alpha_derivative"
 
         ! computation of the fiducial model:
         time_1 = omp_get_wtime()
