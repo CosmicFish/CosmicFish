@@ -61,8 +61,6 @@ contains
         Type(cosmicfish_params), intent(in)                                       :: FP           !< Input Cosmicfish params
         real(dl), dimension(FP%fisher_alpha%number_alpha_redshifts), intent(out)  :: varalpha     !< Output array with the
                                                                                                   !< theoretical alpha variation
-        real(dl), dimension(FP%fisher_alpha%number_alpha_redshifts)               :: wde          !< DE EoS obtained from EFTCAMB
-        real(dl), dimension(FP%fisher_alpha%number_alpha_redshifts)               :: rhode        !< DE rho obtained from EFTCAMB
 
         integer, intent(out)                                                      :: err          !< Output error code:
                                                                                                   !< 0 = all fine
@@ -74,6 +72,13 @@ contains
         ! other definitions:
         integer  :: i
         logical  :: EFTsuccess
+
+        !Integration variables
+        integer, parameter          :: numint = 1000
+        integer                     :: ii, jj, kk
+        real(dl), dimension(numint) :: wde, ode, func, redint
+        real(dl)                    :: zstep, zend, integrand
+
 !        real(dl), parameter :: conv_time=3.15e7, conv_mpc=1/(3.09e19) !years to seconds and 1/Mpc to 1/km
 !        real(dl) ::deltaT
         ! initialization:
@@ -102,12 +107,31 @@ contains
         !For wDE use EFT function EFTw(1/(1+FP%fisher_alpha%alpha_redshift(i)),0)
         !For OmegaDE vedi foglio
 
+
         ! compute the delta alpha array:
+        redint(1) = 0.d0
+        wde(1) = EFTw(1/(1+redint(1)),0)
+        ode(1) = (1+redint(1))*P%H0**2.*P%omegav*EFTw(1/(1+redint(1)),3)/(Hofz(redint(1))*c/1000)**2.
+        func(1) = sqrt(3*ode(1)*(1+wde(1)))/(1+redint(1))
+        !Temporary checks------------------
+        write(0,*) 'wde=',EFTw(1/(1+redint(1)),0)
+        write(0,*) 'H0=',P%H0,Hofz(redint(1))*c/1000
+        write(0,*) 'omega=',ode(1),P%omegav
+        write(0,*) 'func=',func(1), sqrt(3*P%omegav*(1-0.95))
+!        stop
+        !----------------------------------
         do i=1, FP%fisher_alpha%number_alpha_redshifts
-            !need to call function for integration here, it's simpler.
-            !or maybe a nested loop to compute integral
-            varalpha(i) = FP%fisher_alpha%alpha_coupling !put equation 9 (generalized) here
-            write(*,*) FP%fisher_alpha%alpha_redshift(i), varalpha(i), FP%fisher_alpha%alpha_error(i)
+           zend = FP%fisher_alpha%alpha_redshift(i)
+           zstep = (zend-redint(1))/numint
+           integrand=0.d0
+           do ii=2,numint
+              redint(ii) = redint(ii-1)+zstep
+              wde(ii) = EFTw(1/(1+redint(ii)),0)
+              ode(ii) = (1+redint(ii))**2.*P%H0**2.*P%omegav*EFTw(1/(1+redint(ii)),3)/(Hofz(redint(ii))*c/1000)**2.
+              func(ii) = sqrt(3*ode(ii)*(1+wde(ii)))/(1+redint(ii))
+              integrand = integrand + 0.5*(func(ii)+func(ii-1))*zstep
+           end do
+           varalpha(i) = FP%fisher_alpha%alpha_coupling*integrand
         end do
 #else
         write(*,*) 'ALPHA VARIATION IMPLEMENTED ONLY WITH EFTCAMB...'
