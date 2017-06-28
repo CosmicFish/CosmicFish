@@ -149,7 +149,7 @@ contains
 
         else if (model == 11) then
 
-            omde = (1-CP%omegab+CP%omegac)/((1-CP%omegab-CP%omegac)+(CP%omegab+CP%omegac)*a**(-3))
+            omde = (1-CP%omegab-CP%omegac)/((1-CP%omegab-CP%omegac)+(CP%omegab+CP%omegac)*a**(-3))
             omdedot = 3.d0*omde*adotoa*(CP%omegab+CP%omegac)/((CP%omegab+CP%omegac)+(1-CP%omegab-CP%omegac)*a**3)
 
             MGMu = 1+CP%E11_mg*omde*(1+CP%c1_mg*((CP%lam_mg*adotoa)**2.)/k2)/(1+((CP%lam_mg*adotoa)**2.)/k2)
@@ -211,7 +211,7 @@ contains
 
         else if (model == 11) then
 
-            omde = (1-CP%omegab+CP%omegac)/((1-CP%omegab-CP%omegac)+(CP%omegab+CP%omegac)*a**(-3))
+            omde = (1-CP%omegab-CP%omegac)/((1-CP%omegab-CP%omegac)+(CP%omegab+CP%omegac)*a**(-3))
             omdedot = 3.d0*omde*adotoa*(CP%omegab+CP%omegac)/((CP%omegab+CP%omegac)+(1-CP%omegab-CP%omegac)*a**3)
 
             MGMudot = (omdedot/omde)*(MGMu(a,adotoa,k2,model)-1.d0)+CP%E11_mg*omde*(2*CP%lam_mg*adotoa*Hdot*(CP%c1_mg-1)/k2)/(1+((CP%lam_mg*adotoa)**2/k2))**2.
@@ -262,7 +262,7 @@ contains
 
         else if (model == 11) then
 
-            omde =(1-CP%omegab+CP%omegac)/((1-CP%omegab-CP%omegac)+(CP%omegab+CP%omegac)*a**(-3))
+            omde =(1-CP%omegab-CP%omegac)/((1-CP%omegab-CP%omegac)+(CP%omegab+CP%omegac)*a**(-3))
             omdedot =3.d0*omde*adotoa*(CP%omegab+CP%omegac)/((CP%omegab+CP%omegac)+(1-CP%omegab-CP%omegac)*a**3)
 
             MGGamma =  1 + CP%E22_mg*omde*(1+CP%c2_mg*((CP%lam_mg*adotoa)**2.)/k2)/(1+((CP%lam_mg*adotoa)**2.)/k2)
