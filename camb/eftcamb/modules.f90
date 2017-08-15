@@ -50,9 +50,6 @@ module RedshiftSpaceData
     integer, parameter :: max_redshiftwindows  = 100
     logical :: limber_windows = .false.
     logical :: DoRedshiftLensing = .false.
-    !MMmod: if force_limber = T, limber approximation is done
-    !for ell>limber_phiphi independently from other parameters
-    logical :: force_limber   = .false.
 
     Type(TRedWin), target :: Redshift_W(max_redshiftwindows)
 
@@ -71,6 +68,16 @@ module RedshiftSpaceData
     logical :: counts_ISW = .true.
     logical :: counts_potential = .true. !terms in potentials at source
     logical :: counts_evolve = .false.
+
+
+    !MMmod: bias_assumption
+    integer :: bias_assumption
+
+
+    !MMmod: if force_limber = T, limber approximation is done
+    !for ell>limber_phiphi independently from other parameters
+    logical :: force_limber   = .false.
+
 
     logical :: use_mK = .true.
 

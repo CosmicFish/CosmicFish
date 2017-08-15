@@ -1533,6 +1533,9 @@ contains
         Type (TRedWin), pointer :: W
         real(dl) cs2, xe,opacity, delta_p
         real(dl) s(0:10), t(0:10)
+        !MMmod: bias assumption
+        real(dl) used_bias
+
         real(dl) counts_radial_source, counts_velocity_source, counts_density_source, counts_ISW_source, &
             counts_redshift_source, counts_timedelay_source, counts_potential_source
 
@@ -2196,8 +2199,21 @@ contains
 
                         !Main density source
                         if (counts_density) then
-                            counts_density_source= W%wing(j)*(clxc*W%bias + (W%comoving_density_ev(j) - 3*adotoa)*sigma/k)
+
+                            !MMmod: bias assumption
+
+                            if (bias_assumption.eq.0) then
+                               used_bias = W%bias
+                            else if (bias_assumption.eq.1) then
+                               used_bias = sqrt(1/a) !Bias assumption made in
+                            else
+                               write(*,*) 'NO EXISTING OPTION FOR BIAS_ASSUMPTION'
+                               write(*,*) 'CHECK YOUR CHOICE!'
+                               stop
+                            end if
+                            counts_density_source= W%wing(j)*(clxc*used_bias + (W%comoving_density_ev(j) - 3*adotoa)*sigma/k)
                             !Newtonian gauge count density; bias assumed to be on synchronous gauge CDM density
+                            !---------------------------------------
                         else
                             counts_density_source= 0
                         endif

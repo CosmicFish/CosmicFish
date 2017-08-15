@@ -72,6 +72,9 @@ module RedshiftSpaceData
     logical :: counts_potential = .true. !terms in potentials at source
     logical :: counts_evolve = .false.
 
+    !MMmod: bias_assumption
+    integer :: bias_assumption
+
     logical :: use_mK = .true.
 
     ! COSMICFISH MOD START: we need to define a procedure pointer for the window to allow CosmicFish to redefine it

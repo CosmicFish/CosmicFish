@@ -105,6 +105,13 @@ contains
             num_redshiftwindows = 0
         end if
         limber_windows = Ini_Read_Logical('limber_windows',limber_windows)
+        !MMmod: force_limber
+        force_limber   = Ini_Read_Logical('force_limber',force_limber)
+        if (force_limber .and. (.not.limber_windows) ) then
+           write(*,*) 'force_limber is True, switching on limber_windows'
+           limber_windows = .true.
+        end if
+        !-------------------
         if (limber_windows) limber_phiphi = Ini_Read_Int('limber_phiphi',limber_phiphi)
         if (num_redshiftwindows>0) then
             DoRedshiftLensing = Ini_Read_Logical('DoRedshiftLensing',.false.)
@@ -187,6 +194,8 @@ contains
             counts_ISW = Ini_read_Logical('counts_ISW')
             counts_potential = Ini_read_Logical('counts_potential')
             counts_velocity = Ini_read_Logical('counts_velocity')
+
+            bias_assumption = Ini_read_Int('bias_assumption',0)
         end if
 
         P%OutputNormalization=outNone
@@ -577,6 +586,8 @@ contains
         FP%fisher_par%want_initial_ratio           = Ini_Read_Logical( 'param[r]'       ,.false. )
         FP%fisher_par%want_re_optical_depth        = Ini_Read_Logical( 'param[tau]'     ,.false. )
         FP%fisher_par%want_bias                    = Ini_Read_Logical( 'param[bias]'    ,.false. )
+        !MMmod: bias assumption (bias is not a parameter if assumptions are on)
+        if (bias_assumption>0) FP%fisher_par%want_bias = .false.
         FP%fisher_par%want_alpha_SN                = Ini_Read_Logical( 'param[alpha_SN]',.false. )
         FP%fisher_par%want_beta_SN                 = Ini_Read_Logical( 'param[beta_SN]' ,.false. )
         FP%fisher_par%want_M0_SN                   = Ini_Read_Logical( 'param[M0_SN]'   ,.false. )

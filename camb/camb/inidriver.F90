@@ -155,6 +155,9 @@
         counts_ISW = Ini_read_Logical('counts_ISW')
         counts_potential = Ini_read_Logical('counts_potential')
         counts_velocity = Ini_read_Logical('counts_velocity')
+
+        !MMmod: bias assumption
+        bias_assumption = Ini_Read_Int('bias_assumption',0)
     end if
 
     P%OutputNormalization=outNone
