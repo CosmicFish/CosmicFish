@@ -50,6 +50,9 @@ module RedshiftSpaceData
     integer, parameter :: max_redshiftwindows  = 100
     logical :: limber_windows = .false.
     logical :: DoRedshiftLensing = .false.
+    !MMmod: if force_limber = T, limber approximation is done
+    !for ell>limber_phiphi independently from other parameters
+    logical :: force_limber   = .false. 
 
     Type(TRedWin), target :: Redshift_W(max_redshiftwindows)
 
@@ -1334,16 +1337,22 @@ contains
         integer, intent(in) :: lmax
         integer ell_limb
 
-        if (limber_windows) then
-            !Turn on limber when k is a scale smaller than window width
-            if (W%kind==window_lensing) then
-                ell_limb = max(limber_phiphi,nint(50*AccuracyBoost))
-            else
-                ell_limb = max(limber_phiphi, nint(AccuracyBoost *6* W%chi0/W%sigma_tau))
-            end if
+        !MMmod: force_limber
+        if (force_limber) then
+           ell_limb = limber_phiphi
         else
-            ell_limb = lmax
+            if (limber_windows) then
+               !Turn on limber when k is a scale smaller than window width
+               if (W%kind==window_lensing) then
+                   ell_limb = max(limber_phiphi,nint(50*AccuracyBoost))
+               else
+                   ell_limb = max(limber_phiphi, nint(AccuracyBoost *6* W%chi0/W%sigma_tau))
+               end if
+            else
+               ell_limb = lmax
+            end if
         end if
+
     end function Win_Limber_ell
 
     subroutine CheckLoadedHighLTemplate

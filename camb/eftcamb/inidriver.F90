@@ -74,6 +74,14 @@ program driver
         num_redshiftwindows = 0
     end if
     limber_windows = Ini_Read_Logical('limber_windows',limber_windows)
+    !MMmod: force_limber
+    force_limber   = Ini_Read_Logical('force_limber',force_limber)
+    if (force_limber .and. (.not.limber_windows) ) then
+       write(*,*) 'force_limber is True, switching on limber_windows'
+       limber_windows = .true.
+    end if
+    !-------------------
+
     if (limber_windows) limber_phiphi = Ini_Read_Int('limber_phiphi',limber_phiphi)
     if (num_redshiftwindows>0) then
         DoRedshiftLensing = Ini_Read_Logical('DoRedshiftLensing',.false.)
