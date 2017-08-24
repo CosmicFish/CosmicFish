@@ -2405,7 +2405,7 @@ contains
                         if(tempmodel == 0 ) then
                             sources(3+w_ix) =-2*phi*W%win_lens(j)
                         else
-                            sources(3+w_ix) = -(MGC_Psi+MGC_Phi)*phi*W%win_lens(j)
+                            sources(3+w_ix) = -(MGC_Psi+MGC_Phi)*W%win_lens(j)
                         end if
                         ! MGCAMB MOD END.
                     elseif (W%kind == window_counts) then
