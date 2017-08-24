@@ -146,6 +146,9 @@ program driver
 
     if (DoCounts) then
         counts_density = Ini_read_Logical('counts_density')
+        ! COSMICFISH MOD START: total matter density for compatibility with other codes
+        counts_density_total_matter = Ini_read_Logical( 'counts_density_total_matter', .false. )
+        ! COSMICFISH MOD END.
         counts_redshift = Ini_read_Logical('counts_redshift')
         counts_radial = Ini_read_Logical('counts_radial')
         counts_evolve = Ini_read_Logical('counts_evolve')

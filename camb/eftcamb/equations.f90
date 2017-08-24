@@ -1391,6 +1391,9 @@ contains
         real(dl), dimension(:),pointer :: ypol,ypolprime
 
         real(dl) dgq,grhob_t,grhor_t,grhoc_t,grhog_t,grhov_t,sigma,polter
+        ! COSMICFISH MOD START: total matter density for compatibility with other codes
+        real(dl) :: grho_matter, dgrho_matter
+        ! COSMICFISH MOD END.
         real(dl) qgdot,pigdot,pirdot,vbdot,dgrho
         real(dl) a,a2,dz,z,clxc,clxb,vb,clxg,qg,pig,clxr,qr,pir
 
@@ -1686,8 +1689,19 @@ contains
 
                         !Main density source
                         if (counts_density) then
+                            ! 1- Newtonian gauge count density; bias assumed to be on synchronous gauge CDM density
                             counts_density_source= W%wing(j)*(clxc*W%bias + (W%comoving_density_ev(j) - 3*adotoa)*sigma/k)
-                            !Newtonian gauge count density; bias assumed to be on synchronous gauge CDM density
+                            ! COSMICFISH MOD START: total matter density for compatibility with other codes
+                            if (counts_density_total_matter) then
+                                ! 2- Count density for total matter density, to compare to other codes:
+                                grho_matter  = grhob_t +grhoc_t
+                                dgrho_matter = grhob_t*clxb +grhoc_t*clxc
+                                if (CP%Num_Nu_Massive /= 0) then
+                                    call MassiveNuVarsOut(EV,y,yprime,a,grho=grho_matter,dgrho=dgrho_matter)
+                                end if
+                                counts_density_source= W%wing(j)*W%bias*( dgrho_matter/grho_matter )
+                            end if
+                            ! COSMICFISH MOD END.
                         else
                             counts_density_source= 0
                         endif

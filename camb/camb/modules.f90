@@ -63,6 +63,9 @@ module RedshiftSpaceData
     logical :: counts_radial = .false. !does not include time delay;
     ! subset of counts_velocity, just 1/(chi*H) term
     logical :: counts_density = .true.
+    ! COSMICFISH MOD START: total matter density for compatibility with other codes
+    logical :: counts_density_total_matter = .false.
+    ! COSMICFISH MOD END.
     logical :: counts_redshift = .true.
     logical :: counts_timedelay = .true. !time delay terms * 1/(H*chi)
     logical :: counts_ISW = .true.
