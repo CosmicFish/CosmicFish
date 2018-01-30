@@ -327,6 +327,77 @@ class fisher_matrix():
         # check the validity of the param names:
         if len(self.param_names) != self.num_params:
             raise ValueError('Error in load_paramnames_from_file: wrong number of parameters in the .paramnames file')
+    
+    # -----------------------------------------------------------------------------------
+
+    def save_paramnames_to_file( self, file_name=None ):
+        """
+        Saves the paramnames to a file.
+
+        :param file_name: (optional) file name and path of the parameter names file.
+            If file_name is None this saves the file self.name+.paramnames.
+            
+        """
+        if file_name is None:
+            name = self.indir+'/'+self.name+'.paramnames'
+        else:
+            name = file_name
+        # open the output file:
+        out_file = open( name, 'w' )
+        # write the header:
+        out_file.write( '#\n' )
+        out_file.write( '# This file contains the parameter names for a Fisher matrix.\n' )
+        out_file.write( '#\n' )
+        # write the parameters:
+        for ind in xrange( self.num_params ):
+            param_name = self.get_param_name( ind+1 )
+            out_file.write( str(param_name)+'    '+ \
+                            str(self.get_param_name_latex( param_name ))+'    '+ \
+                            str(self.get_fiducial( param_name ))+'\n'
+                            )
+        # close the output file: 
+        out_file.close()
+    
+    # -----------------------------------------------------------------------------------
+
+    def save_to_file( self, file_name ):
+        """
+        Saves the fisher matrix to a file. Notice that the file name has to be specified
+        to avoid overwriting an existing fisher matrix.
+
+        :param file_name: file name and path of the output fisher matrix.
+        The file extension gets automatically added as is not needed.
+            
+        """
+        # save the param name file:
+        self.save_paramnames_to_file( file_name=file_name+'.paramnames' )
+        # open the output file:
+        out_file = open( file_name+'.dat', 'w' )
+        # write the header:        
+        out_file.write( '#\n' )
+        out_file.write( '# This file contains a Fisher matrix created with the CosmicFish code.\n' )
+        out_file.write( '#\n' )
+        out_file.write( '# The parameters of this Fisher matrix are:\n' )
+        out_file.write( '#\n' )
+        # write the param names commented:
+        for ind in xrange( self.num_params ):
+            param_name = self.get_param_name( ind+1 )
+            out_file.write( '#'+'    '+str(ind+1)+'    '+ \
+                            str(param_name)+'    '+ \
+                            str(self.get_param_name_latex( param_name ))+'    '+ \
+                            str(self.get_fiducial( param_name ))+'\n'
+                            )
+        out_file.write( '#\n' )
+        # write the fisher matrix:
+        fisher_matrix = self.get_fisher_matrix()
+        for i in xrange( self.num_params ):
+            for j in xrange( self.num_params ):
+                out_file.write( str( format(fisher_matrix[i,j],'.16E') )+'     ' )
+            out_file.write( '\n' )
+        
+ 
+        # close the output file: 
+        out_file.close()
         
     # -----------------------------------------------------------------------------------
 
@@ -504,7 +575,7 @@ class fisher_matrix():
         # modify the Fisher matrix if necessary:
         if redo_PCA:
             # create a zero matrix:
-            temp = np.zeros(( len(self.fisher_eigenvalues), len(self.fisher_eigenvalues)), float)
+            temp = np.zeros(( len(self.fisher_eigenvalues), len(self.fisher_eigenvalues)), float )
             # write:
             for ind, eigh in enumerate( self.fisher_eigenvalues ):
                 temp[ind,ind] = eigh

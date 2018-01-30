@@ -14,7 +14,7 @@
 #----------------------------------------------------------------------------------------
 
 # import first packages
-import os, sys
+import os, sys, copy
 # define path to the executable and add all the relevant folders to the path where python looks for files.
 here = os.path.dirname(os.path.abspath(__file__))
 cosmicfish_pylib_path = here+'/..'
@@ -677,6 +677,20 @@ class test_plot_realistic():
         test_plotter.plot_tri(['omegabh2','omegach2','omeganuh2'], title="Wonderfull plot")
         test_plotter.export(plot_dump+'test_realistic_6.pdf')
         test_plotter.export(plot_dump+'test_realistic_6.png')
+        test_plotter.close_plot()
+    
+    def test_init_plot_tri_2(self):
+        # do spectral protection a couple of times:
+        for i in xrange(4):
+            fish = copy.deepcopy( self.fisher_list_test.get_fisher_list()[-1] )
+            fish.protect_degenerate( cache=True )
+            fish.name = str(i+1)
+            self.fisher_list_test.add_fisher_matrix( fish )
+        test_plotter = fp.CosmicFishPlotter( fishers=self.fisher_list_test )
+        # get plot 1D of 2 parameter and all fishers:
+        test_plotter.new_plot()
+        test_plotter.plot_tri(['omegabh2','omegach2','omeganuh2','h','logA','ns'], title="Wonderfull plot")
+        test_plotter.export(plot_dump+'test_realistic_7.png')
         test_plotter.close_plot()
         
         

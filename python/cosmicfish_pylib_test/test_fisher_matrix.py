@@ -15,10 +15,12 @@
 
 # import first packages
 import os, sys
+from dircache import cache
 # define path to the executable and add all the relevant folders to the path where python looks for files.
 here = os.path.dirname(os.path.abspath(__file__))
 cosmicfish_pylib_path = here+'/..'
-test_input = here+'/test_input'
+test_input  = here+'/test_input'
+test_output = here+'/test_output'
 sys.path.insert(0, os.path.normpath(cosmicfish_pylib_path))
 
 import numpy as np
@@ -373,6 +375,64 @@ class test_fisher_load_paramnames_from_file():
         fisher_1 = fm.fisher_matrix( fisher_matrix=matrix )
         assert_raises( ValueError, fisher_1.load_paramnames_from_file, file_name=test_input+'/dummy_paramnames_5.paramnames' )
 
+# ***************************************************************************************
+    
+class test_fisher_save_paramnames_to_file():
+
+    @classmethod
+    def setup_class(cls):
+        print color_print.header(__name__+': test_fisher_save_paramnames_to_file.setup_class() ----------')
+       
+    @classmethod
+    def teardown_class(cls):
+        print color_print.bold(__name__+': test_fisher_save_paramnames_to_file.teardown_class() -------')
+
+    def setup(self):
+        pass
+    
+    # test the loading of the parameter names from file:
+    def test_fisher_save_paramnames_to_file_1(self):
+        matrix = np.identity(5)
+        for i in xrange(5):
+            matrix[i,i] = i+1
+        param_names_latex = [ 'm'+str(i) for i in xrange(5) ] 
+        fiducial = [ float(i) for i in xrange(5) ]
+        fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
+        fisher_1.save_paramnames_to_file(file_name=test_output+'/dummy_paramnames_out.paramnames')
+        fisher_1.indir = './dont_exist'
+        fisher_1.name  = 'dont_exist'
+        assert_raises( IOError, fisher_1.save_paramnames_to_file )
+
+# ***************************************************************************************
+    
+class test_save_to_file():
+
+    @classmethod
+    def setup_class(cls):
+        print color_print.header(__name__+': test_save_to_file.setup_class() ----------')
+       
+    @classmethod
+    def teardown_class(cls):
+        print color_print.bold(__name__+': test_save_to_file.teardown_class() -------')
+
+    def setup(self):
+        pass
+    
+    # test the loading of the parameter names from file:
+    def test_save_to_file_1(self):
+        # load the fisher matrix:
+        fisher_1 = fm.fisher_matrix( file_name=test_input+'/dummy_fisher_matrix_2.dat' )
+        # save the fisher matrix back to file:
+        fisher_1.save_to_file( file_name=test_output+'/dummy_fisher_matrix_out' )        
+        # import it as a second fisher:
+        fisher_2 = fm.fisher_matrix( file_name=test_output+'/dummy_fisher_matrix_out.dat' )
+        # test equality, to do so we have to set a couple of things to be the same...
+        fisher_1.path  = fisher_2.path
+        fisher_1.name  = fisher_2.name
+        fisher_1.indir = fisher_2.indir
+        fisher_1.protect_degenerate( cache=False ) # we have to do it twice otherwise eigenvalues are slightly different
+        assert fisher_1==fisher_2
+                               
 # ***************************************************************************************
     
 class test_fisher_overload_operations():
