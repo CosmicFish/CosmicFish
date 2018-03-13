@@ -529,7 +529,7 @@ class CosmicFishPlotter():
             subplot.set_xticklabels( [] )
         else:
             xticks = np.linspace(x_limits[0], x_limits[1], number_x_ticks)
-            xticks = [ u'$'+str(i)+'$' for i in xticks ]
+            xticks = [ u'$'+str('{}'.format(i))+'$' for i in xticks ]
             subplot.set_xticklabels( xticks, fontsize=secondary_fontsize )
             if xlabel_up: subplot.xaxis.tick_top()
         # yticks:
@@ -537,7 +537,7 @@ class CosmicFishPlotter():
             subplot.set_yticklabels( [] )
         else:
             yticks = np.linspace(0,1, number_y_ticks) 
-            yticks = [ u'$'+str(i)+'$' for i in yticks ]
+            yticks = [ u'$'+str('{}'.format(i))+'$' for i in yticks ]
             subplot.set_yticklabels( yticks, fontsize=secondary_fontsize )
             if ylabel_right: subplot.yaxis.tick_right()
         # align the left and right tick labels:
@@ -649,7 +649,7 @@ class CosmicFishPlotter():
             subplot.set_xticklabels( [] )
         else:
             xticks = np.linspace(ranges[param1][0], ranges[param1][1], number_x_ticks)
-            xticks = [ u'$'+str(i)+'$' for i in xticks ]
+            xticks = [ u'$'+str('{}'.format(i))+'$' for i in xticks ]
             subplot.set_xticklabels( xticks, fontsize=secondary_fontsize )
             if xlabel_up: subplot.xaxis.tick_top()
         # yticks:
@@ -657,7 +657,7 @@ class CosmicFishPlotter():
             subplot.set_yticklabels( [] )
         else:
             yticks = np.linspace( ranges[param2][0], ranges[param2][1], number_y_ticks)
-            yticks = [ u'$'+str(i)+'$' for i in yticks ]
+            yticks = [ u'$'+str('{}'.format(i))+'$' for i in yticks ]
             subplot.set_yticklabels( yticks, fontsize=secondary_fontsize )
             if ylabel_right: subplot.yaxis.tick_right()
         # align the left and right tick labels:
