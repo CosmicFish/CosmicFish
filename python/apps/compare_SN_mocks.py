@@ -139,15 +139,15 @@ if __name__ == "__main__":
 
     # print to screen number of SN:
     if not args.quiet:
-        for k in xrange(0, number_SN_mock):
-            print 'Total number of SN in '+names[k]+' :', len(data[k][:,1])
-        print
+        for k in range(0, number_SN_mock):
+            print('Total number of SN in '+names[k]+' :', len(data[k][:,1]))
+        print()
     
     # plot SN redshift distribution and luminosity distance:
     ax_1  = plt.subplot(plot_grid[1,0]) # distribution
     ax_2  = plt.subplot(plot_grid[1,1]) # d_L
     # cycle over files:
-    for k in xrange(0, number_SN_mock):
+    for k in range(0, number_SN_mock):
         # grab the x values:
         x_values = data[k][:,1]
         y_values = data[k][:,2]
@@ -171,7 +171,7 @@ if __name__ == "__main__":
     ax_1  = plt.subplot(plot_grid[2,0])
     ax_2  = plt.subplot(plot_grid[2,1])
     # cycle over files:
-    for k in xrange(0, number_SN_mock):
+    for k in range(0, number_SN_mock):
         # grab the x values:
         x_values = data[k][:,1]
         y_values = data[k][:,3]
@@ -192,7 +192,7 @@ if __name__ == "__main__":
     ax_1  = plt.subplot(plot_grid[3,0])
     ax_2  = plt.subplot(plot_grid[3,1])
     # cycle over files:
-    for k in xrange(0, number_SN_mock):
+    for k in range(0, number_SN_mock):
         # grab the x values:
         x_values = data[k][:,1]
         y_values = data[k][:,4]
@@ -211,7 +211,7 @@ if __name__ == "__main__":
 
     # create legend handlers
     leg_handlers = []
-    for k in xrange(0, number_SN_mock):
+    for k in range(0, number_SN_mock):
         leg_handlers.append( mlines.Line2D([], [], color=fc.nice_colors(k)) )
     # create the legend
     legend_anchor =  plot_grid[0,0].get_position(fig)
@@ -227,6 +227,6 @@ if __name__ == "__main__":
     plt.clf()
     # print some final feedback:
     if not args.quiet:
-        print 'Done. Saved results in: ', outroot
+        print('Done. Saved results in: ', outroot)
     # exit without error:
     exit(0)

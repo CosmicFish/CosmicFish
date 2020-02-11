@@ -38,11 +38,11 @@ class test_nice_number():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_nice_number.setup_class() ----------')
+        print(color_print.header(__name__+': test_nice_number.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_nice_number.teardown_class() -------')
+        print(color_print.bold(__name__+': test_nice_number.teardown_class() -------'))
 
     def setup(self):
         pass
@@ -71,11 +71,11 @@ class test_significant_digits():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_nice_number.setup_class() ----------')
+        print(color_print.header(__name__+': test_nice_number.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_nice_number.teardown_class() -------')
+        print(color_print.bold(__name__+': test_nice_number.teardown_class() -------'))
 
     def setup(self):
         pass
@@ -134,11 +134,11 @@ class test_make_list():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_make_list.setup_class() ----------')
+        print(color_print.header(__name__+': test_make_list.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_make_list.teardown_class() -------')
+        print(color_print.bold(__name__+': test_make_list.teardown_class() -------'))
 
     def setup(self):
         pass
@@ -162,11 +162,11 @@ class test_print_table():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_print_table.setup_class() ----------')
+        print(color_print.header(__name__+': test_print_table.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_print_table.teardown_class() -------')
+        print(color_print.bold(__name__+': test_print_table.teardown_class() -------'))
 
     def setup(self):
         pass
@@ -183,11 +183,11 @@ class test_confidence_coefficient():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_confidence_coefficient.setup_class() ----------')
+        print(color_print.header(__name__+': test_confidence_coefficient.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_confidence_coefficient.teardown_class() -------')
+        print(color_print.bold(__name__+': test_confidence_coefficient.teardown_class() -------'))
 
     def setup(self):
         pass
@@ -204,11 +204,11 @@ class test_num_to_mant_exp():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_num_to_mant_exp.setup_class() ----------')
+        print(color_print.header(__name__+': test_num_to_mant_exp.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_num_to_mant_exp.teardown_class() -------')
+        print(color_print.bold(__name__+': test_num_to_mant_exp.teardown_class() -------'))
 
     def setup(self):
         pass
@@ -225,11 +225,11 @@ class test_grouper():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_grouper.setup_class() ----------')
+        print(color_print.header(__name__+': test_grouper.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_grouper.teardown_class() -------')
+        print(color_print.bold(__name__+': test_grouper.teardown_class() -------'))
 
     def setup(self):
         pass
@@ -249,11 +249,11 @@ class test_CosmicFish_write_header():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_CosmicFish_write_header.setup_class() ----------')
+        print(color_print.header(__name__+': test_CosmicFish_write_header.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_CosmicFish_write_header.teardown_class() -------')
+        print(color_print.bold(__name__+': test_CosmicFish_write_header.teardown_class() -------'))
 
     def setup(self):
         pass

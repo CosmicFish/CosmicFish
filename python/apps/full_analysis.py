@@ -62,7 +62,7 @@ import sys
 import os
 import copy
 import itertools as it
-import ConfigParser
+import configparser
 
 # get the path of the application and the CosmicFish library:
 here = os.path.dirname(os.path.abspath(__file__))
@@ -117,12 +117,12 @@ if __name__ == "__main__":
                 if dict1[option] == -1:
                    DebugPrint("skip: %s" % option)
             except:
-                print("exception on %s!" % option)
+                print(("exception on %s!" % option))
                 dict1[option] = None
         return dict1
     
     #initializing and reading the config file
-    Config = ConfigParser.ConfigParser()
+    Config = configparser.ConfigParser()
     Config.read(inifile)
 
     #Reading general options
@@ -135,36 +135,36 @@ if __name__ == "__main__":
 
     #General screen output
     if not args.quiet:
-       print 'GENERAL OPTIONS:'
-       print ' Output root='+outroot
-       print ' Using derived parameters='+str(derived)
-       print ' Eliminate rather than marginalize='+str(eliminate)
-       print ' ---------------------------------'
-       print ' Bounds from these matrices will be computed:'
+       print('GENERAL OPTIONS:')
+       print(' Output root='+outroot)
+       print(' Using derived parameters='+str(derived))
+       print(' Eliminate rather than marginalize='+str(eliminate))
+       print(' ---------------------------------')
+       print(' Bounds from these matrices will be computed:')
        for elem in files:
-           print elem
+           print(elem)
        if sum_fish[0]:
-           print 'Also the combination of these will be computed:'
+           print('Also the combination of these will be computed:')
            for elem in sum_fish:
-               print elem
-       print ' ---------------------------------'
-       print
-       print
+               print(elem)
+       print(' ---------------------------------')
+       print()
+       print()
 
     if not files[0]:
        if not sum_fish[0]:
-          print 'NO MATRICES TO WORK WITH!'
+          print('NO MATRICES TO WORK WITH!')
           exit()
        else:
           files = sum_fish
-          print 'No fishers to plot, using only the combined one'
+          print('No fishers to plot, using only the combined one')
 
 
     #MOD: too much putput here!
     if derived is not False:
        fishers = fpa.CosmicFish_FisherAnalysis(fisher_path=files, with_derived=True)
        if sum_fish[0]:
-          print 'NOT HERE'
+          print('NOT HERE')
           summing = fpa.CosmicFish_FisherAnalysis(fisher_path=sum_fish, with_derived=True)
     else:
        fishers = fpa.CosmicFish_FisherAnalysis(fisher_path=files, with_derived=False)
@@ -193,8 +193,8 @@ if __name__ == "__main__":
     num1D = Config.items( "1Dplot" )
         
     if not args.quiet and len(num1D)>0:
-        print
-        print 'Producing 1D plots:'
+        print()
+        print('Producing 1D plots:')
     for key, params in num1D:
         params = Config.get("1Dplot", key).split(",")
 
@@ -211,17 +211,17 @@ if __name__ == "__main__":
         plotter.export( outroot+'_1Dplot_'+str(key)+'.png' )
         plotter.close_plot()
         if not args.quiet:
-           print ' 1D plots done for parameters '+str(params)
-           print ' Saved results in: ', outroot+'_1Dplot_'+str(key)+'.png'
+           print(' 1D plots done for parameters '+str(params))
+           print(' Saved results in: ', outroot+'_1Dplot_'+str(key)+'.png')
 
     if not args.quiet and len(num1D)>0:
-        print '1D plots done!'
+        print('1D plots done!')
 
     #Producing 2D plots
     num2D = Config.items( "2Dplot" )
     if not args.quiet and len(num2D)>0:
-        print
-        print 'Producing 2D plots:'
+        print()
+        print('Producing 2D plots:')
     for key, params in num2D:
         params = Config.get("2Dplot", key).split(",")
 
@@ -243,17 +243,17 @@ if __name__ == "__main__":
         plotter.export( outroot+'_2Dplot_'+str(key)+'.png' )
         plotter.close_plot()
         if not args.quiet:
-           print ' 2D plots done for parameters '+str(params)
-           print ' Saved results in: ', outroot+'_2Dplot_'+str(key)+'.png'
+           print(' 2D plots done for parameters '+str(params))
+           print(' Saved results in: ', outroot+'_2Dplot_'+str(key)+'.png')
 
     if not args.quiet and len(num2D)>0:
-        print '2D plots done!'
+        print('2D plots done!')
 
     #Producing triangular plots
     numtri = Config.items( "triplot" )
     if not args.quiet and len(numtri)>0:
-        print 
-        print 'Producing triangular plots:'
+        print() 
+        print('Producing triangular plots:')
     for key, params in numtri:
         params = Config.get("triplot", key).split(",")
 
@@ -270,11 +270,11 @@ if __name__ == "__main__":
         plotter.export( outroot+'_triplot_'+str(key)+'.png' )
         plotter.close_plot()
         if not args.quiet:
-           print ' Triangular plots done for parameters '+str(params)
-           print ' Saved results in: ', outroot+'_triplot_'+str(key)+'.png'
+           print(' Triangular plots done for parameters '+str(params))
+           print(' Saved results in: ', outroot+'_triplot_'+str(key)+'.png')
 
     if not args.quiet and len(numtri)>0:
-        print 'Triangular plots done!'
+        print('Triangular plots done!')
 
     #Producing bounds files:
     # get the parameters:
@@ -285,8 +285,8 @@ if __name__ == "__main__":
     if len(numbounds)>0:
     
         if not args.quiet:
-            print
-            print 'Producing bounds:'
+            print()
+            print('Producing bounds:')
     
         # open the file if wanted:
         if outroot is not None:
@@ -330,7 +330,7 @@ if __name__ == "__main__":
                         table_length = len(print_table)/latex_num_col +1
                     print_table = fu.grouper( table_length, print_table,fillvalue='' )
                     print_table = [ list(i) for i in print_table]      
-                    print_table = map(list, zip(*print_table))
+                    print_table = list(map(list, list(zip(*print_table))))
                     col_width = [max(len(str(x)) for x in col) for col in zip(*print_table)]
                     
                     if outroot is not None:
@@ -340,11 +340,11 @@ if __name__ == "__main__":
                         for line in print_table:
                             out_file.write( " " + " & ".join("{:{}}".format(x, col_width[i]) for i, x in enumerate(line)) + " \\\[1mm]\n" )
                     else:
-                        print '\hline'
-                        print '\multicolumn{'+str(latex_num_col)+'}{|c|}{'+fish.name.replace('_',' ')+'} \\\[1mm]'
-                        print '\hline'
+                        print('\hline')
+                        print('\multicolumn{'+str(latex_num_col)+'}{|c|}{'+fish.name.replace('_',' ')+'} \\\[1mm]')
+                        print('\hline')
                         for line in print_table:
-                            print " " + " & ".join("{:{}}".format(x, col_width[i]) for i, x in enumerate(line)) + " \\\[1mm]"
+                            print(" " + " & ".join("{:{}}".format(x, col_width[i]) for i, x in enumerate(line)) + " \\\[1mm]")
                         
                 else:
                     # put on top the labels of the columns:
@@ -362,11 +362,11 @@ if __name__ == "__main__":
                     #
                     print_table = [parameter_names,fiducial,Bounds_68, Bounds_95, Bounds_99]
                     
-                    out_file.write( ''.join([ '*' for i in xrange(len('Parameter bounds for the Fisher matrix: '+fish.name)+1)])+'\n' )
+                    out_file.write( ''.join([ '*' for i in range(len('Parameter bounds for the Fisher matrix: '+fish.name)+1)])+'\n' )
                     out_file.write( 'Parameter bounds for the Fisher matrix: '+fish.name+'\n' )
-                    out_file.write( ''.join([ '*' for i in xrange(len('Parameter bounds for the Fisher matrix: '+fish.name)+1)])+'\n' )
+                    out_file.write( ''.join([ '*' for i in range(len('Parameter bounds for the Fisher matrix: '+fish.name)+1)])+'\n' )
                     out_file.write( '\n' )
-                    print_table = map(list, zip(*print_table))
+                    print_table = list(map(list, list(zip(*print_table))))
                     col_width = [max(len(str(x)) for x in col) for col in zip(*print_table)]
                     # print it to file:
                     for line in print_table:
@@ -374,7 +374,7 @@ if __name__ == "__main__":
                     out_file.write( '\n' )
                 
             if not args.quiet:
-               print ' Bounds computed for parameters '+str( fishers_temp.get_parameter_list() )
+               print(' Bounds computed for parameters '+str( fishers_temp.get_parameter_list() ))
         
         # finalize the latex part:
         if use_latex:
@@ -384,13 +384,13 @@ if __name__ == "__main__":
             out_file.close()  
         
         if not args.quiet:
-            print ' Saved results in: ', outroot+'_bounds.txt'
-            print 'bounds done!'
+            print(' Saved results in: ', outroot+'_bounds.txt')
+            print('bounds done!')
 
     # finalize:
     if not args.quiet:
-       print
-       print 'It seems everything is done...'
-       print 'It was nice working with you. See you soon!'
+       print()
+       print('It seems everything is done...')
+       print('It was nice working with you. See you soon!')
     # everything's fine, exit without error:
     exit(0)

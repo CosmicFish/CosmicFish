@@ -31,7 +31,7 @@ import os
 import math
 import copy
 import numpy as np
-import utilities as fu
+from . import utilities as fu
 
 # ***************************************************************************************
 
@@ -122,7 +122,7 @@ class fisher_matrix():
         :rtype: :class:`int` or a :class:`list` of :class:`int`
             
         """
-        if isinstance(name, basestring):
+        if isinstance(name, str):
             return self.param_names_dict[name]-1
         elif len(name)>1:
             return [ self.param_names_dict[i]-1 for i in name ]
@@ -138,7 +138,7 @@ class fisher_matrix():
         :rtype: :class:`int` or a :class:`list` of :class:`int`
         
         """
-        if isinstance(name, basestring):
+        if isinstance(name, str):
             return self.param_names_dict[name]
         elif len(name)>1:
             return [ self.param_names_dict[i] for i in name ]
@@ -153,7 +153,7 @@ class fisher_matrix():
         :rtype: :class:`string` or a :class:`list` of :class:`string`.
         
         """
-        if isinstance(name, basestring):
+        if isinstance(name, str):
             return self.param_names_latex[self.get_param_index(name)]
         elif len(name)>1:
             return [ self.param_names_latex[i] for i in self.get_param_index(name) ]
@@ -168,7 +168,7 @@ class fisher_matrix():
         :rtype: :class:`float` or a :class:`list` of :class:`float`.
 
         """
-        if isinstance(name, basestring):
+        if isinstance(name, str):
             return self.param_fiducial[self.get_param_index(name)]
         elif len(name)>1:
             return [ self.param_fiducial[i] for i in self.get_param_index(name) ]
@@ -246,8 +246,8 @@ class fisher_matrix():
             try:
                 self.load_paramnames_from_file()
             except ValueError:
-                self.param_names  = [ 'p'+str(i+1) for i in xrange(self.num_params) ]
-                self.param_names_latex = [ 'p'+str(i+1) for i in xrange(self.num_params) ]
+                self.param_names  = [ 'p'+str(i+1) for i in range(self.num_params) ]
+                self.param_names_latex = [ 'p'+str(i+1) for i in range(self.num_params) ]
                 self.param_fiducial    = np.array( [0.0 for i in self.param_names] ) 
         else: 
             self.param_names = copy.deepcopy(param_names)
@@ -349,7 +349,7 @@ class fisher_matrix():
         out_file.write( '# This file contains the parameter names for a Fisher matrix.\n' )
         out_file.write( '#\n' )
         # write the parameters:
-        for ind in xrange( self.num_params ):
+        for ind in range( self.num_params ):
             param_name = self.get_param_name( ind+1 )
             out_file.write( str(param_name)+'    '+ \
                             str(self.get_param_name_latex( param_name ))+'    '+ \
@@ -380,7 +380,7 @@ class fisher_matrix():
         out_file.write( '# The parameters of this Fisher matrix are:\n' )
         out_file.write( '#\n' )
         # write the param names commented:
-        for ind in xrange( self.num_params ):
+        for ind in range( self.num_params ):
             param_name = self.get_param_name( ind+1 )
             out_file.write( '#'+'    '+str(ind+1)+'    '+ \
                             str(param_name)+'    '+ \
@@ -390,8 +390,8 @@ class fisher_matrix():
         out_file.write( '#\n' )
         # write the fisher matrix:
         fisher_matrix = self.get_fisher_matrix()
-        for i in xrange( self.num_params ):
-            for j in xrange( self.num_params ):
+        for i in range( self.num_params ):
+            for j in range( self.num_params ):
                 out_file.write( str( format(fisher_matrix[i,j],'.16E') )+'     ' )
             out_file.write( '\n' )
         
@@ -416,7 +416,7 @@ class fisher_matrix():
         # check the parameters of the other Fisher matrix:
         for i in other.param_names:
             # if the parameter is in common check that they have the same fiducial value:
-            if self.param_names_dict.has_key(i):
+            if i in self.param_names_dict:
                 ind1 = self.param_names_dict[i]-1
                 ind2 = other.param_names_dict[i]-1
                 if not np.allclose( self.param_fiducial[ind1], other.param_fiducial[ind2]):
@@ -431,8 +431,8 @@ class fisher_matrix():
         num_param_new = len(param_names_new)
         new_matrix = np.zeros([num_param_new,num_param_new])
         # fill the new matrix:
-        for i in xrange(num_param_new):
-            for j in xrange(num_param_new):
+        for i in range(num_param_new):
+            for j in range(num_param_new):
                 # get the new parameters name at each entry:
                 x = param_names_new[i]
                 y = param_names_new[j]
@@ -565,7 +565,7 @@ class fisher_matrix():
         if np.abs(condition_number) > self.fisher_spectrum:
             self.fisher_cutoff = maximum_spectrum/self.fisher_spectrum
         # cycle through the eigenvalues
-        for i in xrange( len(self.fisher_eigenvalues) ):
+        for i in range( len(self.fisher_eigenvalues) ):
             # detect very small eigenvalues            
             if self.fisher_eigenvalues[i] < self.fisher_cutoff:
                 # tell the code to redo PCA:
@@ -637,8 +637,8 @@ class fisher_matrix():
         # get the number of parameters:
         self.num_params = self.fisher_matrix.shape[0]  
         # load the parameter names:
-        self.param_names       = [ 'p'+str(i+1) for i in xrange(self.num_params) ]
-        self.param_names_latex = [ 'p'+str(i+1) for i in xrange(self.num_params) ]
+        self.param_names       = [ 'p'+str(i+1) for i in range(self.num_params) ]
+        self.param_names_latex = [ 'p'+str(i+1) for i in range(self.num_params) ]
         self.param_fiducial    = np.array( [0.0 for i in self.param_names] ) 
         # re-create a dictionary of param names:
         self.param_names_dict = {}

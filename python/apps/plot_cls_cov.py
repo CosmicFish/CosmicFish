@@ -136,7 +136,7 @@ if __name__ == "__main__":
     else:
         names = args.labels
     # check wether all the cls covariances have the same size:
-    for i in xrange(0, number_cls_cov):
+    for i in range(0, number_cls_cov):
         if ( data[i].shape[1] != data[0].shape[1] ):
             raise ValueError( 'The cls covariance '+names[i]+' does not have the same size as '+names[0] )
     # number of Cls:
@@ -155,15 +155,15 @@ if __name__ == "__main__":
     fig.set_size_inches( x_size, y_size )
     plot_grid = gridspec.GridSpec( num, num, wspace=x_spacing, hspace=y_spacing )
     # loop over the Cls grid:
-    for ind in xrange(1, num+1):
-        for ind2 in xrange(1, ind+1):
+    for ind in range(1, num+1):
+        for ind2 in range(1, ind+1):
     
             ax  = plt.subplot(plot_grid[ind-1,ind2-1])
             col  = ind + num*(ind2-1)
     
             plotrange_x = []
             plotrange_y = []
-            for k in xrange(0, number_cls_cov):
+            for k in range(0, number_cls_cov):
     
                 # grab the x values:
                 x_values = data[k][:,0]
@@ -217,7 +217,7 @@ if __name__ == "__main__":
             
     # create legend handlers
     leg_handlers = []
-    for k in xrange(0, len(names)):
+    for k in range(0, len(names)):
         leg_handlers.append( mlines.Line2D([], [], color=fc.nice_colors(k)) )
     # create the legend
     legend_anchor =  plot_grid[0,num-1].get_position(fig)
@@ -239,6 +239,6 @@ if __name__ == "__main__":
     plt.clf()
     # print some final feedback:
     if not args.quiet:
-        print 'Done. Saved results in: ', outroot
+        print('Done. Saved results in: ', outroot)
     # exit without error:
     exit(0)

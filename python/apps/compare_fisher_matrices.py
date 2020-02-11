@@ -163,7 +163,7 @@ if __name__ == "__main__":
     
     # some feedback:
     if not args.quiet:
-        print
+        print()
         
     # get the couples of Fisher matrices:
     fisher_names = list(itertools.combinations( fishers.get_fisher_name_list(), 2))
@@ -171,16 +171,16 @@ if __name__ == "__main__":
     # print some warning feedback it it's the case:
     if not args.quiet:
         if len(fisher_names) > 10:
-            print ' WARNING: comparison will result in '+str(len(fisher_names))+' plots.'
-            print ' That is a lot and will take some time...'
-            print
+            print(' WARNING: comparison will result in '+str(len(fisher_names))+' plots.')
+            print(' That is a lot and will take some time...')
+            print()
     
     # cycle over the couples:
     for fisher_couples in fisher_names:
         
         # print some feedback:
         if not args.quiet:
-            print ' Comparing '+fisher_couples[0]+' and '+fisher_couples[1]+': ',
+            print(' Comparing '+fisher_couples[0]+' and '+fisher_couples[1]+': ', end=' ')
         
         # get the names:
         fisher_name_1 = fisher_couples[0]
@@ -194,11 +194,11 @@ if __name__ == "__main__":
         if fisher_1 == fisher_2:
             # print feedback:
             if not args.quiet:
-                print 'equal.'
+                print('equal.')
         else:
             # print feedback:
             if not args.quiet:
-                print 'different. Plotting results.'
+                print('different. Plotting results.')
             
             # make sure that the two matrices have the same parameters:
             fisher_1_paramnames = fisher_1.get_param_names()
@@ -207,7 +207,7 @@ if __name__ == "__main__":
             
             # check if there's parameters left:
             if len(paramnames)==0:
-                print 'the two Fisher matrices do not have common parameters.'
+                print('the two Fisher matrices do not have common parameters.')
                 continue
             
             # now reshuffle:
@@ -325,7 +325,7 @@ if __name__ == "__main__":
             
             # print some final feedback:
             if not args.quiet:
-                print '  Done. Saved results in: ', outroot+fisher_name_1+'_vs_'+fisher_name_2+'.'+output_format
+                print('  Done. Saved results in: ', outroot+fisher_name_1+'_vs_'+fisher_name_2+'.'+output_format)
         
     # exit without error:
     exit(0)

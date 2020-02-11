@@ -181,8 +181,8 @@ class CosmicFish_PlotSettings():
         self.D1_show_yaxis_label     = True                
         self.D1_x_label_rotation     = 0                   
         self.D1_y_label_rotation     = 90                  
-        self.D1_prob_label           = u'$P/P_{\\rm max}$' 
-        self.D1_norm_prob_label      = u'$P$'              
+        self.D1_prob_label           = '$P/P_{\\rm max}$' 
+        self.D1_norm_prob_label      = '$P$'              
         self.D1_main_fontsize        = 10.0                
         self.D1_secondary_fontsize   = 9.0                 
         self.D1_show_best_fit        = False               
@@ -255,12 +255,12 @@ class CosmicFish_PlotSettings():
             if not isinstance(dictionary, dict):
                 raise ValueError('Invalid input. Dictionary shall be a dictionary of settings.')
             else:
-                temp = [ key for key in dictionary.keys() if key in __accepted_settings__ ]
+                temp = [ key for key in list(dictionary.keys()) if key in __accepted_settings__ ]
                 for key in temp:
                     setattr(self, key, dictionary[key])
         # now parse kwargs. Esplicit kwarg takes precedence wrt dictionary:
         if kwargs is not None:
-            temp = [ key for key in kwargs.keys() if key in __accepted_settings__ ]
+            temp = [ key for key in list(kwargs.keys()) if key in __accepted_settings__ ]
             for key in temp:
                 setattr(self, key, kwargs[key])
             
@@ -286,12 +286,12 @@ class CosmicFish_PlotSettings():
             if not isinstance(dictionary, dict):
                 raise ValueError('Invalid input. Dictionary shall be a dictionary of settings.')
             else:
-                temp = [ key for key in dictionary.keys() if key in __accepted_settings__ ]
+                temp = [ key for key in list(dictionary.keys()) if key in __accepted_settings__ ]
                 for key in temp:
                     setattr(self, key, dictionary[key])
         # now parse kwargs. Esplicit kwarg takes precedence wrt dictionary:
         if kwargs is not None:
-            temp = [ key for key in kwargs.keys() if key in __accepted_settings__ ]
+            temp = [ key for key in list(kwargs.keys()) if key in __accepted_settings__ ]
             for key in temp:
                 setattr(self, key, kwargs[key])
         

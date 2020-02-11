@@ -193,7 +193,7 @@ if __name__ == "__main__":
     
     # print some final feedback:
     if not args.quiet:
-        print 'Done. Saved results in: ', outroot+'.'+output_format
+        print('Done. Saved results in: ', outroot+'.'+output_format)
     
     # exit without error:
     exit(0)

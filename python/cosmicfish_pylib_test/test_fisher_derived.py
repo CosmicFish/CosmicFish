@@ -37,16 +37,16 @@ class test_getters():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header( __name__+': test_getters.setup_class() ----------')
+        print(color_print.header( __name__+': test_getters.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold( __name__+': test_getters.teardown_class() -------')
+        print(color_print.bold( __name__+': test_getters.teardown_class() -------'))
 
     def setup(self):
         # generate the Fisher matrix. In this case a simple diagonal matrix.
         matrix = np.identity(3)
-        for i in xrange(3):
+        for i in range(3):
             matrix[i,i] = i+1
         # Jacobian matrix:
         matrix_derived = np.zeros( (3, 2) )
@@ -54,11 +54,11 @@ class test_getters():
         matrix_derived[1,1] = 1.0
         matrix_derived[2,0] = 1.0
         # parameter names:
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ]
-        derived_param_names_latex = [ 'md'+str(i) for i in xrange(2) ]
+        param_names_latex = [ 'm'+str(i) for i in range(3) ]
+        derived_param_names_latex = [ 'md'+str(i) for i in range(2) ]
         # fiducial:
-        fiducial = [ float(i) for i in xrange(3) ]
-        fiducial_derived = [ float(i) for i in xrange(2) ]
+        fiducial = [ float(i) for i in range(3) ]
+        fiducial_derived = [ float(i) for i in range(2) ]
         # initialize the Fisher type:
         self.fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
         # initialize the derived matrix:
@@ -96,11 +96,11 @@ class test_fisher_derived_init():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_fisher_derived_init.setup_class() ----------')
+        print(color_print.header(__name__+': test_fisher_derived_init.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_fisher_derived_init.teardown_class() -------')
+        print(color_print.bold(__name__+': test_fisher_derived_init.teardown_class() -------'))
 
     def setup(self):
         pass
@@ -159,11 +159,11 @@ class test_fisher_derived_init():
         matrix_derived[1,1] = 1.0
         matrix_derived[2,0] = 1.0
         # parameter names:
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ]
-        derived_param_names_latex = [ 'md'+str(i) for i in xrange(2) ]
+        param_names_latex = [ 'm'+str(i) for i in range(3) ]
+        derived_param_names_latex = [ 'md'+str(i) for i in range(2) ]
         # fiducial:
-        fiducial = [ float(i) for i in xrange(3) ]
-        fiducial_derived = [ float(i) for i in xrange(2) ]
+        fiducial = [ float(i) for i in range(3) ]
+        fiducial_derived = [ float(i) for i in range(2) ]
         # initialize the derived matrix:
         fisher_1 = fd.fisher_derived( derived_matrix=matrix_derived )
         # after calling init all the objects of the class have to be initialized properly:
@@ -186,13 +186,13 @@ class test_fisher_derived_init():
         matrix_derived[1,1] = 1.0
         matrix_derived[2,0] = 1.0
         # parameter names:
-        param_names = [ 'q'+str(i) for i in xrange(4) ]   
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ]
-        derived_param_names = [ 'qd'+str(i) for i in xrange(2) ]   
-        derived_param_names_latex = [ 'md'+str(i) for i in xrange(2) ]
+        param_names = [ 'q'+str(i) for i in range(4) ]   
+        param_names_latex = [ 'm'+str(i) for i in range(3) ]
+        derived_param_names = [ 'qd'+str(i) for i in range(2) ]   
+        derived_param_names_latex = [ 'md'+str(i) for i in range(2) ]
         # fiducial:
-        fiducial = [ float(i) for i in xrange(3) ]
-        fiducial_derived = [ float(i) for i in xrange(2) ]
+        fiducial = [ float(i) for i in range(3) ]
+        fiducial_derived = [ float(i) for i in range(2) ]
         # initialize the derived matrix:
         fisher_1 = fd.fisher_derived( derived_matrix=matrix_derived )
         assert_raises( ValueError,  fd.fisher_derived, derived_matrix=matrix_derived,
@@ -208,13 +208,13 @@ class test_fisher_derived_init():
         matrix_derived[1,1] = 1.0
         matrix_derived[2,0] = 1.0
         # parameter names:
-        param_names = [ 'q'+str(i) for i in xrange(3) ]   
-        param_names_latex = [ 'm'+str(i) for i in xrange(4) ]
-        derived_param_names = [ 'qd'+str(i) for i in xrange(2) ]   
-        derived_param_names_latex = [ 'md'+str(i) for i in xrange(2) ]
+        param_names = [ 'q'+str(i) for i in range(3) ]   
+        param_names_latex = [ 'm'+str(i) for i in range(4) ]
+        derived_param_names = [ 'qd'+str(i) for i in range(2) ]   
+        derived_param_names_latex = [ 'md'+str(i) for i in range(2) ]
         # fiducial:
-        fiducial = [ float(i) for i in xrange(3) ]
-        fiducial_derived = [ float(i) for i in xrange(2) ]
+        fiducial = [ float(i) for i in range(3) ]
+        fiducial_derived = [ float(i) for i in range(2) ]
         # initialize the derived matrix:
         fisher_1 = fd.fisher_derived( derived_matrix=matrix_derived )
         assert_raises( ValueError,  fd.fisher_derived, derived_matrix=matrix_derived,
@@ -230,13 +230,13 @@ class test_fisher_derived_init():
         matrix_derived[1,1] = 1.0
         matrix_derived[2,0] = 1.0
         # parameter names:
-        param_names = [ 'q'+str(i) for i in xrange(3) ]   
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ]
-        derived_param_names = [ 'qd'+str(i) for i in xrange(3) ]   
-        derived_param_names_latex = [ 'md'+str(i) for i in xrange(2) ]
+        param_names = [ 'q'+str(i) for i in range(3) ]   
+        param_names_latex = [ 'm'+str(i) for i in range(3) ]
+        derived_param_names = [ 'qd'+str(i) for i in range(3) ]   
+        derived_param_names_latex = [ 'md'+str(i) for i in range(2) ]
         # fiducial:
-        fiducial = [ float(i) for i in xrange(3) ]
-        fiducial_derived = [ float(i) for i in xrange(2) ]
+        fiducial = [ float(i) for i in range(3) ]
+        fiducial_derived = [ float(i) for i in range(2) ]
         # initialize the derived matrix:
         fisher_1 = fd.fisher_derived( derived_matrix=matrix_derived )
         assert_raises( ValueError,  fd.fisher_derived, derived_matrix=matrix_derived,
@@ -252,13 +252,13 @@ class test_fisher_derived_init():
         matrix_derived[1,1] = 1.0
         matrix_derived[2,0] = 1.0
         # parameter names:
-        param_names = [ 'q'+str(i) for i in xrange(3) ]   
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ]
-        derived_param_names = [ 'qd'+str(i) for i in xrange(2) ]   
-        derived_param_names_latex = [ 'md'+str(i) for i in xrange(3) ]
+        param_names = [ 'q'+str(i) for i in range(3) ]   
+        param_names_latex = [ 'm'+str(i) for i in range(3) ]
+        derived_param_names = [ 'qd'+str(i) for i in range(2) ]   
+        derived_param_names_latex = [ 'md'+str(i) for i in range(3) ]
         # fiducial:
-        fiducial = [ float(i) for i in xrange(3) ]
-        fiducial_derived = [ float(i) for i in xrange(2) ]
+        fiducial = [ float(i) for i in range(3) ]
+        fiducial_derived = [ float(i) for i in range(2) ]
         # initialize the derived matrix:
         fisher_1 = fd.fisher_derived( derived_matrix=matrix_derived )
         assert_raises( ValueError,  fd.fisher_derived, derived_matrix=matrix_derived,
@@ -274,13 +274,13 @@ class test_fisher_derived_init():
         matrix_derived[1,1] = 1.0
         matrix_derived[2,0] = 1.0
         # parameter names:
-        param_names = [ 'q'+str(i) for i in xrange(3) ]   
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ]
-        derived_param_names = [ 'qd'+str(i) for i in xrange(2) ]   
-        derived_param_names_latex = [ 'md'+str(i) for i in xrange(2) ]
+        param_names = [ 'q'+str(i) for i in range(3) ]   
+        param_names_latex = [ 'm'+str(i) for i in range(3) ]
+        derived_param_names = [ 'qd'+str(i) for i in range(2) ]   
+        derived_param_names_latex = [ 'md'+str(i) for i in range(2) ]
         # fiducial:
-        fiducial = [ float(i) for i in xrange(4) ]
-        fiducial_derived = [ float(i) for i in xrange(2) ]
+        fiducial = [ float(i) for i in range(4) ]
+        fiducial_derived = [ float(i) for i in range(2) ]
         # initialize the derived matrix:
         fisher_1 = fd.fisher_derived( derived_matrix=matrix_derived )
         assert_raises( ValueError,  fd.fisher_derived, derived_matrix=matrix_derived,
@@ -296,13 +296,13 @@ class test_fisher_derived_init():
         matrix_derived[1,1] = 1.0
         matrix_derived[2,0] = 1.0
         # parameter names:
-        param_names = [ 'q'+str(i) for i in xrange(3) ]   
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ]
-        derived_param_names = [ 'qd'+str(i) for i in xrange(2) ]   
-        derived_param_names_latex = [ 'md'+str(i) for i in xrange(2) ]
+        param_names = [ 'q'+str(i) for i in range(3) ]   
+        param_names_latex = [ 'm'+str(i) for i in range(3) ]
+        derived_param_names = [ 'qd'+str(i) for i in range(2) ]   
+        derived_param_names_latex = [ 'md'+str(i) for i in range(2) ]
         # fiducial:
-        fiducial = [ float(i) for i in xrange(3) ]
-        fiducial_derived = [ float(i) for i in xrange(3) ]
+        fiducial = [ float(i) for i in range(3) ]
+        fiducial_derived = [ float(i) for i in range(3) ]
         # initialize the derived matrix:
         fisher_1 = fd.fisher_derived( derived_matrix=matrix_derived )
         assert_raises( ValueError,  fd.fisher_derived, derived_matrix=matrix_derived,
@@ -318,11 +318,11 @@ class test_fisher_derived_load_paramnames_from_file():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_fisher_derived_load_paramnames_from_file.setup_class() ----------')
+        print(color_print.header(__name__+': test_fisher_derived_load_paramnames_from_file.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_fisher_derived_load_paramnames_from_file.teardown_class() -------')
+        print(color_print.bold(__name__+': test_fisher_derived_load_paramnames_from_file.teardown_class() -------'))
 
     def setup(self):
         pass
@@ -333,12 +333,12 @@ class test_fisher_derived_load_paramnames_from_file():
         matrix_derived[0,0] = 1.0
         matrix_derived[1,1] = 1.0
         matrix_derived[2,0] = 1.0
-        param_names = [ 'q'+str(i) for i in xrange(3) ]   
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ]
-        derived_param_names = [ 'qd'+str(i) for i in xrange(2) ]   
-        derived_param_names_latex = [ 'md'+str(i) for i in xrange(2) ]
-        fiducial = [ float(i) for i in xrange(3) ]
-        fiducial_derived = [ float(i) for i in xrange(2) ]
+        param_names = [ 'q'+str(i) for i in range(3) ]   
+        param_names_latex = [ 'm'+str(i) for i in range(3) ]
+        derived_param_names = [ 'qd'+str(i) for i in range(2) ]   
+        derived_param_names_latex = [ 'md'+str(i) for i in range(2) ]
+        fiducial = [ float(i) for i in range(3) ]
+        fiducial_derived = [ float(i) for i in range(2) ]
         fisher_1 = fd.fisher_derived( derived_matrix=matrix_derived )
         fisher_1.load_paramnames_from_file( file_name=test_input+'/dummy_paramnames_1_derived.paramnames')
         # test if everything is properly initialized:
@@ -355,12 +355,12 @@ class test_fisher_derived_load_paramnames_from_file():
         matrix_derived[0,0] = 1.0
         matrix_derived[1,1] = 1.0
         matrix_derived[2,0] = 1.0
-        param_names = [ 'q'+str(i) for i in xrange(3) ]   
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ]
-        derived_param_names = [ 'qd'+str(i) for i in xrange(2) ]   
-        derived_param_names_latex = [ 'md'+str(i) for i in xrange(2) ]
-        fiducial = [ float(i) for i in xrange(3) ]
-        fiducial_derived = [ float(i) for i in xrange(2) ]
+        param_names = [ 'q'+str(i) for i in range(3) ]   
+        param_names_latex = [ 'm'+str(i) for i in range(3) ]
+        derived_param_names = [ 'qd'+str(i) for i in range(2) ]   
+        derived_param_names_latex = [ 'md'+str(i) for i in range(2) ]
+        fiducial = [ float(i) for i in range(3) ]
+        fiducial_derived = [ float(i) for i in range(2) ]
         fisher_1 = fd.fisher_derived( derived_matrix=matrix_derived )
         fisher_1.load_paramnames_from_file( file_name=test_input+'/dummy_paramnames_2_derived.paramnames')
         # test if everything is properly initialized:
@@ -377,12 +377,12 @@ class test_fisher_derived_load_paramnames_from_file():
         matrix_derived[0,0] = 1.0
         matrix_derived[1,1] = 1.0
         matrix_derived[2,0] = 1.0
-        param_names = [ 'q'+str(i) for i in xrange(3) ]   
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ]
-        derived_param_names = [ 'qd'+str(i) for i in xrange(2) ]   
-        derived_param_names_latex = [ 'md'+str(i) for i in xrange(2) ]
-        fiducial = [ float(i) for i in xrange(3) ]
-        fiducial_derived = [ float(i) for i in xrange(2) ]
+        param_names = [ 'q'+str(i) for i in range(3) ]   
+        param_names_latex = [ 'm'+str(i) for i in range(3) ]
+        derived_param_names = [ 'qd'+str(i) for i in range(2) ]   
+        derived_param_names_latex = [ 'md'+str(i) for i in range(2) ]
+        fiducial = [ float(i) for i in range(3) ]
+        fiducial_derived = [ float(i) for i in range(2) ]
         fisher_1 = fd.fisher_derived( derived_matrix=matrix_derived )
         fisher_1.load_paramnames_from_file( file_name=test_input+'/dummy_paramnames_3_derived.paramnames')
         # test if everything is properly initialized:
@@ -399,12 +399,12 @@ class test_fisher_derived_load_paramnames_from_file():
         matrix_derived[0,0] = 1.0
         matrix_derived[1,1] = 1.0
         matrix_derived[2,0] = 1.0
-        param_names = [ 'q'+str(i) for i in xrange(3) ]   
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ]
-        derived_param_names = [ 'qd'+str(i) for i in xrange(2) ]   
-        derived_param_names_latex = [ 'md'+str(i) for i in xrange(2) ]
-        fiducial = [ float(i) for i in xrange(3) ]
-        fiducial_derived = [ float(i) for i in xrange(2) ]
+        param_names = [ 'q'+str(i) for i in range(3) ]   
+        param_names_latex = [ 'm'+str(i) for i in range(3) ]
+        derived_param_names = [ 'qd'+str(i) for i in range(2) ]   
+        derived_param_names_latex = [ 'md'+str(i) for i in range(2) ]
+        fiducial = [ float(i) for i in range(3) ]
+        fiducial_derived = [ float(i) for i in range(2) ]
         fisher_1 = fd.fisher_derived( derived_matrix=matrix_derived )
         fisher_1.load_paramnames_from_file( file_name=test_input+'/dummy_paramnames_4_derived.paramnames')
         # test if everything is properly initialized:
@@ -421,12 +421,12 @@ class test_fisher_derived_load_paramnames_from_file():
         matrix_derived[0,0] = 1.0
         matrix_derived[1,1] = 1.0
         matrix_derived[2,0] = 1.0
-        param_names = [ 'q'+str(i) for i in xrange(3) ]   
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ]
-        derived_param_names = [ 'qd'+str(i) for i in xrange(4) ]   
-        derived_param_names_latex = [ 'md'+str(i) for i in xrange(4) ]
-        fiducial = [ float(i) for i in xrange(3) ]
-        fiducial_derived = [ float(i) for i in xrange(4) ]
+        param_names = [ 'q'+str(i) for i in range(3) ]   
+        param_names_latex = [ 'm'+str(i) for i in range(3) ]
+        derived_param_names = [ 'qd'+str(i) for i in range(4) ]   
+        derived_param_names_latex = [ 'md'+str(i) for i in range(4) ]
+        fiducial = [ float(i) for i in range(3) ]
+        fiducial_derived = [ float(i) for i in range(4) ]
         fisher_1 = fd.fisher_derived( derived_matrix=matrix_derived )
         fisher_1.load_paramnames_from_file( file_name=test_input+'/dummy_paramnames_5_derived.paramnames')
         # test if everything is properly initialized:
@@ -443,12 +443,12 @@ class test_fisher_derived_load_paramnames_from_file():
         matrix_derived[0,0] = 1.0
         matrix_derived[1,1] = 1.0
         matrix_derived[2,0] = 1.0
-        param_names = [ 'q'+str(i) for i in xrange(3) ]   
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ]
-        derived_param_names = [ 'qd'+str(i) for i in xrange(4) ]   
-        derived_param_names_latex = [ 'md'+str(i) for i in xrange(4) ]
-        fiducial = [ float(i) for i in xrange(3) ]
-        fiducial_derived = [ float(i) for i in xrange(4) ]
+        param_names = [ 'q'+str(i) for i in range(3) ]   
+        param_names_latex = [ 'm'+str(i) for i in range(3) ]
+        derived_param_names = [ 'qd'+str(i) for i in range(4) ]   
+        derived_param_names_latex = [ 'md'+str(i) for i in range(4) ]
+        fiducial = [ float(i) for i in range(3) ]
+        fiducial_derived = [ float(i) for i in range(4) ]
         fisher_1 = fd.fisher_derived( derived_matrix=matrix_derived )
         assert_raises( ValueError, fisher_1.load_paramnames_from_file, file_name=test_input+'/dummy_paramnames_5_derived.paramnames' )
 
@@ -458,16 +458,16 @@ class test_add_derived():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header( __name__+': test_add_derived.setup_class() ----------')
+        print(color_print.header( __name__+': test_add_derived.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold( __name__+': test_add_derived.teardown_class() -------')
+        print(color_print.bold( __name__+': test_add_derived.teardown_class() -------'))
 
     def setup(self):
         # generate the Fisher matrix. In this case a simple diagonal matrix.
         matrix = np.identity(3)
-        for i in xrange(3):
+        for i in range(3):
             matrix[i,i] = i+1
         # Jacobian matrix:
         matrix_derived = np.zeros( (3, 2) )
@@ -475,11 +475,11 @@ class test_add_derived():
         matrix_derived[1,1] = 1.0
         matrix_derived[2,0] = 1.0
         # parameter names:
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ]
-        derived_param_names_latex = [ 'md'+str(i) for i in xrange(2) ]
+        param_names_latex = [ 'm'+str(i) for i in range(3) ]
+        derived_param_names_latex = [ 'md'+str(i) for i in range(2) ]
         # fiducial:
-        fiducial = [ float(i) for i in xrange(3) ]
-        fiducial_derived = [ float(i) for i in xrange(2) ]
+        fiducial = [ float(i) for i in range(3) ]
+        fiducial_derived = [ float(i) for i in range(2) ]
         # initialize the Fisher type:
         self.fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
         # initialize the derived matrix:
@@ -492,12 +492,12 @@ class test_add_derived():
         assert_raises( ValueError, self.fisher_der.add_derived, fisher_matrix=[0.0] )
     
     def test_invalid_names(self):
-        fake_names = [ 'm'+str(i) for i in xrange(3) ]
+        fake_names = [ 'm'+str(i) for i in range(3) ]
         self.fisher_1.set_param_names( fake_names )
         assert_raises( ValueError, self.fisher_der.add_derived, fisher_matrix=self.fisher_1 )
         
     def test_invalid_fiducial(self):
-        fake_fiducial = [ float(i+1) for i in xrange(3) ]
+        fake_fiducial = [ float(i+1) for i in range(3) ]
         self.fisher_1.set_fiducial( fake_fiducial )
         assert_raises( ValueError, self.fisher_der.add_derived, fisher_matrix=self.fisher_1 )
         
@@ -529,11 +529,11 @@ class test_add_derived():
         matrix_derived[0,0] = 1.e10
         matrix_derived[2,0] = 1.e-10
         # parameter names:
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ]
-        derived_param_names_latex = [ 'md'+str(i) for i in xrange(2) ]
+        param_names_latex = [ 'm'+str(i) for i in range(3) ]
+        derived_param_names_latex = [ 'md'+str(i) for i in range(2) ]
         # fiducial:
-        fiducial = [ float(i) for i in xrange(3) ]
-        fiducial_derived = [ float(i) for i in xrange(2) ]
+        fiducial = [ float(i) for i in range(3) ]
+        fiducial_derived = [ float(i) for i in range(2) ]
         # initialize the derived matrix:
         fisher_der = fd.fisher_derived( derived_matrix=matrix_derived, 
                                              param_names_latex=param_names_latex, 

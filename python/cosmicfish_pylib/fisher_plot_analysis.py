@@ -28,13 +28,13 @@ import os
 import math
 import copy
 import numpy as np
-import utilities         as fu
-import fisher_matrix     as fm
-import fisher_derived    as fd
-import fisher_operations as fo
-from __builtin__ import dict
+from . import utilities         as fu
+from . import fisher_matrix     as fm
+from . import fisher_derived    as fd
+from . import fisher_operations as fo
+from builtins import dict
 
-import __init__ as CosmicFishPyLib
+from . import __init__ as CosmicFishPyLib
 
 # ***************************************************************************************
 
@@ -160,38 +160,38 @@ class CosmicFish_FisherAnalysis():
                     
         # import fisher matrices:
         for file in fisher_files:
-            if CosmicFishPyLib.__feedback__ > 1: print 'Trying to import: '+file+' as a Fisher matrix: ',
+            if CosmicFishPyLib.__feedback__ > 1: print('Trying to import: '+file+' as a Fisher matrix: ', end=' ')
             try:    
                 self.fisher_list.append( fm.fisher_matrix( file_name = file ))
                 self.fisher_name_list.append( self.fisher_list[-1].name )
-                if CosmicFishPyLib.__feedback__ > 1: print 'SUCCESS'
-                if CosmicFishPyLib.__feedback__ == 1: print 'Imported as a Fisher matrix: '+file
+                if CosmicFishPyLib.__feedback__ > 1: print('SUCCESS')
+                if CosmicFishPyLib.__feedback__ == 1: print('Imported as a Fisher matrix: '+file)
                 # remove from the derived fishers if necessary:
                 derived_fisher_files.remove(file)
             except:
-                if CosmicFishPyLib.__feedback__ > 1: print 'FAIL'
+                if CosmicFishPyLib.__feedback__ > 1: print('FAIL')
         # import derived fisher matrices:
         if with_derived:
             for file in derived_fisher_files:
                 # get the derived matrix:
-                if CosmicFishPyLib.__feedback__ > 1: print 'Trying to import: '+file+' as a derived Fisher matrix: ',
+                if CosmicFishPyLib.__feedback__ > 1: print('Trying to import: '+file+' as a derived Fisher matrix: ', end=' ')
                 try:    
                     fisher_derived = fd.fisher_derived( file_name = file )
-                    if CosmicFishPyLib.__feedback__ > 1: print 'SUCCESS'
+                    if CosmicFishPyLib.__feedback__ > 1: print('SUCCESS')
                 except: 
                     fisher_derived = None
-                    if CosmicFishPyLib.__feedback__ > 1: print 'FAIL'
+                    if CosmicFishPyLib.__feedback__ > 1: print('FAIL')
                 # add derived to the fisher matrix when possible:
                 if fisher_derived is not None:
-                    for i in xrange( len( self.fisher_name_list) ):
-                        if CosmicFishPyLib.__feedback__ > 1: print 'Trying to add derived from: '+fisher_derived.name+' to the Fisher matrix: '+self.fisher_list[i].name,
+                    for i in range( len( self.fisher_name_list) ):
+                        if CosmicFishPyLib.__feedback__ > 1: print('Trying to add derived from: '+fisher_derived.name+' to the Fisher matrix: '+self.fisher_list[i].name, end=' ')
                         try: 
                             self.fisher_list[i] = fisher_derived.add_derived( fisher_matrix=self.fisher_list[i], preserve_input=True )
                             self.fisher_name_list[i] = self.fisher_list[i].name 
-                            if CosmicFishPyLib.__feedback__ > 1: print 'SUCCESS'
-                            if CosmicFishPyLib.__feedback__ == 1: print 'Added derived parameters from: '+fisher_derived.name+' to Fisher matrix: '+self.fisher_list[i].name
+                            if CosmicFishPyLib.__feedback__ > 1: print('SUCCESS')
+                            if CosmicFishPyLib.__feedback__ == 1: print('Added derived parameters from: '+fisher_derived.name+' to Fisher matrix: '+self.fisher_list[i].name)
                         except:
-                            if CosmicFishPyLib.__feedback__ > 1: print 'FAIL'
+                            if CosmicFishPyLib.__feedback__ > 1: print('FAIL')
                 
     # -----------------------------------------------------------------------------------
     
@@ -270,7 +270,7 @@ class CosmicFish_FisherAnalysis():
         # get indeces to delete:
         indexes_to_delete = [ i for i, s in enumerate(self.fisher_name_list) if s in names_to_delete ]
         # delete them. We have to use this way because fisher_matrix might not have a delete method and we do not want to move in memory the arrays.
-        for i in xrange(len(indexes_to_delete)):
+        for i in range(len(indexes_to_delete)):
             self.fisher_name_list.pop(indexes_to_delete[i]-i)
             self.fisher_list.pop(indexes_to_delete[i]-i)
         
@@ -387,7 +387,7 @@ class CosmicFish_FisherAnalysis():
                     latex_names[name] = fish.get_param_name_latex(name)
                 except:
                     continue
-                if latex_names.has_key(name): continue
+                if name in latex_names: continue
         
         return latex_names
     
@@ -456,7 +456,7 @@ class CosmicFish_FisherAnalysis():
             range.append([ float(str(np.amin(lower_bound))), float(str(np.amax(upper_bound))) ])
         
         dict = {}
-        for i,j in zip(params_temp,xrange(len(params_temp))):
+        for i,j in zip(params_temp,range(len(params_temp))):
             dict[i] = range[j]
             
         return dict

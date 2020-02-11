@@ -38,11 +38,11 @@ import matplotlib.gridspec as gridspec
 import matplotlib.patches  as mpatches
 import matplotlib.lines    as mlines
 
-import utilities     as fu
-import fisher_matrix as fm
-import fisher_plot_analysis as fpa
+from . import utilities     as fu
+from . import fisher_matrix as fm
+from . import fisher_plot_analysis as fpa
 
-from fisher_plot_settings import *
+from .fisher_plot_settings import *
 
 # ***************************************************************************************
 
@@ -529,7 +529,7 @@ class CosmicFishPlotter():
             subplot.set_xticklabels( [] )
         else:
             xticks = np.linspace(x_limits[0], x_limits[1], number_x_ticks)
-            xticks = [ u'$'+str('{}'.format(i))+'$' for i in xticks ]
+            xticks = [ '$'+str('{}'.format(i))+'$' for i in xticks ]
             subplot.set_xticklabels( xticks, fontsize=secondary_fontsize )
             if xlabel_up: subplot.xaxis.tick_top()
         # yticks:
@@ -537,7 +537,7 @@ class CosmicFishPlotter():
             subplot.set_yticklabels( [] )
         else:
             yticks = np.linspace(0,1, number_y_ticks) 
-            yticks = [ u'$'+str('{}'.format(i))+'$' for i in yticks ]
+            yticks = [ '$'+str('{}'.format(i))+'$' for i in yticks ]
             subplot.set_yticklabels( yticks, fontsize=secondary_fontsize )
             if ylabel_right: subplot.yaxis.tick_right()
         # align the left and right tick labels:
@@ -550,7 +550,7 @@ class CosmicFishPlotter():
             pass
         # set axis labels:
         if show_xaxis_label:
-            subplot.set_xlabel( u'$'+self.plot_fishers.get_parameter_latex_names()[param]+'$', fontsize=main_fontsize, rotation=x_label_rotation )
+            subplot.set_xlabel( '$'+self.plot_fishers.get_parameter_latex_names()[param]+'$', fontsize=main_fontsize, rotation=x_label_rotation )
             if xlabel_up: subplot.xaxis.set_label_position("top")
         if show_yaxis_label:
             if normalized:
@@ -649,7 +649,7 @@ class CosmicFishPlotter():
             subplot.set_xticklabels( [] )
         else:
             xticks = np.linspace(ranges[param1][0], ranges[param1][1], number_x_ticks)
-            xticks = [ u'$'+str('{}'.format(i))+'$' for i in xticks ]
+            xticks = [ '$'+str('{}'.format(i))+'$' for i in xticks ]
             subplot.set_xticklabels( xticks, fontsize=secondary_fontsize )
             if xlabel_up: subplot.xaxis.tick_top()
         # yticks:
@@ -657,7 +657,7 @@ class CosmicFishPlotter():
             subplot.set_yticklabels( [] )
         else:
             yticks = np.linspace( ranges[param2][0], ranges[param2][1], number_y_ticks)
-            yticks = [ u'$'+str('{}'.format(i))+'$' for i in yticks ]
+            yticks = [ '$'+str('{}'.format(i))+'$' for i in yticks ]
             subplot.set_yticklabels( yticks, fontsize=secondary_fontsize )
             if ylabel_right: subplot.yaxis.tick_right()
         # align the left and right tick labels:
@@ -670,10 +670,10 @@ class CosmicFishPlotter():
             pass
         # set axis labels:
         if show_xaxis_label:
-            subplot.set_xlabel( u'$'+self.plot_fishers.get_parameter_latex_names()[param1]+'$', fontsize=main_fontsize, rotation=x_label_rotation )
+            subplot.set_xlabel( '$'+self.plot_fishers.get_parameter_latex_names()[param1]+'$', fontsize=main_fontsize, rotation=x_label_rotation )
             if xlabel_up: subplot.xaxis.set_label_position("top")
         if show_yaxis_label:
-            subplot.set_ylabel( u'$'+self.plot_fishers.get_parameter_latex_names()[param2]+'$', fontsize=main_fontsize, rotation=y_label_rotation )
+            subplot.set_ylabel( '$'+self.plot_fishers.get_parameter_latex_names()[param2]+'$', fontsize=main_fontsize, rotation=y_label_rotation )
             if ylabel_right: subplot.yaxis.set_label_position("right")    
                 
     # -----------------------------------------------------------------------------------
@@ -690,7 +690,7 @@ class CosmicFishPlotter():
             otherwise the value in :class:`cosmicfish_pylib.fisher_plot.CosmicFishPlotter.plot_settings`
         
         """
-        if kwargs.has_key(key): 
+        if key in kwargs: 
             return kwargs[key]
         else:
             try:
@@ -719,7 +719,7 @@ class CosmicFishPlotter():
         # let's start with colors. We want them binded to names so there is consistency of colors through plots.
         # line colors
         self.bind_line_colors = {}
-        if kwargs.has_key('line_colors'): 
+        if 'line_colors' in kwargs: 
             for i, name in enumerate(names_temp):
                 self.bind_line_colors[name] = kwargs['line_colors'][i]
         else:
@@ -727,7 +727,7 @@ class CosmicFishPlotter():
                 self.bind_line_colors[name] = self.plot_settings.line_colors[i]
         # solid colors
         self.bind_solid_colors = {}
-        if kwargs.has_key('solid_colors'): 
+        if 'solid_colors' in kwargs: 
             for i, name in enumerate(names_temp):
                 self.bind_solid_colors[name] = kwargs['solid_colors'][i]
         else:
@@ -735,7 +735,7 @@ class CosmicFishPlotter():
                 self.bind_solid_colors[name] = self.plot_settings.solid_colors[i]
         # labels:
         self.bind_labels = {}
-        if kwargs.has_key('labels'): 
+        if 'labels' in kwargs: 
             for i, name in enumerate(names_temp):
                 self.bind_labels[name] = kwargs['labels'][i]
         else:
@@ -743,7 +743,7 @@ class CosmicFishPlotter():
                 self.bind_labels[name] = name
         # linestyle:
         self.bind_linestyle = {}
-        if kwargs.has_key('linestyle'): 
+        if 'linestyle' in kwargs: 
             for i, name in enumerate(names_temp):
                 self.bind_linestyle[name] = kwargs['linestyle'][i]
         else:
@@ -776,7 +776,7 @@ class CosmicFishPlotter():
         sizes_dictionary['figure'] = self.figure.get_size_inches() #: in inches
         # get max (x,y) size of the y ticks:
         max_y_tick_label = [0.0,0.0]
-        for plot in self.plot_dict.values():
+        for plot in list(self.plot_dict.values()):
             for ylabel in plot.get_yticklabels():
                 x_dimension = ylabel.get_window_extent(renderer).width/default_dpi  #: in inches
                 y_dimension = ylabel.get_window_extent(renderer).height/default_dpi  #: in inches
@@ -785,7 +785,7 @@ class CosmicFishPlotter():
         sizes_dictionary['y_tick_labels'] = max_y_tick_label #: in inches
         # get max (x,y) size of the x ticks:
         max_x_tick_label = [0.0,0.0]
-        for plot in self.plot_dict.values():
+        for plot in list(self.plot_dict.values()):
             for xlabel in plot.get_xticklabels():
                 x_dimension = xlabel.get_window_extent(renderer).width/default_dpi  #: in inches
                 y_dimension = xlabel.get_window_extent(renderer).height/default_dpi  #: in inches
@@ -794,7 +794,7 @@ class CosmicFishPlotter():
         sizes_dictionary['x_tick_labels'] = max_x_tick_label #: in inches
         # get max (x,y) size of the y label:
         max_y_label = [0.0,0.0]
-        for plot in self.plot_dict.values():    
+        for plot in list(self.plot_dict.values()):    
             x_dimension = plot.yaxis.get_label().get_window_extent(renderer).width/default_dpi  #: in inches
             y_dimension = plot.yaxis.get_label().get_window_extent(renderer).height/default_dpi  #: in inches
             if x_dimension>max_y_label[0]: max_y_label[0]=x_dimension
@@ -802,7 +802,7 @@ class CosmicFishPlotter():
         sizes_dictionary['y_labels'] = max_y_label #: in inches 
         # get max (x,y) size of the x label:
         max_x_label = [0.0,0.0]
-        for plot in self.plot_dict.values():     
+        for plot in list(self.plot_dict.values()):     
             x_dimension = plot.xaxis.get_label().get_window_extent(renderer).width/default_dpi  #: in inches
             y_dimension = plot.xaxis.get_label().get_window_extent(renderer).height/default_dpi  #: in inches
             if x_dimension>max_x_label[0]: max_x_label[0]=x_dimension
@@ -892,19 +892,19 @@ class CosmicFishPlotter():
         # compute the global paddings, and the space between sub plots
         wspace = ( +dimensions['ytick_pad'] +2.0*dimensions['label_pad'] +dimensions['y_tick_labels'][0] +dimensions['y_labels'][0] )/2.0
         hspace = ( +dimensions['xtick_pad'] +2.0*dimensions['label_pad'] +dimensions['x_tick_labels'][1] +dimensions['x_labels'][1] )/2.0
-        if 'left' in [ subplot.yaxis.get_label_position() for subplot in self.plot_dict.values() ]:
+        if 'left' in [ subplot.yaxis.get_label_position() for subplot in list(self.plot_dict.values()) ]:
             left   = 2.0*wspace
         else:
             left   = small_space
-        if 'right' in [ subplot.yaxis.get_label_position() for subplot in self.plot_dict.values() ]:
+        if 'right' in [ subplot.yaxis.get_label_position() for subplot in list(self.plot_dict.values()) ]:
             right  = x_size - 2.0*wspace
         else:
             right  = x_size - small_space
-        if 'bottom' in [ subplot.xaxis.get_label_position() for subplot in self.plot_dict.values() ]:
+        if 'bottom' in [ subplot.xaxis.get_label_position() for subplot in list(self.plot_dict.values()) ]:
             bottom  = 2.0*hspace
         else:
             bottom  = small_space
-        if 'top' in [ subplot.xaxis.get_label_position() for subplot in self.plot_dict.values() ]:
+        if 'top' in [ subplot.xaxis.get_label_position() for subplot in list(self.plot_dict.values()) ]:
             top  = y_size - 2.0*hspace
         else:
             top  = y_size - small_space
@@ -1014,19 +1014,19 @@ class CosmicFishPlotter():
         # compute the global paddings, and the space between sub plots
         wspace = ( +dimensions['ytick_pad'] +2.0*dimensions['label_pad'] +dimensions['y_tick_labels'][0] +dimensions['y_labels'][0] )/2.0
         hspace = ( +dimensions['xtick_pad'] +2.0*dimensions['label_pad'] +dimensions['x_tick_labels'][1] +dimensions['x_labels'][1] )/2.0
-        if 'left' in [ subplot.yaxis.get_label_position() for subplot in self.plot_dict.values() ]:
+        if 'left' in [ subplot.yaxis.get_label_position() for subplot in list(self.plot_dict.values()) ]:
             left   = 2.0*wspace
         else:
             left   = small_space
-        if 'right' in [ subplot.yaxis.get_label_position() for subplot in self.plot_dict.values() ]:
+        if 'right' in [ subplot.yaxis.get_label_position() for subplot in list(self.plot_dict.values()) ]:
             right  = x_size - 2.0*wspace
         else:
             right  = x_size - small_space
-        if 'bottom' in [ subplot.xaxis.get_label_position() for subplot in self.plot_dict.values() ]:
+        if 'bottom' in [ subplot.xaxis.get_label_position() for subplot in list(self.plot_dict.values()) ]:
             bottom  = 2.0*hspace
         else:
             bottom  = small_space
-        if 'top' in [ subplot.xaxis.get_label_position() for subplot in self.plot_dict.values() ]:
+        if 'top' in [ subplot.xaxis.get_label_position() for subplot in list(self.plot_dict.values()) ]:
             top  = y_size - 2.0*hspace
         else:
             top  = y_size - small_space
@@ -1110,7 +1110,7 @@ class CosmicFishPlotter():
                 leg_handlers.append( mlines.Line2D([], [], color = self.bind_line_colors[name],
                                                    linestyle = self.bind_linestyle[name], ) )
         # process names:
-        names_legend = [ u'$\\mathrm{'+str(i).replace(" ", "\ ").replace('_', '\ ')+'}$' for i in names_temp]
+        names_legend = [ '$\\mathrm{'+str(i).replace(" ", "\ ").replace('_', '\ ')+'}$' for i in names_temp]
         self.legend = self.figure.legend( handles  = leg_handlers, 
                                           labels   = names_legend, 
                                           fontsize = main_fontsize,
@@ -1139,7 +1139,7 @@ class CosmicFishPlotter():
         # override settings:
         fontsize = self.setting_setter('title_fontsize', **kwargs)
         # create the title:
-        self.title = self.figure.suptitle( u'$\\mathrm{'+str(title).replace(" ", "\ ")+'}$', fontsize=fontsize )
+        self.title = self.figure.suptitle( '$\\mathrm{'+str(title).replace(" ", "\ ")+'}$', fontsize=fontsize )
         
     # -----------------------------------------------------------------------------------
     

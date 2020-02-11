@@ -41,11 +41,11 @@ class test_setup():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_setup.setup_class() ----------')
+        print(color_print.header(__name__+': test_setup.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_setup.teardown_class() -------')
+        print(color_print.bold(__name__+': test_setup.teardown_class() -------'))
 
     def setup(self):
         # create a list of fisher matrices:
@@ -53,12 +53,12 @@ class test_setup():
         num_param = 6
         num_fish  = 3
         matrix = np.identity(num_param)
-        for j in xrange(num_fish):
-            for i in xrange(num_param):
+        for j in range(num_fish):
+            for i in range(num_param):
                 #matrix[i,i] = i+j+1
                 matrix[i,i] = (i+1)/float(j+1)
-            param_names_latex = [ 'm'+str(i) for i in xrange(num_param) ] 
-            fiducial = [ float(i) for i in xrange(num_param) ]
+            param_names_latex = [ 'm'+str(i) for i in range(num_param) ] 
+            fiducial = [ float(i) for i in range(num_param) ]
             fisher = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
             fisher.name = 'fisher'+str(j+1)
             fisher_list.append( fisher )
@@ -103,11 +103,11 @@ class test_utilities():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_utilities.setup_class() ----------')
+        print(color_print.header(__name__+': test_utilities.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_utilities.teardown_class() -------')
+        print(color_print.bold(__name__+': test_utilities.teardown_class() -------'))
 
     def setup(self):
         # create a list of fisher matrices:
@@ -115,12 +115,12 @@ class test_utilities():
         num_param = 6
         num_fish  = 3
         matrix = np.identity(num_param)
-        for j in xrange(num_fish):
-            for i in xrange(num_param):
+        for j in range(num_fish):
+            for i in range(num_param):
                 #matrix[i,i] = i+j+1
                 matrix[i,i] = (i+1)/float(j+1)
-            param_names_latex = [ 'm'+str(i) for i in xrange(num_param) ] 
-            fiducial = [ float(i) for i in xrange(num_param) ]
+            param_names_latex = [ 'm'+str(i) for i in range(num_param) ] 
+            fiducial = [ float(i) for i in range(num_param) ]
             fisher = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
             fisher.name = 'fisher'+str(j+1)
             fisher_list.append( fisher )
@@ -151,11 +151,11 @@ class test_plot1D():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_plot1D.setup_class() ----------')
+        print(color_print.header(__name__+': test_plot1D.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_plot1D.teardown_class() -------')
+        print(color_print.bold(__name__+': test_plot1D.teardown_class() -------'))
 
     def setup(self):
         # create a list of fisher matrices:
@@ -163,12 +163,12 @@ class test_plot1D():
         num_param = 6
         num_fish  = 3
         matrix = np.identity(num_param)
-        for j in xrange(num_fish):
-            for i in xrange(num_param):
+        for j in range(num_fish):
+            for i in range(num_param):
                 #matrix[i,i] = i+j+1
                 matrix[i,i] = (i+1)/float(j+1)
-            param_names_latex = [ 'm'+str(i) for i in xrange(num_param) ] 
-            fiducial = [ float(i) for i in xrange(num_param) ]
+            param_names_latex = [ 'm'+str(i) for i in range(num_param) ] 
+            fiducial = [ float(i) for i in range(num_param) ]
             fisher = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
             fisher.name = 'fisher'+str(j+1)
             fisher_list.append( fisher )
@@ -288,11 +288,11 @@ class test_plot2D():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_plot2D.setup_class() ----------')
+        print(color_print.header(__name__+': test_plot2D.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_plot2D.teardown_class() -------')
+        print(color_print.bold(__name__+': test_plot2D.teardown_class() -------'))
 
     def setup(self):
         # create a list of fisher matrices:
@@ -300,12 +300,12 @@ class test_plot2D():
         num_param = 3
         num_fish  = 3
         matrix = np.identity(num_param)
-        for j in xrange(num_fish):
-            for i in xrange(num_param):
+        for j in range(num_fish):
+            for i in range(num_param):
                 #matrix[i,i] = i+j+1
                 matrix[i,i] = (i+1)/float(j+1)
-            param_names_latex = [ 'm'+str(i) for i in xrange(num_param) ] 
-            fiducial = [ float(i) for i in xrange(num_param) ]
+            param_names_latex = [ 'm'+str(i) for i in range(num_param) ] 
+            fiducial = [ float(i) for i in range(num_param) ]
             fisher = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
             fisher.name = 'fisher'+str(j+1)
             fisher_list.append( fisher )
@@ -391,11 +391,11 @@ class test_plot3D():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_plot3D.setup_class() ----------')
+        print(color_print.header(__name__+': test_plot3D.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_plot3D.teardown_class() -------')
+        print(color_print.bold(__name__+': test_plot3D.teardown_class() -------'))
 
     def setup(self):
         # create a list of fisher matrices:
@@ -403,12 +403,12 @@ class test_plot3D():
         num_param = 4
         num_fish  = 1
         matrix = np.identity(num_param)
-        for j in xrange(num_fish):
-            for i in xrange(num_param):
+        for j in range(num_fish):
+            for i in range(num_param):
                 #matrix[i,i] = i+j+1
                 matrix[i,i] = (i+1)/float(j+1)
-            param_names_latex = [ 'm'+str(i) for i in xrange(num_param) ] 
-            fiducial = [ float(i) for i in xrange(num_param) ]
+            param_names_latex = [ 'm'+str(i) for i in range(num_param) ] 
+            fiducial = [ float(i) for i in range(num_param) ]
             fisher = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
             fisher.name = 'fisher'+str(j+1)
             fisher_list.append( fisher )
@@ -444,11 +444,11 @@ class test_plot_tri():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_plot_tri.setup_class() ----------')
+        print(color_print.header(__name__+': test_plot_tri.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_plot_tri.teardown_class() -------')
+        print(color_print.bold(__name__+': test_plot_tri.teardown_class() -------'))
 
     def setup(self):
         # create a list of fisher matrices:
@@ -456,12 +456,12 @@ class test_plot_tri():
         num_param = 4
         num_fish  = 3
         matrix = np.identity(num_param)
-        for j in xrange(num_fish):
-            for i in xrange(num_param):
+        for j in range(num_fish):
+            for i in range(num_param):
                 #matrix[i,i] = i+j+1
                 matrix[i,i] = (i+1)/float(j+1)
-            param_names_latex = [ 'm'+str(i) for i in xrange(num_param) ] 
-            fiducial = [ float(i) for i in xrange(num_param) ]
+            param_names_latex = [ 'm'+str(i) for i in range(num_param) ] 
+            fiducial = [ float(i) for i in range(num_param) ]
             fisher = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
             fisher.name = 'fisher'+str(j+1)
             fisher_list.append( fisher )
@@ -524,7 +524,7 @@ class test_plot_tri():
         test_plotter = fp.CosmicFishPlotter( fishers=self.fisher_list_test )
         test_plotter.new_plot()
         test_plotter.plot_tri(['p1','p2'])
-        for subplot in test_plotter.plot_dict.values():
+        for subplot in list(test_plotter.plot_dict.values()):
             subplot.yaxis.set_label_position('right')
             subplot.xaxis.set_label_position('top')
         test_plotter.set_triplot_dimensions( num_col=2, num_rows=2 )
@@ -533,7 +533,7 @@ class test_plot_tri():
         test_plotter = fp.CosmicFishPlotter( fishers=self.fisher_list_test )
         test_plotter.new_plot()
         test_plotter.plot_tri(['p1','p2'])
-        for subplot in test_plotter.plot_dict.values():
+        for subplot in list(test_plotter.plot_dict.values()):
             subplot.yaxis.set_label_position('left')
             subplot.xaxis.set_label_position('bottom')
         test_plotter.set_triplot_dimensions( num_col=2, num_rows=2 )
@@ -577,11 +577,11 @@ class test_plot_mixed():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_plot_mixed.setup_class() ----------')
+        print(color_print.header(__name__+': test_plot_mixed.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_plot_mixed.teardown_class() -------')
+        print(color_print.bold(__name__+': test_plot_mixed.teardown_class() -------'))
 
     def setup(self):
         # create a list of fisher matrices:
@@ -589,12 +589,12 @@ class test_plot_mixed():
         num_param = 4
         num_fish  = 3
         matrix = np.identity(num_param)
-        for j in xrange(num_fish):
-            for i in xrange(num_param):
+        for j in range(num_fish):
+            for i in range(num_param):
                 #matrix[i,i] = i+j+1
                 matrix[i,i] = (i+1)/float(j+1)
-            param_names_latex = [ 'm'+str(i) for i in xrange(num_param) ] 
-            fiducial = [ float(i) for i in xrange(num_param) ]
+            param_names_latex = [ 'm'+str(i) for i in range(num_param) ] 
+            fiducial = [ float(i) for i in range(num_param) ]
             fisher = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
             fisher.name = 'fisher'+str(j+1)
             fisher_list.append( fisher )
@@ -617,11 +617,11 @@ class test_plot_realistic():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_plot_realistic.setup_class() ----------')
+        print(color_print.header(__name__+': test_plot_realistic.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_plot_realistic.teardown_class() -------')
+        print(color_print.bold(__name__+': test_plot_realistic.teardown_class() -------'))
 
     def setup(self):
         # create a list of fisher matrices:
@@ -681,7 +681,7 @@ class test_plot_realistic():
     
     def test_init_plot_tri_2(self):
         # do spectral protection a couple of times:
-        for i in xrange(4):
+        for i in range(4):
             fish = copy.deepcopy( self.fisher_list_test.get_fisher_list()[-1] )
             fish.protect_degenerate( cache=True )
             fish.name = str(i+1)

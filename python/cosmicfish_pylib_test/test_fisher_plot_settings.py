@@ -36,11 +36,11 @@ class test_init():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header( __name__+': test_init.setup_class() ----------')
+        print(color_print.header( __name__+': test_init.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold( __name__+': test_init.teardown_class() -------')
+        print(color_print.bold( __name__+': test_init.teardown_class() -------'))
 
     def test_init_settings_default(self):
         settings = fps.CosmicFish_PlotSettings()
@@ -63,11 +63,11 @@ class test_update():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header( __name__+': test_update.setup_class() ----------')
+        print(color_print.header( __name__+': test_update.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold( __name__+': test_update.teardown_class() -------')
+        print(color_print.bold( __name__+': test_update.teardown_class() -------'))
 
     def test_update_dict(self):
         settings = fps.CosmicFish_PlotSettings()

@@ -185,7 +185,7 @@ if __name__ == "__main__":
         if outroot is not None:
             out_file.write( '\\begin{tabular}{ |'+''.join(['l|' for i in range(latex_num_col) ])+' }\n' )
         else:
-            print '\\begin{tabular}{ |'+''.join(['l|' for i in range(latex_num_col) ])+' }'
+            print('\\begin{tabular}{ |'+''.join(['l|' for i in range(latex_num_col) ])+' }')
             
     # print the confidence bounds on the Fisher matrices:
     for num, fish in enumerate(fishers.get_fisher_list()):
@@ -213,7 +213,7 @@ if __name__ == "__main__":
                 table_length = len(print_table)/latex_num_col +1
             print_table = fu.grouper( table_length, print_table,fillvalue='' )
             print_table = [ list(i) for i in print_table]      
-            print_table = map(list, zip(*print_table))
+            print_table = list(map(list, list(zip(*print_table))))
             col_width = [max(len(str(x)) for x in col) for col in zip(*print_table)]
             
             if outroot is not None:
@@ -223,11 +223,11 @@ if __name__ == "__main__":
                 for line in print_table:
                     out_file.write( " " + " & ".join("{:{}}".format(x, col_width[i]) for i, x in enumerate(line)) + " \\\[1mm]\n" )
             else:
-                print '\hline'
-                print '\multicolumn{'+str(latex_num_col)+'}{|c|}{'+fish.name.replace('_',' ')+'} \\\[1mm]'
-                print '\hline'
+                print('\hline')
+                print('\multicolumn{'+str(latex_num_col)+'}{|c|}{'+fish.name.replace('_',' ')+'} \\\[1mm]')
+                print('\hline')
                 for line in print_table:
-                    print " " + " & ".join("{:{}}".format(x, col_width[i]) for i, x in enumerate(line)) + " \\\[1mm]"
+                    print(" " + " & ".join("{:{}}".format(x, col_width[i]) for i, x in enumerate(line)) + " \\\[1mm]")
                 
         else:
             # put on top the labels of the columns:
@@ -245,11 +245,11 @@ if __name__ == "__main__":
             #
             print_table = [parameter_names,fiducial,Bounds_68, Bounds_95, Bounds_99]
             if outroot is not None:
-                out_file.write( ''.join([ '*' for i in xrange(len('Parameter bounds for the Fisher matrix: '+fish.name)+1)])+'\n' )
+                out_file.write( ''.join([ '*' for i in range(len('Parameter bounds for the Fisher matrix: '+fish.name)+1)])+'\n' )
                 out_file.write( 'Parameter bounds for the Fisher matrix: '+fish.name+'\n' )
-                out_file.write( ''.join([ '*' for i in xrange(len('Parameter bounds for the Fisher matrix: '+fish.name)+1)])+'\n' )
+                out_file.write( ''.join([ '*' for i in range(len('Parameter bounds for the Fisher matrix: '+fish.name)+1)])+'\n' )
                 out_file.write( '\n' )
-                print_table = map(list, zip(*print_table))
+                print_table = list(map(list, list(zip(*print_table))))
                 col_width = [max(len(str(x)) for x in col) for col in zip(*print_table)]
                 # print it to file:
                 for line in print_table:
@@ -258,9 +258,9 @@ if __name__ == "__main__":
             else:
                 # print the table:
                 # header to screen
-                print ''.join([ '*' for i in xrange(len('Parameter bounds for the Fisher matrix: '+fish.name)+1)])
-                print 'Parameter bounds for the Fisher matrix: ', fish.name
-                print ''.join([ '*' for i in xrange(len('Parameter bounds for the Fisher matrix: '+fish.name)+1)])
+                print(''.join([ '*' for i in range(len('Parameter bounds for the Fisher matrix: '+fish.name)+1)]))
+                print('Parameter bounds for the Fisher matrix: ', fish.name)
+                print(''.join([ '*' for i in range(len('Parameter bounds for the Fisher matrix: '+fish.name)+1)]))
                 fu.print_table( print_table )
         
     # finalize and close file:
@@ -269,8 +269,8 @@ if __name__ == "__main__":
             out_file.write( '\hline\n' )
             out_file.write( '\end{tabular}' )
         else:
-            print '\hline'
-            print '\end{tabular}'
+            print('\hline')
+            print('\end{tabular}')
         
     if outroot is not None:
         out_file.close()    
@@ -278,8 +278,8 @@ if __name__ == "__main__":
     # print some final feedback:
     if not args.quiet:
         if outroot is not None:
-            print 'Done. Saved results in: ', outroot+'.txt'
+            print('Done. Saved results in: ', outroot+'.txt')
         else:
-            print 'Done.'
+            print('Done.')
     # exit without error:
     exit(0)
