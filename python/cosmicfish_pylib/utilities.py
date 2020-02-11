@@ -200,7 +200,7 @@ def grouper( n, iterable, fillvalue=None ):
 
     """
     args = [iter(iterable)]*n
-    return list( it.izip_longest(fillvalue=fillvalue, *args) )
+    return list( it.zip_longest(fillvalue=fillvalue, *args) )
 
 # ***************************************************************************************
 

@@ -282,9 +282,9 @@ class CosmicFishPlotter():
         if legend_takes_place_plot: num_plots = num_plots +1
         # get the number of rows:
         if num_plots%plot_per_line == 0: 
-            num_row = max(1,num_plots/plot_per_line)
+            num_row = max(1,num_plots//plot_per_line)
         else: 
-            num_row = max(1,num_plots/plot_per_line+1)
+            num_row = max(1,num_plots//plot_per_line+1)
         # get the number of columns:
         num_col = min( num_plots, plot_per_line )
         # create the layout of the figure:
@@ -294,8 +294,8 @@ class CosmicFishPlotter():
         self.plot_dict = {}
         for i,j in enumerate(params_temp):
             # generate the dictionary: we want symmetric keys just to be sure.
-            self.plot_dict['['+str(j[0])+','+str(j[1])+']'] = plt.subplot(self.plot_grid[i/plot_per_line,i%plot_per_line])
-            self.plot_dict['['+str(j[1])+','+str(j[0])+']'] = plt.subplot(self.plot_grid[i/plot_per_line,i%plot_per_line])
+            self.plot_dict['['+str(j[0])+','+str(j[1])+']'] = plt.subplot(self.plot_grid[i//plot_per_line,i%plot_per_line])
+            self.plot_dict['['+str(j[1])+','+str(j[0])+']'] = plt.subplot(self.plot_grid[i//plot_per_line,i%plot_per_line])
             # create the figures:
             self.figure_2D( subplot=self.plot_dict['['+str(j[0])+','+str(j[1])+']'], param1=j[0], param2=j[1], names=names_temp, **kwargs )
         # do the legend:
@@ -937,7 +937,7 @@ class CosmicFishPlotter():
             if legend_takes_place_plot:
                 num_plots = self.plot_number
                 plot_per_line = self.plot_grid.get_geometry()[1]
-                bbox     = self.plot_grid[(num_plots-1)/plot_per_line,(num_plots-1)%plot_per_line].get_position(self.figure)
+                bbox     = self.plot_grid[(num_plots-1)//plot_per_line,(num_plots-1)%plot_per_line].get_position(self.figure)
                 self.legend.set_bbox_to_anchor( bbox=bbox )
             
         # position the title:

@@ -15,7 +15,6 @@
 
 # import first packages
 import os, sys
-from dircache import cache
 # define path to the executable and add all the relevant folders to the path where python looks for files.
 here = os.path.dirname(os.path.abspath(__file__))
 cosmicfish_pylib_path = here+'/..'
