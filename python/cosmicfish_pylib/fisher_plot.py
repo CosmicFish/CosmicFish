@@ -211,9 +211,9 @@ class CosmicFishPlotter():
         if legend_takes_place_plot: num_plots = num_plots +1
         # get the number of rows:
         if num_plots%plot_per_line == 0: 
-            num_row = max(1,num_plots/plot_per_line)
+            num_row = max(1,num_plots//plot_per_line)
         else: 
-            num_row = max(1,num_plots/plot_per_line+1)
+            num_row = max(1,num_plots//plot_per_line+1)
         # get the number of columns:
         num_col = min( num_plots, plot_per_line )
         # create the layout of the figure:
@@ -222,7 +222,7 @@ class CosmicFishPlotter():
         # fill the single plotters:
         self.plot_dict = {}
         for i,j in enumerate(params_temp):
-            self.plot_dict[j] = plt.subplot( self.plot_grid[i/plot_per_line,i%plot_per_line] )
+            self.plot_dict[j] = plt.subplot( self.plot_grid[i//plot_per_line,i%plot_per_line] )
             self.figure_1D( subplot=self.plot_dict[j], param=j, names=names_temp, **kwargs)
         # do the legend:
         self.set_legend( names=names_temp, **kwargs )
