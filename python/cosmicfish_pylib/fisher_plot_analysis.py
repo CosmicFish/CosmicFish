@@ -426,7 +426,7 @@ class CosmicFish_FisherAnalysis():
         # compute the confidence coefficient:
         confidence_coefficient = fu.confidence_coefficient( confidence_level )
         # get the ranges:
-        range = []
+        range_temp = []
         for i in params_temp:
             lower_bound = []
             upper_bound  = []
@@ -453,13 +453,13 @@ class CosmicFish_FisherAnalysis():
             # decide what to use:
             upper_bound = np.array(upper_bound)
             lower_bound = np.array(lower_bound)
-            range.append([ float(str(np.amin(lower_bound))), float(str(np.amax(upper_bound))) ])
+            range_temp.append([ float(str(np.amin(lower_bound))), float(str(np.amax(upper_bound))) ])
         
-        dict = {}
+        result = {}
         for i,j in zip(params_temp,range(len(params_temp))):
-            dict[i] = range[j]
+            result[i] = range_temp[j]
             
-        return dict
+        return result
             
     # -----------------------------------------------------------------------------------
     
