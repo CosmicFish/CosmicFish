@@ -491,6 +491,7 @@ class CosmicFishPlotter():
         filling_alpha = self.setting_setter('D1_alpha', **kwargs)
         ylabel_right = self.setting_setter('D1_ylabel_right', **kwargs)
         xlabel_up = self.setting_setter('D1_xlabel_up', **kwargs)
+        show_best_fit = self.setting_setter('D1_show_best_fit', **kwargs)
         # do the plotting:
         if filled:
             for i,confl in enumerate(confidence_level):
@@ -511,6 +512,16 @@ class CosmicFishPlotter():
                           linestyle = self.bind_linestyle[name],
                           linewidth = linewidth, 
                           label     = self.bind_labels[name] )
+        if show_best_fit:
+            # go over the Fisher matrices and plot fiducials:
+            for name, fisher in zip(names, self.plot_fishers.get_fisher_matrix(names)):
+                # note: the vline goes from 0 to 2 because the non-normalized one has a range [0,1] anyway
+                subplot.vlines(
+                    fisher.get_fiducial(param),
+                    0, 2.0,
+                    linestyle = self.bind_linestyle[name],
+                    linewidth = linewidth
+                )
         # set the plot range:
         x_limits = self.plot_fishers.compute_plot_range(params=param, confidence_level=max(confidence_level), names=names_temp, nice=nice)[param]
         subplot.set_xlim( x_limits )
@@ -608,6 +619,7 @@ class CosmicFishPlotter():
         filling_alpha = self.setting_setter('D2_alphas', **kwargs)
         ylabel_right = self.setting_setter('D2_ylabel_right', **kwargs)
         xlabel_up = self.setting_setter('D2_xlabel_up', **kwargs)
+        show_best_fit = self.setting_setter('D2_show_best_fit', **kwargs)
         # get the data:
         for j,confidence in enumerate(confidence_level):
             # get the data from the fisher_plot_analysis:
@@ -635,6 +647,21 @@ class CosmicFishPlotter():
         ranges = self.plot_fishers.compute_plot_range(params=[param1,param2], confidence_level=max(confidence_level), names=names_temp, nice=nice)
         subplot.set_xlim( ranges[param1] )
         subplot.set_ylim( ranges[param2] )
+        if show_best_fit:
+            # go over the Fisher matrices and plot fiducials:
+            for name, fisher in zip(names, self.plot_fishers.get_fisher_matrix(names)):
+                subplot.vlines(
+                    fisher.get_fiducial(param1),
+                    ranges[param2][0], ranges[param2][1],
+                    linestyle = self.bind_linestyle[name],
+                    linewidth = linewidth
+                )
+                subplot.hlines(
+                    fisher.get_fiducial(param2),
+                    ranges[param1][0], ranges[param1][1],
+                    linestyle = self.bind_linestyle[name],
+                    linewidth = linewidth
+                )
         # set the ticks and ticks labels:
         if show_x_ticks:
             subplot.set_xticks( np.linspace(ranges[param1][0], ranges[param1][1], number_x_ticks)  )
