@@ -281,6 +281,24 @@ class test_plot1D():
         test_plotter.plot1D('p1')
         test_plotter.export(plot_dump+'test_plot_1D_options_12.pdf')
         test_plotter.close_plot()
+
+        # test for extra_vlines
+        pnames = self.fisher_list_test.get_fisher_list()[0].get_param_names()
+        pvalues = self.fisher_list_test.get_fisher_list()[0].get_param_fiducial()
+        extra_vlines = {pname : pvalue * 1.5 for pname, pvalue in zip(pnames, pvalues)}
+        extra_vlines[None] = {
+            'linestyle' : '--',
+            'color' : 'C2',
+            'linewidth' : 3,
+        }
+        test_plotter = fp.CosmicFishPlotter(
+            fishers=self.fisher_list_test,
+            D1_extra_vlines=extra_vlines,
+        )
+        test_plotter.new_plot()
+        test_plotter.plot1D(['p2', 'p3'])
+        test_plotter.export(plot_dump+'test_plot_1D_options_13.pdf')
+        test_plotter.close_plot()
         
 # ***************************************************************************************
     

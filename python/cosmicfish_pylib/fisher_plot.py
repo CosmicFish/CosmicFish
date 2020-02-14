@@ -491,6 +491,7 @@ class CosmicFishPlotter():
         filling_alpha = self.setting_setter('D1_alpha', **kwargs)
         ylabel_right = self.setting_setter('D1_ylabel_right', **kwargs)
         xlabel_up = self.setting_setter('D1_xlabel_up', **kwargs)
+        extra_vlines = self.setting_setter('D1_extra_vlines', **kwargs)
         # do the plotting:
         if filled:
             for i,confl in enumerate(confidence_level):
@@ -515,6 +516,22 @@ class CosmicFishPlotter():
         x_limits = self.plot_fishers.compute_plot_range(params=param, confidence_level=max(confidence_level), names=names_temp, nice=nice)[param]
         subplot.set_xlim( x_limits )
         subplot.set_ylim( [0.0, 1.05] )
+        if extra_vlines is not None and isinstance(extra_vlines, dict):
+            if param in extra_vlines:
+                if min(x_limits) <= extra_vlines[param] <= max(x_limits):
+                    extra_vlines_kwargs = extra_vlines[None] if None in extra_vlines else {}
+                    subplot.vlines(
+                        extra_vlines[param],
+                        0, 2.0,
+                        **extra_vlines_kwargs
+                    )
+                else:
+                    # maybe print that the requested vline lies outside the xrange?
+                    pass
+            else:
+                # print a warning about a missing key or something
+                pass
+
         # set the ticks and ticks labels:
         if show_x_ticks:
             subplot.set_xticks( np.linspace(x_limits[0], x_limits[1], number_x_ticks)  )
