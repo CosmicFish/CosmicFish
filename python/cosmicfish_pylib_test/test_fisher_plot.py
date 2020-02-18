@@ -288,7 +288,7 @@ class test_plot1D():
         extra_vlines = {pname : pvalue * 1.5 for pname, pvalue in zip(pnames, pvalues)}
         extra_vlines[None] = {
             'linestyle' : '--',
-            'color' : 'C2',
+            'color' : 'green',
             'linewidth' : 3,
         }
         test_plotter = fp.CosmicFishPlotter(
@@ -296,7 +296,7 @@ class test_plot1D():
             D1_extra_vlines=extra_vlines,
         )
         test_plotter.new_plot()
-        test_plotter.plot1D(['p2', 'p3'])
+        test_plotter.plot1D('p2')
         test_plotter.export(plot_dump+'test_plot_1D_options_13.pdf')
         test_plotter.close_plot()
         
