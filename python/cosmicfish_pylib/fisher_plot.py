@@ -444,6 +444,28 @@ class CosmicFishPlotter():
         raise ValueError('plot_mixed: not yet implemented.')     
     
     # -----------------------------------------------------------------------------------
+
+    def __figure_1D_extra_vlines( self, subplot, param, x_limits, extra_vlines ):
+        # make sure it's of the right type
+        if isinstance(extra_vlines, dict):
+            if param in extra_vlines:
+                if min(x_limits) <= extra_vlines[param] <= max(x_limits):
+                    # if there are kwargs as values of the key 'None', parse them, otherwise just set to empty dict
+                    extra_vlines_kwargs = extra_vlines.get(None, {})
+                    subplot.vlines(
+                        extra_vlines[param],
+                        0, 2.0,
+                        **extra_vlines_kwargs
+                    )
+                else:
+                    # print that the requested vline lies outside the xrange
+                    print("WARNING: the value {} for parameter '{}' is outside the range [{}, {}]".format(extra_vlines[param], param, x_limits[0], x_limits[1]))
+            else:
+                # print a warning about a missing key
+                print("WARNING: parameter '{}' is not in the Fisher matrix!".format(param))
+        else:
+            # if it's not a dict, do nothing (should maybe raise an error)
+            pass
     
     def figure_1D( self, subplot, param, names, **kwargs ):
         """
@@ -516,22 +538,25 @@ class CosmicFishPlotter():
         x_limits = self.plot_fishers.compute_plot_range(params=param, confidence_level=max(confidence_level), names=names_temp, nice=nice)[param]
         subplot.set_xlim( x_limits )
         subplot.set_ylim( [0.0, 1.05] )
-        if extra_vlines is not None and isinstance(extra_vlines, dict):
-            if param in extra_vlines:
-                if min(x_limits) <= extra_vlines[param] <= max(x_limits):
-                    extra_vlines_kwargs = extra_vlines[None] if None in extra_vlines else {}
-                    subplot.vlines(
-                        extra_vlines[param],
-                        0, 2.0,
-                        **extra_vlines_kwargs
+        # plotting the extra vertical lines
+        if extra_vlines is not None:
+            # check if it's a list, and then plot each vline
+            if isinstance(extra_vlines, list):
+                for it in extra_vlines:
+                    self.__figure_1D_extra_vlines(
+                        subplot,
+                        param,
+                        x_limits,
+                        it
                     )
-                else:
-                    # maybe print that the requested vline lies outside the xrange?
-                    pass
+            # otherwise just plot the single vline
             else:
-                # print a warning about a missing key or something
-                pass
-
+                self.__figure_1D_extra_vlines(
+                    subplot,
+                    param,
+                    x_limits,
+                    extra_vlines
+                )
         # set the ticks and ticks labels:
         if show_x_ticks:
             subplot.set_xticks( np.linspace(x_limits[0], x_limits[1], number_x_ticks)  )

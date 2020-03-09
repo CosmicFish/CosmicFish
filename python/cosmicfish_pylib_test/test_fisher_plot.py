@@ -282,7 +282,7 @@ class test_plot1D():
         test_plotter.export(plot_dump+'test_plot_1D_options_12.pdf')
         test_plotter.close_plot()
 
-        # test for extra_vlines
+        # test for extra_vlines (single)
         pnames = self.fisher_list_test.get_fisher_list()[0].get_param_names()
         pvalues = self.fisher_list_test.get_fisher_list()[0].get_param_fiducial()
         extra_vlines = {pname : pvalue * 1.5 for pname, pvalue in zip(pnames, pvalues)}
@@ -299,6 +299,36 @@ class test_plot1D():
         test_plotter.plot1D('p2')
         test_plotter.export(plot_dump+'test_plot_1D_options_13.pdf')
         test_plotter.close_plot()
+
+        # test for extra_vlines (multiple)
+        extra_vlines = [
+            {pname : pvalue * (1 + index / 3.) for pname, pvalue in zip(pnames, pvalues)} for index in range(3)
+        ]
+        extra_vlines[0][None] = {
+            'linestyle' : '--',
+            'color' : 'green',
+            'linewidth' : 2,
+        }
+        extra_vlines[1][None] = {
+            'linestyle' : ':',
+            'color' : 'orange',
+            'linewidth' : 2,
+        }
+        extra_vlines[2][None] = {
+            'linestyle' : '-.',
+            'color' : 'magenta',
+            'linewidth' : 2,
+        }
+
+        test_plotter = fp.CosmicFishPlotter(
+            fishers=self.fisher_list_test,
+            D1_extra_vlines=extra_vlines,
+        )
+        test_plotter.new_plot()
+        test_plotter.plot1D('p2')
+        test_plotter.export(plot_dump+'test_plot_1D_options_14.pdf')
+        test_plotter.close_plot()
+
         
 # ***************************************************************************************
     
@@ -578,6 +608,53 @@ class test_plot_tri():
         test_plotter.new_plot()
         test_plotter.plot_tri(['p1','p2'])
         test_plotter.export(plot_dump+'test_plot_tri_options_10.pdf')
+        test_plotter.close_plot()
+
+        # test for extra_vlines (single)
+        pnames = self.fisher_list_test.get_fisher_list()[0].get_param_names()
+        pvalues = self.fisher_list_test.get_fisher_list()[0].get_param_fiducial()
+        extra_vlines = {pname : pvalue * 1.5 for pname, pvalue in zip(pnames, pvalues)}
+        extra_vlines[None] = {
+            'linestyle' : '--',
+            'color' : 'green',
+            'linewidth' : 3,
+        }
+        test_plotter = fp.CosmicFishPlotter(
+            fishers=self.fisher_list_test,
+            D1_extra_vlines=extra_vlines,
+        )
+        test_plotter.new_plot()
+        test_plotter.plot_tri(['p1','p2'])
+        test_plotter.export(plot_dump+'test_plot_tri_options_11.pdf')
+        test_plotter.close_plot()
+
+        # test for extra_vlines (multiple)
+        extra_vlines = [
+            {pname : pvalue * (1 + index / 3.) for pname, pvalue in zip(pnames, pvalues)} for index in range(3)
+        ]
+        extra_vlines[0][None] = {
+            'linestyle' : '--',
+            'color' : 'green',
+            'linewidth' : 2,
+        }
+        extra_vlines[1][None] = {
+            'linestyle' : ':',
+            'color' : 'orange',
+            'linewidth' : 2,
+        }
+        extra_vlines[2][None] = {
+            'linestyle' : '-.',
+            'color' : 'magenta',
+            'linewidth' : 2,
+        }
+
+        test_plotter = fp.CosmicFishPlotter(
+            fishers=self.fisher_list_test,
+            D1_extra_vlines=extra_vlines,
+        )
+        test_plotter.new_plot()
+        test_plotter.plot_tri(['p1','p2'])
+        test_plotter.export(plot_dump+'test_plot_tri_options_12.pdf')
         test_plotter.close_plot()
     
     def test_plot_tri_legend(self):
