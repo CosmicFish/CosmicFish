@@ -550,7 +550,7 @@ class CosmicFishPlotter():
             pass
         # set axis labels:
         if show_xaxis_label:
-            subplot.set_xlabel( u'$'+self.plot_fishers.get_parameter_latex_names()[param]+'$', fontsize=main_fontsize, rotation=x_label_rotation )
+            subplot.set_xlabel( self.plot_fishers.get_parameter_latex_names()[param], fontsize=main_fontsize, rotation=x_label_rotation )
             if xlabel_up: subplot.xaxis.set_label_position("top")
         if show_yaxis_label:
             if normalized:
@@ -670,10 +670,10 @@ class CosmicFishPlotter():
             pass
         # set axis labels:
         if show_xaxis_label:
-            subplot.set_xlabel( u'$'+self.plot_fishers.get_parameter_latex_names()[param1]+'$', fontsize=main_fontsize, rotation=x_label_rotation )
+            subplot.set_xlabel( self.plot_fishers.get_parameter_latex_names()[param1], fontsize=main_fontsize, rotation=x_label_rotation )
             if xlabel_up: subplot.xaxis.set_label_position("top")
         if show_yaxis_label:
-            subplot.set_ylabel( u'$'+self.plot_fishers.get_parameter_latex_names()[param2]+'$', fontsize=main_fontsize, rotation=y_label_rotation )
+            subplot.set_ylabel( self.plot_fishers.get_parameter_latex_names()[param2], fontsize=main_fontsize, rotation=y_label_rotation )
             if ylabel_right: subplot.yaxis.set_label_position("right")    
                 
     # -----------------------------------------------------------------------------------
@@ -1110,7 +1110,7 @@ class CosmicFishPlotter():
                 leg_handlers.append( mlines.Line2D([], [], color = self.bind_line_colors[name],
                                                    linestyle = self.bind_linestyle[name], ) )
         # process names:
-        names_legend = [ u'$\\mathrm{'+str(i).replace(" ", "\ ").replace('_', '\ ')+'}$' for i in names_temp]
+        names_legend = [str(i) for i in names_temp]
         self.legend = self.figure.legend( handles  = leg_handlers, 
                                           labels   = names_legend, 
                                           fontsize = main_fontsize,
@@ -1139,7 +1139,7 @@ class CosmicFishPlotter():
         # override settings:
         fontsize = self.setting_setter('title_fontsize', **kwargs)
         # create the title:
-        self.title = self.figure.suptitle( u'$\\mathrm{'+str(title).replace(" ", "\ ")+'}$', fontsize=fontsize )
+        self.title = self.figure.suptitle(str(title), fontsize=fontsize)
         
     # -----------------------------------------------------------------------------------
     
