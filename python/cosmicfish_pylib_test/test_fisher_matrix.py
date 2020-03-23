@@ -194,7 +194,7 @@ class test_fisher_init():
         assert fisher_1.indir == test_input
         assert fisher_1.num_params == 28
         assert fisher_1.param_names == ['omegabh2', 'omegach2', 'omeganuh2', 'h', 'yhe', 'logA', 'ns', 'nrun', 'nt', 'r', 'tau', 'Bias_W_1', 'Bias_W_2', 'Bias_W_3', 'Bias_W_4', 'Bias_W_5', 'Bias_W_6', 'Bias_W_7', 'Bias_W_8', 'Bias_W_9', 'Bias_W_10', 'Bias_W_11', 'Bias_W_12', 'Bias_W_13', 'Bias_W_14', 'alpha_SN', 'beta_SN', 'M0_SN']
-        assert fisher_1.param_names_latex == ['\\Omega_b h^2', '\\Omega_c h^2', '\\Omega_\\nu h^2', 'h', 'Y_{He}', '{\\rm{ln}}(10^{10} A_s)', 'n_s', 'n_{\\rm run}', 'n_t', 'r', '\\tau', 'b_1', 'b_2', 'b_3', 'b_4', 'b_5', 'b_6', 'b_7', 'b_8', 'b_9', 'b_10', 'b_11', 'b_12', 'b_13', 'b_14', '\\alpha_{\\rm SN}', '\\beta_{\\rm SN}', 'M_0^{\\rm SN}']
+        assert fisher_1.param_names_latex == ['${}$'.format(i) for i in ['\\Omega_b h^2', '\\Omega_c h^2', '\\Omega_\\nu h^2', 'h', 'Y_{He}', '{\\rm{ln}}(10^{10} A_s)', 'n_s', 'n_{\\rm run}', 'n_t', 'r', '\\tau', 'b_1', 'b_2', 'b_3', 'b_4', 'b_5', 'b_6', 'b_7', 'b_8', 'b_9', 'b_10', 'b_11', 'b_12', 'b_13', 'b_14', '\\alpha_{\\rm SN}', '\\beta_{\\rm SN}', 'M_0^{\\rm SN}']]
       
     def test_init_from_python(self):
         matrix = np.identity(10)
