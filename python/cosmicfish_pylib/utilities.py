@@ -159,14 +159,14 @@ def print_table(table):
 
     """
     # transpose the table:
-    table = map(list, zip(*table))
+    table = list(map(list, list(zip(*table))))
     # get the column width:
     col_width = [max(len(str(x)) for x in col) for col in zip(*table)]
     # print it to screen:
-    print
+    print()
     for line in table:
-        print "| " + " | ".join("{:{}}".format(x, col_width[i]) for i, x in enumerate(line)) + " |"
-    print
+        print("| " + " | ".join("{:{}}".format(x, col_width[i]) for i, x in enumerate(line)) + " |")
+    print()
 
 # ***************************************************************************************
 
@@ -200,7 +200,7 @@ def grouper( n, iterable, fillvalue=None ):
 
     """
     args = [iter(iterable)]*n
-    return list( it.izip_longest(fillvalue=fillvalue, *args) )
+    return list( it.zip_longest(fillvalue=fillvalue, *args) )
 
 # ***************************************************************************************
 
@@ -214,17 +214,17 @@ def CosmicFish_write_header(name):
     
     """
 
-    print
-    print "**************************************************************"
-    print "   _____               _     _____     __  "
-    print "  / ___/__  ___ __ _  (_)___/ __(_)__ / /  "
-    print " / /__/ _ \(_-</  ' \/ / __/ _// (_-</ _ \ "
-    print " \___/\___/___/_/_/_/_/\__/_/ /_/___/_//_/ Py Lib"
-    print " "
-    print "**************************************************************"
-    print name
-    print " This application was developed using the CosmicFish code."
-    print "**************************************************************"
-    print
+    print()
+    print("**************************************************************")
+    print("   _____               _     _____     __  ")
+    print("  / ___/__  ___ __ _  (_)___/ __(_)__ / /  ")
+    print(" / /__/ _ \(_-</  ' \/ / __/ _// (_-</ _ \ ")
+    print(" \___/\___/___/_/_/_/_/\__/_/ /_/___/_//_/ Py Lib")
+    print(" ")
+    print("**************************************************************")
+    print(name)
+    print(" This application was developed using the CosmicFish code.")
+    print("**************************************************************")
+    print()
     
 # ***************************************************************************************

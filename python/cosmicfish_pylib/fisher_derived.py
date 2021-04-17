@@ -30,8 +30,8 @@ import os
 import math
 import copy
 import numpy as np
-import utilities as fu
-import fisher_matrix as fm
+from . import utilities as fu
+from . import fisher_matrix as fm
 
 # ***************************************************************************************
 
@@ -166,11 +166,11 @@ class fisher_derived():
             try:
                 self.load_paramnames_from_file()
             except ValueError:
-                self.param_names               = [ 'p'+str(i+1) for i in xrange(self.num_params) ]
-                self.param_names_latex         = [ 'p'+str(i+1) for i in xrange(self.num_params) ]
+                self.param_names               = [ 'p'+str(i+1) for i in range(self.num_params) ]
+                self.param_names_latex         = [ 'p'+str(i+1) for i in range(self.num_params) ]
                 self.param_fiducial            = np.array( [0.0 for i in self.param_names] ) 
-                self.derived_param_names       = [ 'p'+str(i+1) for i in xrange(self.num_params, self.num_derived+self.num_params) ]
-                self.derived_param_names_latex = [ 'p'+str(i+1) for i in xrange(self.num_params, self.num_derived+self.num_params) ]
+                self.derived_param_names       = [ 'p'+str(i+1) for i in range(self.num_params, self.num_derived+self.num_params) ]
+                self.derived_param_names_latex = [ 'p'+str(i+1) for i in range(self.num_params, self.num_derived+self.num_params) ]
                 self.derived_param_fiducial    = np.array( [0.0 for i in self.derived_param_names] ) 
         else:
             self.param_names                 = copy.deepcopy(param_names)
@@ -350,9 +350,9 @@ class fisher_derived():
         lower_cutoff = 10.0**(np.log10(initial_best_mode)-spectral_width)
         # check the cutoff:
         if np.amin(np.abs(w_new))<lower_cutoff or np.amax(np.abs(w_new))>upper_cutoff:
-            print 'WARNING: in add_derived name:', self.name, ' fisher:', fisher_matrix.name
-            print '** derived parameters are strongly degenerate and might alter the quality of the original Fisher matrix.'
-            print '** Try removing degenerate parameters from the Fisher matrix and the derived matrix to get rid of this warning.'
+            print('WARNING: in add_derived name:', self.name, ' fisher:', fisher_matrix.name)
+            print('** derived parameters are strongly degenerate and might alter the quality of the original Fisher matrix.')
+            print('** Try removing degenerate parameters from the Fisher matrix and the derived matrix to get rid of this warning.')
         # apply the cutoff:
         if preserve_input:
             temp = np.zeros((self.num_params + self.num_derived, self.num_params + self.num_derived), float)

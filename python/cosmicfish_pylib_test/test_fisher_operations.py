@@ -40,19 +40,19 @@ class test_eliminate_columns_rows():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header( __name__+': test_eliminate_columns_rows.setup_class() ----------')
+        print(color_print.header( __name__+': test_eliminate_columns_rows.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold( __name__+': test_eliminate_columns_rows.teardown_class() -------')
+        print(color_print.bold( __name__+': test_eliminate_columns_rows.teardown_class() -------'))
 
     def setup(self):
         # generate the Fisher matrix. In this case a simple diagonal matrix.
         matrix = np.identity(4)
-        for i in xrange(4):
+        for i in range(4):
             matrix[i,i] = i+1
-        param_names_latex = [ 'm'+str(i+1) for i in xrange(4) ] 
-        fiducial = [ float(i) for i in xrange(4) ]
+        param_names_latex = [ 'm'+str(i+1) for i in range(4) ] 
+        fiducial = [ float(i) for i in range(4) ]
         # initialize the Fisher type:
         self.fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
 
@@ -78,19 +78,19 @@ class test_eliminate_parameters():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header( __name__+': test_eliminate_parameters.setup_class() ----------')
+        print(color_print.header( __name__+': test_eliminate_parameters.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold( __name__+': test_eliminate_parameters.teardown_class() -------')
+        print(color_print.bold( __name__+': test_eliminate_parameters.teardown_class() -------'))
 
     def setup(self):
         # generate the Fisher matrix. In this case a simple diagonal matrix.
         matrix = np.identity(3)
-        for i in xrange(3):
+        for i in range(3):
             matrix[i,i] = i+1
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-        fiducial = [ float(i) for i in xrange(3) ]
+        param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+        fiducial = [ float(i) for i in range(3) ]
         # initialize the Fisher type:
         self.fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
 
@@ -119,19 +119,19 @@ class test_reshuffle():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header( __name__+': test_reshuffle.setup_class() ----------')
+        print(color_print.header( __name__+': test_reshuffle.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold( __name__+': test_reshuffle.teardown_class() -------')
+        print(color_print.bold( __name__+': test_reshuffle.teardown_class() -------'))
 
     def setup(self):
         # generate the Fisher matrix. In this case a simple diagonal matrix.
         matrix = np.identity(3)
-        for i in xrange(3):
+        for i in range(3):
             matrix[i,i] = i+1
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-        fiducial = [ float(i) for i in xrange(3) ]
+        param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+        fiducial = [ float(i) for i in range(3) ]
         # initialize the Fisher type:
         self.fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
         
@@ -160,19 +160,19 @@ class test_marginalise():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header( __name__+': test_marginalise.setup_class() ----------')
+        print(color_print.header( __name__+': test_marginalise.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold( __name__+': test_marginalise.teardown_class() -------')
+        print(color_print.bold( __name__+': test_marginalise.teardown_class() -------'))
 
     def setup(self):
         # generate the Fisher matrix. In this case a simple diagonal matrix.
         matrix = np.identity(3)
-        for i in xrange(3):
+        for i in range(3):
             matrix[i,i] = i+1
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-        fiducial = [ float(i) for i in xrange(3) ]
+        param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+        fiducial = [ float(i) for i in range(3) ]
         # initialize the Fisher type:
         self.fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
         
@@ -201,19 +201,19 @@ class test_marginalise_over():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header( __name__+': test_marginalise_over.setup_class() ----------')
+        print(color_print.header( __name__+': test_marginalise_over.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold( __name__+': test_marginalise_over.teardown_class() -------')
+        print(color_print.bold( __name__+': test_marginalise_over.teardown_class() -------'))
 
     def setup(self):
         # generate the Fisher matrix. In this case a simple diagonal matrix.
         matrix = np.identity(3)
-        for i in xrange(3):
+        for i in range(3):
             matrix[i,i] = i+1
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-        fiducial = [ float(i) for i in xrange(3) ]
+        param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+        fiducial = [ float(i) for i in range(3) ]
         # initialize the Fisher type:
         self.fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
         
@@ -242,19 +242,19 @@ class test_information_gain():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header( __name__+': test_information_gain.setup_class() ----------')
+        print(color_print.header( __name__+': test_information_gain.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold( __name__+': test_information_gain.teardown_class() -------')
+        print(color_print.bold( __name__+': test_information_gain.teardown_class() -------'))
 
     def setup(self):
         # generate the Fisher matrix. In this case a simple diagonal matrix.
         matrix = np.identity(3)
-        for i in xrange(3):
+        for i in range(3):
             matrix[i,i] = i+1
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-        fiducial = [ float(i) for i in xrange(3) ]
+        param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+        fiducial = [ float(i) for i in range(3) ]
         # initialize the Fisher type:
         self.fisher_1 = fm.fisher_matrix( fisher_matrix=1.0*matrix, param_names_latex=param_names_latex, fiducial=fiducial )
         self.fisher_2 = fm.fisher_matrix( fisher_matrix=10.0*matrix, param_names_latex=param_names_latex, fiducial=fiducial )

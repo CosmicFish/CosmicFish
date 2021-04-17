@@ -39,21 +39,21 @@ class test_class_getters():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_class_getters.setup_class() ----------')
+        print(color_print.header(__name__+': test_class_getters.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_class_getters.teardown_class() -------')
+        print(color_print.bold(__name__+': test_class_getters.teardown_class() -------'))
 
     def setup(self):
         # create a list of fisher matrices:
         fisher_list = []
         matrix = np.identity(3)
-        for j in xrange(3):
-            for i in xrange(3):
+        for j in range(3):
+            for i in range(3):
                 matrix[i,i] = i+j+1
-            param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-            fiducial = [ float(i) for i in xrange(3) ]
+            param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+            fiducial = [ float(i) for i in range(3) ]
             fisher = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
             fisher.name = 'fisher'+str(j+1)
             fisher_list.append( fisher )
@@ -105,11 +105,11 @@ class test_init():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_init.setup_class() ----------')
+        print(color_print.header(__name__+': test_init.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_init.teardown_class() -------')
+        print(color_print.bold(__name__+': test_init.teardown_class() -------'))
 
     def setup(self):
         pass
@@ -121,12 +121,12 @@ class test_init():
         # create the list of Fisher matrices:
         fisher_list = []
         matrix = np.identity(3)
-        for j in xrange(3):
-            for i in xrange(3):
+        for j in range(3):
+            for i in range(3):
                 matrix[i,i] = i+j+1
-            param_names = [ 'pa'+str(i+j) for i in xrange(3) ] 
-            param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-            fiducial = [ float(i) for i in xrange(3) ]
+            param_names = [ 'pa'+str(i+j) for i in range(3) ] 
+            param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+            fiducial = [ float(i) for i in range(3) ]
             fisher = fm.fisher_matrix( fisher_matrix=matrix, param_names=param_names, param_names_latex=param_names_latex, fiducial=fiducial )
             fisher.name = 'fisher'+str(j+1)
             fisher_list.append( fisher )
@@ -139,12 +139,12 @@ class test_init():
         # create the list of Fisher matrices:
         fisher_list = []
         matrix = np.identity(3)
-        for j in xrange(3):
-            for i in xrange(3):
+        for j in range(3):
+            for i in range(3):
                 matrix[i,i] = i+j+1
-            param_names = [ 'pa'+str(i+j) for i in xrange(3) ] 
-            param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-            fiducial = [ float(i) for i in xrange(3) ]
+            param_names = [ 'pa'+str(i+j) for i in range(3) ] 
+            param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+            fiducial = [ float(i) for i in range(3) ]
             fisher = fm.fisher_matrix( fisher_matrix=matrix, param_names=param_names, param_names_latex=param_names_latex, fiducial=fiducial )
             fisher.name = 'fisher'+str(j+1)
             fisher_list.append( fisher )
@@ -161,7 +161,7 @@ class test_init():
         assert_raises( ValueError, fisher_list_test.add_fisher_matrix, [0.0] )
         # check second raise:
         matrix = np.identity(3)
-        for i in xrange(3):
+        for i in range(3):
             matrix[i,i] = i+1
         fisher = fm.fisher_matrix( fisher_matrix=matrix )
         # add a fisher without a name:
@@ -212,22 +212,22 @@ class test_get_fisher_matrix():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_get_fisher_matrix.setup_class() ----------')
+        print(color_print.header(__name__+': test_get_fisher_matrix.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_get_fisher_matrix.teardown_class() -------')
+        print(color_print.bold(__name__+': test_get_fisher_matrix.teardown_class() -------'))
 
     def setup(self):
         # create a list of fisher matrices:
         fisher_list = []
         matrix = np.identity(3)
-        for j in xrange(3):
-            for i in xrange(3):
+        for j in range(3):
+            for i in range(3):
                 matrix[i,i] = i+j+1
-            param_names = [ 'pa'+str(i+j) for i in xrange(3) ] 
-            param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-            fiducial = [ float(i) for i in xrange(3) ]
+            param_names = [ 'pa'+str(i+j) for i in range(3) ] 
+            param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+            fiducial = [ float(i) for i in range(3) ]
             fisher = fm.fisher_matrix( fisher_matrix=matrix, param_names=param_names, param_names_latex=param_names_latex, fiducial=fiducial )
             fisher.name = 'fisher'+str(j+1)
             fisher_list.append( fisher )
@@ -249,22 +249,22 @@ class test_delete_fisher_matrix():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_delete_fisher_matrix.setup_class() ----------')
+        print(color_print.header(__name__+': test_delete_fisher_matrix.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_delete_fisher_matrix.teardown_class() -------')
+        print(color_print.bold(__name__+': test_delete_fisher_matrix.teardown_class() -------'))
 
     def setup(self):
         # create a list of fisher matrices:
         fisher_list = []
         matrix = np.identity(3)
-        for j in xrange(3):
-            for i in xrange(3):
+        for j in range(3):
+            for i in range(3):
                 matrix[i,i] = i+j+1
-            param_names = [ 'pa'+str(i+j) for i in xrange(3) ] 
-            param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-            fiducial = [ float(i) for i in xrange(3) ]
+            param_names = [ 'pa'+str(i+j) for i in range(3) ] 
+            param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+            fiducial = [ float(i) for i in range(3) ]
             fisher = fm.fisher_matrix( fisher_matrix=matrix, param_names=param_names, param_names_latex=param_names_latex, fiducial=fiducial )
             fisher.name = 'fisher'+str(j+1)
             fisher_list.append( fisher )
@@ -285,22 +285,22 @@ class test_get_parameter_list():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_get_parameter_list.setup_class() ----------')
+        print(color_print.header(__name__+': test_get_parameter_list.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_get_parameter_list.teardown_class() -------')
+        print(color_print.bold(__name__+': test_get_parameter_list.teardown_class() -------'))
 
     def setup(self):
         # create a list of fisher matrices:
         fisher_list = []
         matrix = np.identity(3)
-        for j in xrange(3):
-            for i in xrange(3):
+        for j in range(3):
+            for i in range(3):
                 matrix[i,i] = i+j+1
-            param_names = [ 'pa'+str(i+j) for i in xrange(3) ] 
-            param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-            fiducial = [ float(i) for i in xrange(3) ]
+            param_names = [ 'pa'+str(i+j) for i in range(3) ] 
+            param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+            fiducial = [ float(i) for i in range(3) ]
             fisher = fm.fisher_matrix( fisher_matrix=matrix, param_names=param_names, param_names_latex=param_names_latex, fiducial=fiducial )
             fisher.name = 'fisher'+str(j+1)
             fisher_list.append( fisher )
@@ -321,22 +321,22 @@ class test_get_parameter_latex_names():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_get_parameter_latex_names.setup_class() ----------')
+        print(color_print.header(__name__+': test_get_parameter_latex_names.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_get_parameter_latex_names.teardown_class() -------')
+        print(color_print.bold(__name__+': test_get_parameter_latex_names.teardown_class() -------'))
 
     def setup(self):
         # create a list of fisher matrices:
         fisher_list = []
         matrix = np.identity(3)
-        for j in xrange(3):
-            for i in xrange(3):
+        for j in range(3):
+            for i in range(3):
                 matrix[i,i] = i+j+1
-            param_names = [ 'pa'+str(i+j) for i in xrange(3) ] 
-            param_names_latex = [ 'm'+str(i+j) for i in xrange(3) ] 
-            fiducial = [ float(i) for i in xrange(3) ]
+            param_names = [ 'pa'+str(i+j) for i in range(3) ] 
+            param_names_latex = [ 'm'+str(i+j) for i in range(3) ] 
+            fiducial = [ float(i) for i in range(3) ]
             fisher = fm.fisher_matrix( fisher_matrix=matrix, param_names=param_names, param_names_latex=param_names_latex, fiducial=fiducial )
             fisher.name = 'fisher'+str(j+1)
             fisher_list.append( fisher )
@@ -357,22 +357,22 @@ class test_reshuffle():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_reshuffle.setup_class() ----------')
+        print(color_print.header(__name__+': test_reshuffle.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_reshuffle.teardown_class() -------')
+        print(color_print.bold(__name__+': test_reshuffle.teardown_class() -------'))
 
     def setup(self):
         # create a list of fisher matrices:
         fisher_list = []
         matrix = np.identity(3)
-        for j in xrange(3):
-            for i in xrange(3):
+        for j in range(3):
+            for i in range(3):
                 matrix[i,i] = i+j+1
-            param_names = [ 'pa'+str(i+j) for i in xrange(3) ] 
-            param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-            fiducial = [ float(i) for i in xrange(3) ]
+            param_names = [ 'pa'+str(i+j) for i in range(3) ] 
+            param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+            fiducial = [ float(i) for i in range(3) ]
             fisher = fm.fisher_matrix( fisher_matrix=matrix, param_names=param_names, param_names_latex=param_names_latex, fiducial=fiducial )
             fisher.name = 'fisher'+str(j+1)
             fisher_list.append( fisher )
@@ -394,22 +394,22 @@ class test_marginalise():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_marginalise.setup_class() ----------')
+        print(color_print.header(__name__+': test_marginalise.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_marginalise.teardown_class() -------')
+        print(color_print.bold(__name__+': test_marginalise.teardown_class() -------'))
 
     def setup(self):
         # create a list of fisher matrices:
         fisher_list = []
         matrix = np.identity(3)
-        for j in xrange(3):
-            for i in xrange(3):
+        for j in range(3):
+            for i in range(3):
                 matrix[i,i] = i+j+1
-            param_names = [ 'pa'+str(i+j) for i in xrange(3) ] 
-            param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-            fiducial = [ float(i) for i in xrange(3) ]
+            param_names = [ 'pa'+str(i+j) for i in range(3) ] 
+            param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+            fiducial = [ float(i) for i in range(3) ]
             fisher = fm.fisher_matrix( fisher_matrix=matrix, param_names=param_names, param_names_latex=param_names_latex, fiducial=fiducial )
             fisher.name = 'fisher'+str(j+1)
             fisher_list.append( fisher )
@@ -431,22 +431,22 @@ class test_plot_range():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_plot_range.setup_class() ----------')
+        print(color_print.header(__name__+': test_plot_range.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_plot_range.teardown_class() -------')
+        print(color_print.bold(__name__+': test_plot_range.teardown_class() -------'))
 
     def setup(self):
         # create a list of fisher matrices:
         fisher_list = []
         matrix = np.identity(3)
-        for j in xrange(3):
-            for i in xrange(3):
+        for j in range(3):
+            for i in range(3):
                 matrix[i,i] = i+j+1
-            param_names = [ 'pa'+str(i+j) for i in xrange(3) ] 
-            param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-            fiducial = [ float(i) for i in xrange(3) ]
+            param_names = [ 'pa'+str(i+j) for i in range(3) ] 
+            param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+            fiducial = [ float(i) for i in range(3) ]
             fisher = fm.fisher_matrix( fisher_matrix=matrix, param_names=param_names, param_names_latex=param_names_latex, fiducial=fiducial )
             fisher.name = 'fisher'+str(j+1)
             fisher_list.append( fisher )
@@ -480,22 +480,22 @@ class test_compute_gaussian():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_compute_gaussian.setup_class() ----------')
+        print(color_print.header(__name__+': test_compute_gaussian.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_compute_gaussian.teardown_class() -------')
+        print(color_print.bold(__name__+': test_compute_gaussian.teardown_class() -------'))
 
     def setup(self):
         # create a list of fisher matrices:
         fisher_list = []
         matrix = np.identity(3)
-        for j in xrange(3):
-            for i in xrange(3):
+        for j in range(3):
+            for i in range(3):
                 matrix[i,i] = i+j+1
-            param_names = [ 'pa'+str(i+j) for i in xrange(3) ] 
-            param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-            fiducial = [ float(i) for i in xrange(3) ]
+            param_names = [ 'pa'+str(i+j) for i in range(3) ] 
+            param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+            fiducial = [ float(i) for i in range(3) ]
             fisher = fm.fisher_matrix( fisher_matrix=matrix, param_names=param_names, param_names_latex=param_names_latex, fiducial=fiducial )
             fisher.name = 'fisher'+str(j+1)
             fisher_list.append( fisher )
@@ -508,22 +508,22 @@ class test_compute_gaussian():
         
         results_1 = self.fisher_list_test.compute_gaussian(num_points=10)
         
-        assert results_1.keys() == ['pa0', 'pa1', 'pa2', 'pa3', 'pa4']
-        assert results_1.values()[0].keys() == ['fisher2', 'fisher3', 'fisher1']
+        assert list(results_1.keys()) == ['pa0', 'pa1', 'pa2', 'pa3', 'pa4']
+        assert list(results_1.values())[0].keys() == ['fisher2', 'fisher3', 'fisher1']
         
     def test_compute_gaussian_one_param(self):
         
         results_1 = self.fisher_list_test.compute_gaussian( params='pa1', num_points=10)
         
-        assert results_1.keys() == ['pa1']
-        assert results_1.values()[0].keys() == ['fisher2', 'fisher3', 'fisher1']
+        assert list(results_1.keys()) == ['pa1']
+        assert list(results_1.values())[0].keys() == ['fisher2', 'fisher3', 'fisher1']
         
     def test_compute_gaussian_one_fisher(self):
         
         results_1 = self.fisher_list_test.compute_gaussian( names='fisher1', num_points=10)
         
-        assert results_1.keys() == ['pa0', 'pa1', 'pa2']
-        assert results_1.values()[0].keys() == ['fisher1']
+        assert list(results_1.keys()) == ['pa0', 'pa1', 'pa2']
+        assert list(results_1.values())[0].keys() == ['fisher1']
 
     def test_compute_gaussian_without_nice(self):
         
@@ -539,22 +539,22 @@ class test_compute_compute_ellipse():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_compute_compute_ellipse.setup_class() ----------')
+        print(color_print.header(__name__+': test_compute_compute_ellipse.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_compute_compute_ellipse.teardown_class() -------')
+        print(color_print.bold(__name__+': test_compute_compute_ellipse.teardown_class() -------'))
 
     def setup(self):
         # create a list of fisher matrices:
         fisher_list = []
         matrix = np.identity(3)
-        for j in xrange(3):
-            for i in xrange(3):
+        for j in range(3):
+            for i in range(3):
                 matrix[i,i] = i+j+1
-            param_names = [ 'pa'+str(i+j) for i in xrange(3) ] 
-            param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-            fiducial = [ float(i) for i in xrange(3) ]
+            param_names = [ 'pa'+str(i+j) for i in range(3) ] 
+            param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+            fiducial = [ float(i) for i in range(3) ]
             fisher = fm.fisher_matrix( fisher_matrix=matrix, param_names=param_names, param_names_latex=param_names_latex, fiducial=fiducial )
             fisher.name = 'fisher'+str(j+1)
             fisher_list.append( fisher )
@@ -567,33 +567,33 @@ class test_compute_compute_ellipse():
         
         results_1 = self.fisher_list_test.compute_ellipse(num_points=10)
         
-        assert results_1.keys() == ['pa0', 'pa1', 'pa2', 'pa3', 'pa4']
-        assert results_1.values()[0].keys() == ['pa0', 'pa1', 'pa2', 'pa3', 'pa4']
-        assert results_1.values()[0].values()[0].keys() == ['fisher2', 'fisher3', 'fisher1']
+        assert list(results_1.keys()) == ['pa0', 'pa1', 'pa2', 'pa3', 'pa4']
+        assert list(results_1.values())[0].keys() == ['pa0', 'pa1', 'pa2', 'pa3', 'pa4']
+        assert list(results_1.values())[0].values()[0].keys() == ['fisher2', 'fisher3', 'fisher1']
         
     def test_compute_ellipse_one_param_multiple_param(self):
         
         results_1 = self.fisher_list_test.compute_ellipse( params1='pa1', num_points=10)
         
-        assert results_1.keys() == ['pa1']
-        assert results_1.values()[0].keys() == ['pa0', 'pa1', 'pa2', 'pa3', 'pa4']
-        assert results_1.values()[0].values()[0].keys() == ['fisher2', 'fisher3', 'fisher1']
+        assert list(results_1.keys()) == ['pa1']
+        assert list(results_1.values())[0].keys() == ['pa0', 'pa1', 'pa2', 'pa3', 'pa4']
+        assert list(results_1.values())[0].values()[0].keys() == ['fisher2', 'fisher3', 'fisher1']
     
     def test_compute_ellipse_one_param_one_param(self):
         
         results_1 = self.fisher_list_test.compute_ellipse( params1='pa1',params2='pa2', num_points=10)
         
-        assert results_1.keys() == ['pa1']
-        assert results_1.values()[0].keys() == ['pa2']
-        assert results_1.values()[0].values()[0].keys() == ['fisher2', 'fisher3', 'fisher1']
+        assert list(results_1.keys()) == ['pa1']
+        assert list(results_1.values())[0].keys() == ['pa2']
+        assert list(results_1.values())[0].values()[0].keys() == ['fisher2', 'fisher3', 'fisher1']
         
     def test_compute_ellipse_one_fisher(self):
         
         results_1 = self.fisher_list_test.compute_ellipse( names='fisher1', num_points=10)
         
-        assert results_1.keys() == ['pa0', 'pa1', 'pa2']
-        assert results_1.values()[0].keys() == ['pa0', 'pa1', 'pa2']
-        assert results_1.values()[0].values()[0].keys() == ['fisher1']
+        assert list(results_1.keys()) == ['pa0', 'pa1', 'pa2']
+        assert list(results_1.values())[0].keys() == ['pa0', 'pa1', 'pa2']
+        assert list(results_1.values())[0].values()[0].keys() == ['fisher1']
 
         
 # ***************************************************************************************

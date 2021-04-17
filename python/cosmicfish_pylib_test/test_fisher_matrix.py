@@ -15,7 +15,6 @@
 
 # import first packages
 import os, sys
-from dircache import cache
 # define path to the executable and add all the relevant folders to the path where python looks for files.
 here = os.path.dirname(os.path.abspath(__file__))
 cosmicfish_pylib_path = here+'/..'
@@ -38,19 +37,19 @@ class test_getters():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header( __name__+': test_getters.setup_class() ----------')
+        print(color_print.header( __name__+': test_getters.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold( __name__+': test_getters.teardown_class() -------')
+        print(color_print.bold( __name__+': test_getters.teardown_class() -------'))
 
     def setup(self):
         # generate the Fisher matrix. In this case a simple diagonal matrix.
         matrix = np.identity(3)
-        for i in xrange(3):
+        for i in range(3):
             matrix[i,i] = i+1
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-        fiducial = [ float(i) for i in xrange(3) ]
+        param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+        fiducial = [ float(i) for i in range(3) ]
         # initialize the Fisher type:
         self.fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
 
@@ -106,19 +105,19 @@ class test_advanced_getters():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_advanced_getters.setup_class() ----------')
+        print(color_print.header(__name__+': test_advanced_getters.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_advanced_getters.teardown_class() -------')
+        print(color_print.bold(__name__+': test_advanced_getters.teardown_class() -------'))
 
     def setup(self):
         # generate the Fisher matrix. In this case a simple diagonal matrix.
         matrix = np.identity(3)
-        for i in xrange(3):
+        for i in range(3):
             matrix[i,i] = i+1
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-        fiducial = [ float(i) for i in xrange(3) ]
+        param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+        fiducial = [ float(i) for i in range(3) ]
         # initialize the Fisher type:
         self.fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
 
@@ -159,11 +158,11 @@ class test_fisher_init():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_fisher_init.setup_class() ----------')
+        print(color_print.header(__name__+': test_fisher_init.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_fisher_init.teardown_class() -------')
+        print(color_print.bold(__name__+': test_fisher_init.teardown_class() -------'))
 
     def setup(self):
         pass
@@ -174,9 +173,9 @@ class test_fisher_init():
     
     def test_init_fisher_nonsymm_1(self):
         fisher_asymm = []
-        for i in xrange(2):
+        for i in range(2):
             fisher_asymm.append([])
-            for j in xrange(3):
+            for j in range(3):
                 fisher_asymm[i].append(0.0)
         assert_raises( ValueError, fm.fisher_matrix, fisher_matrix=fisher_asymm )
     
@@ -198,10 +197,10 @@ class test_fisher_init():
       
     def test_init_from_python(self):
         matrix = np.identity(10)
-        for i in xrange(10):
+        for i in range(10):
             matrix[i,i] = i+1
-        param_names_latex = [ 'm'+str(i) for i in xrange(10) ] 
-        fiducial = [ float(i) for i in xrange(10) ]
+        param_names_latex = [ 'm'+str(i) for i in range(10) ] 
+        fiducial = [ float(i) for i in range(10) ]
         fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
         assert fisher_1.fisher_cutoff == 1e-09
         assert np.allclose( fisher_1.fisher_matrix, matrix )
@@ -253,10 +252,10 @@ class test_fisher_init():
         
     def test_init_from_python_only_fisher(self):
         matrix = np.identity(10)
-        for i in xrange(10):
+        for i in range(10):
             matrix[i,i] = i+1
-        param_names_latex = [ 'm'+str(i) for i in xrange(10) ] 
-        fiducial = [ float(i) for i in xrange(10) ]
+        param_names_latex = [ 'm'+str(i) for i in range(10) ] 
+        fiducial = [ float(i) for i in range(10) ]
         fisher_1 = fm.fisher_matrix( fisher_matrix=matrix )
         # after calling init all the objects of the class have to be initialized properly:
         assert fisher_1.fisher_cutoff == 1e-09
@@ -273,29 +272,29 @@ class test_fisher_init():
 
     def test_init_from_python_invalid_param_names(self):
         matrix = np.identity(10)
-        for i in xrange(10):
+        for i in range(10):
             matrix[i,i] = i+1
-        param_names = [ 'q'+str(i) for i in xrange(9) ]     
-        param_names_latex = [ 'm'+str(i) for i in xrange(10) ] 
-        fiducial = [ float(i) for i in xrange(10) ]
+        param_names = [ 'q'+str(i) for i in range(9) ]     
+        param_names_latex = [ 'm'+str(i) for i in range(10) ] 
+        fiducial = [ float(i) for i in range(10) ]
         assert_raises( ValueError, fm.fisher_matrix, fisher_matrix=matrix, param_names=param_names, param_names_latex=param_names_latex, fiducial=fiducial )
     
     def test_init_from_python_invalid_param_names_latex(self):
         matrix = np.identity(10)
-        for i in xrange(10):
+        for i in range(10):
             matrix[i,i] = i+1
-        param_names = [ 'q'+str(i) for i in xrange(10) ]     
-        param_names_latex = [ 'm'+str(i) for i in xrange(9) ] 
-        fiducial = [ float(i) for i in xrange(10) ]
+        param_names = [ 'q'+str(i) for i in range(10) ]     
+        param_names_latex = [ 'm'+str(i) for i in range(9) ] 
+        fiducial = [ float(i) for i in range(10) ]
         assert_raises( ValueError, fm.fisher_matrix, fisher_matrix=matrix, param_names=param_names, param_names_latex=param_names_latex, fiducial=fiducial )
     
     def test_init_from_python_invalid_fiducial(self):
         matrix = np.identity(10)
-        for i in xrange(10):
+        for i in range(10):
             matrix[i,i] = i+1
-        param_names = [ 'q'+str(i) for i in xrange(10) ]     
-        param_names_latex = [ 'm'+str(i) for i in xrange(10) ] 
-        fiducial = [ float(i) for i in xrange(9) ]
+        param_names = [ 'q'+str(i) for i in range(10) ]     
+        param_names_latex = [ 'm'+str(i) for i in range(10) ] 
+        fiducial = [ float(i) for i in range(9) ]
         assert_raises( ValueError, fm.fisher_matrix, fisher_matrix=matrix, param_names=param_names, param_names_latex=param_names_latex, fiducial=fiducial )
          
 # ***************************************************************************************
@@ -304,11 +303,11 @@ class test_fisher_load_paramnames_from_file():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_fisher_load_paramnames_from_file.setup_class() ----------')
+        print(color_print.header(__name__+': test_fisher_load_paramnames_from_file.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_fisher_load_paramnames_from_file.teardown_class() -------')
+        print(color_print.bold(__name__+': test_fisher_load_paramnames_from_file.teardown_class() -------'))
 
     def setup(self):
         pass
@@ -316,10 +315,10 @@ class test_fisher_load_paramnames_from_file():
     # test the loading of the parameter names from file:
     def test_load_paramnames_from_file_1(self):
         matrix = np.identity(5)
-        for i in xrange(5):
+        for i in range(5):
             matrix[i,i] = i+1
-        param_names_latex = [ 'm'+str(i) for i in xrange(5) ] 
-        fiducial = [ float(i) for i in xrange(5) ]
+        param_names_latex = [ 'm'+str(i) for i in range(5) ] 
+        fiducial = [ float(i) for i in range(5) ]
         fisher_1 = fm.fisher_matrix( fisher_matrix=matrix )
         fisher_1.load_paramnames_from_file( file_name=test_input+'/dummy_paramnames_1.paramnames')
         # test if everything is properly initialized:
@@ -329,10 +328,10 @@ class test_fisher_load_paramnames_from_file():
 
     def test_load_paramnames_from_file_2(self):
         matrix = np.identity(5)
-        for i in xrange(5):
+        for i in range(5):
             matrix[i,i] = i+1
-        param_names_latex = [ 'm'+str(i) for i in xrange(5) ] 
-        fiducial = [ float(i) for i in xrange(5) ]
+        param_names_latex = [ 'm'+str(i) for i in range(5) ] 
+        fiducial = [ float(i) for i in range(5) ]
         fisher_1 = fm.fisher_matrix( fisher_matrix=matrix )
         fisher_1.load_paramnames_from_file( file_name=test_input+'/dummy_paramnames_2.paramnames')
         # test if everything is properly initialized:
@@ -342,10 +341,10 @@ class test_fisher_load_paramnames_from_file():
 
     def test_load_paramnames_from_file_3(self):
         matrix = np.identity(5)
-        for i in xrange(5):
+        for i in range(5):
             matrix[i,i] = i+1
-        param_names_latex = [ 'm'+str(i) for i in xrange(5) ] 
-        fiducial = [ float(i) for i in xrange(5) ]
+        param_names_latex = [ 'm'+str(i) for i in range(5) ] 
+        fiducial = [ float(i) for i in range(5) ]
         fisher_1 = fm.fisher_matrix( fisher_matrix=matrix )
         fisher_1.load_paramnames_from_file( file_name=test_input+'/dummy_paramnames_3.paramnames')
         # test if everything is properly initialized:
@@ -355,10 +354,10 @@ class test_fisher_load_paramnames_from_file():
         
     def test_load_paramnames_from_file_4(self):
         matrix = np.identity(5)
-        for i in xrange(5):
+        for i in range(5):
             matrix[i,i] = i+1
-        param_names_latex = [ 'm'+str(i) for i in xrange(5) ] 
-        fiducial = [ float(i) for i in xrange(5) ]
+        param_names_latex = [ 'm'+str(i) for i in range(5) ] 
+        fiducial = [ float(i) for i in range(5) ]
         fisher_1 = fm.fisher_matrix( fisher_matrix=matrix )
         fisher_1.load_paramnames_from_file( file_name=test_input+'/dummy_paramnames_4.paramnames')
         # test if everything is properly initialized:
@@ -368,10 +367,10 @@ class test_fisher_load_paramnames_from_file():
     
     def test_load_paramnames_from_file_invalid_num_params(self):
         matrix = np.identity(5)
-        for i in xrange(5):
+        for i in range(5):
             matrix[i,i] = i+1
-        param_names_latex = [ 'm'+str(i) for i in xrange(5) ] 
-        fiducial = [ float(i) for i in xrange(5) ]
+        param_names_latex = [ 'm'+str(i) for i in range(5) ] 
+        fiducial = [ float(i) for i in range(5) ]
         fisher_1 = fm.fisher_matrix( fisher_matrix=matrix )
         assert_raises( ValueError, fisher_1.load_paramnames_from_file, file_name=test_input+'/dummy_paramnames_5.paramnames' )
 
@@ -381,11 +380,11 @@ class test_fisher_save_paramnames_to_file():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_fisher_save_paramnames_to_file.setup_class() ----------')
+        print(color_print.header(__name__+': test_fisher_save_paramnames_to_file.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_fisher_save_paramnames_to_file.teardown_class() -------')
+        print(color_print.bold(__name__+': test_fisher_save_paramnames_to_file.teardown_class() -------'))
 
     def setup(self):
         pass
@@ -393,10 +392,10 @@ class test_fisher_save_paramnames_to_file():
     # test the loading of the parameter names from file:
     def test_fisher_save_paramnames_to_file_1(self):
         matrix = np.identity(5)
-        for i in xrange(5):
+        for i in range(5):
             matrix[i,i] = i+1
-        param_names_latex = [ 'm'+str(i) for i in xrange(5) ] 
-        fiducial = [ float(i) for i in xrange(5) ]
+        param_names_latex = [ 'm'+str(i) for i in range(5) ] 
+        fiducial = [ float(i) for i in range(5) ]
         fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
         fisher_1.save_paramnames_to_file(file_name=test_output+'/dummy_paramnames_out.paramnames')
         fisher_1.indir = './dont_exist'
@@ -409,11 +408,11 @@ class test_save_to_file():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_save_to_file.setup_class() ----------')
+        print(color_print.header(__name__+': test_save_to_file.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_save_to_file.teardown_class() -------')
+        print(color_print.bold(__name__+': test_save_to_file.teardown_class() -------'))
 
     def setup(self):
         pass
@@ -439,11 +438,11 @@ class test_fisher_overload_operations():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_fisher_overload_operations.setup_class() ----------')
+        print(color_print.header(__name__+': test_fisher_overload_operations.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_fisher_overload_operations.teardown_class() -------')
+        print(color_print.bold(__name__+': test_fisher_overload_operations.teardown_class() -------'))
 
     def setup(self):
         pass
@@ -451,10 +450,10 @@ class test_fisher_overload_operations():
     # test the fisher matrix addition:
     def test_add_same_params(self):
         matrix = np.identity(3)
-        for i in xrange(3):
+        for i in range(3):
             matrix[i,i] = i+1
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-        fiducial = [ float(i) for i in xrange(3) ]
+        param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+        fiducial = [ float(i) for i in range(3) ]
         fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
         fisher_2 = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
         fisher_3 = fisher_1+fisher_2
@@ -471,11 +470,11 @@ class test_fisher_overload_operations():
     # test the loading of the parameter names from file:
     def test_add_different_fiducial(self):
         matrix = np.identity(3)
-        for i in xrange(3):
+        for i in range(3):
             matrix[i,i] = i+1
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-        fiducial_1 = [ float(i) for i in xrange(3) ]
-        fiducial_2 = [ float(i+1) for i in xrange(3) ]
+        param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+        fiducial_1 = [ float(i) for i in range(3) ]
+        fiducial_2 = [ float(i+1) for i in range(3) ]
         fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial_1 )
         fisher_2 = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial_2 )
         
@@ -483,11 +482,11 @@ class test_fisher_overload_operations():
     
     def test_add_different_params(self):
         matrix = np.identity(2)
-        for i in xrange(2):
+        for i in range(2):
             matrix[i,i] = i+1
-        param_names_1 = [ 'm'+str(i) for i in xrange(2) ] 
-        param_names_2 = [ 'b'+str(i) for i in xrange(2) ] 
-        fiducial = [ float(i) for i in xrange(2) ]
+        param_names_1 = [ 'm'+str(i) for i in range(2) ] 
+        param_names_2 = [ 'b'+str(i) for i in range(2) ] 
+        fiducial = [ float(i) for i in range(2) ]
         fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names = param_names_1, fiducial=fiducial )
         fisher_2 = fm.fisher_matrix( fisher_matrix=matrix, param_names = param_names_2, fiducial=fiducial )
         fisher_3 = fisher_1+fisher_2
@@ -500,27 +499,27 @@ class test_fisher_overload_operations():
         
     def test_equality(self):
         matrix = np.identity(2)
-        for i in xrange(2):
+        for i in range(2):
             matrix[i,i] = i+1
-        param_names = [ 'm'+str(i) for i in xrange(2) ] 
-        fiducial = [ float(i) for i in xrange(2) ]
+        param_names = [ 'm'+str(i) for i in range(2) ] 
+        fiducial = [ float(i) for i in range(2) ]
         fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names = param_names, fiducial=fiducial )
         
         assert fisher_1 != [0.0]
     
     def test_equality_except(self):
         matrix = np.identity(2)
-        for i in xrange(2):
+        for i in range(2):
             matrix[i,i] = i+1
-        param_names = [ 'm'+str(i) for i in xrange(2) ] 
-        fiducial = [ float(i) for i in xrange(2) ]
+        param_names = [ 'm'+str(i) for i in range(2) ] 
+        fiducial = [ float(i) for i in range(2) ]
         fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names = param_names, fiducial=fiducial )
         
         matrix = np.identity(3)
-        for i in xrange(3):
+        for i in range(3):
             matrix[i,i] = i+1
-        param_names = [ 'm'+str(i) for i in xrange(3) ] 
-        fiducial = [ float(i) for i in xrange(3) ]
+        param_names = [ 'm'+str(i) for i in range(3) ] 
+        fiducial = [ float(i) for i in range(3) ]
         fisher_2 = fm.fisher_matrix( fisher_matrix=matrix, param_names = param_names, fiducial=fiducial )
         
         assert fisher_1 != fisher_2
@@ -531,16 +530,16 @@ class test_fisher_std_operations():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_fisher_load_paramnames_from_file.setup_class() ----------')
+        print(color_print.header(__name__+': test_fisher_load_paramnames_from_file.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_fisher_load_paramnames_from_file.teardown_class() -------')
+        print(color_print.bold(__name__+': test_fisher_load_paramnames_from_file.teardown_class() -------'))
 
     def setup(self):
         matrix = np.identity(3)
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-        fiducial = [ float(i) for i in xrange(3) ]
+        param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+        fiducial = [ float(i) for i in range(3) ]
         self.fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
         pass
     
@@ -562,16 +561,16 @@ class test_fisher_setters():
 
     @classmethod
     def setup_class(cls):
-        print color_print.header(__name__+': test_fisher_setters.setup_class() ----------')
+        print(color_print.header(__name__+': test_fisher_setters.setup_class() ----------'))
        
     @classmethod
     def teardown_class(cls):
-        print color_print.bold(__name__+': test_fisher_setters.teardown_class() -------')
+        print(color_print.bold(__name__+': test_fisher_setters.teardown_class() -------'))
 
     def setup(self):
         matrix = np.identity(3)
-        param_names_latex = [ 'm'+str(i) for i in xrange(3) ] 
-        fiducial = [ float(i) for i in xrange(3) ]
+        param_names_latex = [ 'm'+str(i) for i in range(3) ] 
+        fiducial = [ float(i) for i in range(3) ]
         self.fisher_1 = fm.fisher_matrix( fisher_matrix=matrix, param_names_latex=param_names_latex, fiducial=fiducial )
         pass
     
@@ -594,30 +593,30 @@ class test_fisher_setters():
         assert_raises( ValueError, self.fisher_1.set_fisher_matrix, fisher_matrix=matrix )
         
     def test_set_param_names_illegal(self):
-        list = [ 'm'+str(i) for i in xrange(4) ] 
+        list = [ 'm'+str(i) for i in range(4) ] 
         assert_raises( ValueError, self.fisher_1.set_param_names, list )
     
     def test_set_param_names(self):
-        list = [ 'new'+str(i) for i in xrange(3) ] 
+        list = [ 'new'+str(i) for i in range(3) ] 
         self.fisher_1.set_param_names(list)
         assert self.fisher_1.param_names == ['new0', 'new1', 'new2']
         assert self.fisher_1.param_names == self.fisher_1.param_names_latex
     
     def test_set_param_names_latex_illegal(self):
-        list = [ 'm'+str(i) for i in xrange(4) ] 
+        list = [ 'm'+str(i) for i in range(4) ] 
         assert_raises( ValueError, self.fisher_1.set_param_names_latex, list )
     
     def test_set_param_names_latex(self):
-        list = [ 'new'+str(i) for i in xrange(3) ] 
+        list = [ 'new'+str(i) for i in range(3) ] 
         self.fisher_1.set_param_names_latex(list)
         assert self.fisher_1.param_names_latex == ['new0', 'new1', 'new2']
     
     def test_set_fiducial_illegal(self):
-        fiducial = [ float(i) for i in xrange(4) ]
+        fiducial = [ float(i) for i in range(4) ]
         assert_raises( ValueError, self.fisher_1.set_fiducial, fiducial )
     
     def test_set_fiducial(self):
-        fiducial = [ float(i+2) for i in xrange(3) ]
+        fiducial = [ float(i+2) for i in range(3) ]
         self.fisher_1.set_fiducial(fiducial)
         assert np.allclose( self.fisher_1.param_fiducial, [2.0,3.0,4.0] )
         

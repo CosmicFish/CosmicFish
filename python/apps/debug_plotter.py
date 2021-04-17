@@ -157,7 +157,7 @@ if __name__ == "__main__":
         if args.y_columns is not None:
             data_indexes = args.y_columns
         else:
-            data_indexes = range(0,n_col)    
+            data_indexes = list(range(0,n_col))    
         # remove the x axis:
         try:
             data_indexes.remove( x_index )
@@ -184,9 +184,9 @@ if __name__ == "__main__":
     # print some final feedback:
     if not args.quiet:
         if outroot is not None:
-            print 'Done. Saved results in: ', outroot
+            print('Done. Saved results in: ', outroot)
         else:
-            print 'Done.'
+            print('Done.')
 
     # exit without error:
     exit(0)

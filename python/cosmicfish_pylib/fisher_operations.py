@@ -26,7 +26,7 @@
 # ***************************************************************************************
 
 import numpy as np
-import fisher_matrix as fm
+from . import fisher_matrix as fm
 import math
 
 # ***************************************************************************************
@@ -53,7 +53,7 @@ def eliminate_columns_rows( fisher_matrix, indexes ):
     new_param_names       = []
     new_param_names_latex = []
     new_param_fiducial    = []
-    for i in xrange( fisher_matrix.num_params ):
+    for i in range( fisher_matrix.num_params ):
         if i not in indexes:
             new_param_names.append( fisher_matrix.param_names[i] )
             new_param_names_latex.append( fisher_matrix.param_names_latex[i] )
@@ -90,7 +90,7 @@ def eliminate_parameters( fisher_matrix, names ):
     # get the indexes of the parameters:
     index_list = []
     for i in names:
-        if not fisher_matrix.param_names_dict.has_key(i):
+        if i not in fisher_matrix.param_names_dict:
             raise ValueError('Error, parameter '+str(i)+' is not in a parameter of fisher_matrix')
         index_list.append(fisher_matrix.param_names_dict[i]-1)
     # elminate them from the list and return:
@@ -119,7 +119,7 @@ def reshuffle( fisher_matrix, names ):
             raise ValueError('Error, input fisher_matrix is not a fisher_matrix')
     # check wether the names required are inside the Fisher matrix:
     for i in names:
-        if not fisher_matrix.param_names_dict.has_key(i):
+        if i not in fisher_matrix.param_names_dict:
             raise ValueError('Error, parameter '+str(i)+' is not in a parameter of fisher_matrix')
     # get the new latex names and fiducial:
     new_param_names_latex = []
@@ -132,8 +132,8 @@ def reshuffle( fisher_matrix, names ):
     num_param_new = len(names)
     new_matrix = np.zeros([num_param_new,num_param_new])    
     # fill the new matrix:
-    for i in xrange(num_param_new):
-        for j in xrange(num_param_new):
+    for i in range(num_param_new):
+        for j in range(num_param_new):
             # get the name:
             x = names[i]
             y = names[j]
@@ -173,7 +173,7 @@ def marginalise( fisher_matrix, names ):
             raise ValueError('Error, input fisher_matrix is not a fisher_matrix')
     # check wether the names required are inside the Fisher matrix:
     for i in names:
-        if not fisher_matrix.param_names_dict.has_key(i):
+        if i not in fisher_matrix.param_names_dict:
             raise ValueError('Error, parameter '+str(i)+' is not in a parameter of fisher_matrix')
     # get the new latex names and fiducial:
     new_param_names_latex = []
@@ -186,8 +186,8 @@ def marginalise( fisher_matrix, names ):
     num_param_new = len(names)
     new_matrix = np.zeros([num_param_new,num_param_new])    
     # fill the new inverse matrix:
-    for i in xrange(num_param_new):
-        for j in xrange(num_param_new):
+    for i in range(num_param_new):
+        for j in range(num_param_new):
             # get the name:
             x = names[i]
             y = names[j]
@@ -227,7 +227,7 @@ def marginalise_over( fisher_matrix, names ):
             raise ValueError('Error, input fisher_matrix is not a fisher_matrix')
     # check wether the names required are inside the Fisher matrix:
     for i in names:
-        if not fisher_matrix.param_names_dict.has_key(i):
+        if i not in fisher_matrix.param_names_dict:
             raise ValueError('Error, parameter '+str(i)+' is not in a parameter of fisher_matrix')
     # get the indexes:
     new_names = [ i for i in fisher_matrix.param_names if i not in names ]

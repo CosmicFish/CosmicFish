@@ -28,7 +28,7 @@ import cosmicfish_pylib.colors as col
 # ***************************************************************************************
 
 def test_nice_colors():
-    for i in xrange(10):
+    for i in range(10):
         # check that the entrances are 3:
         assert len(col.nice_colors(i))==3
         # check that they are positive and smaller than 1, i.e. it is legal RGB:
@@ -40,13 +40,13 @@ def test_nice_colors():
 
 def test_bash_colors():
     color_print = col.bash_colors()
-    print 
-    print color_print.header(__name__+'.test_bash_colors: Header color')
-    print color_print.blue(__name__+'.test_bash_colors: Blue color')
-    print color_print.green(__name__+'.test_bash_colors: Green color')
-    print color_print.warning(__name__+'.test_bash_colors: Warning color')
-    print color_print.fail(__name__+'.test_bash_colors: Fail color')
-    print color_print.bold(__name__+'.test_bash_colors: Bold color')
-    print color_print.underline(__name__+'.test_bash_colors: Underline color')
+    print() 
+    print(color_print.header(__name__+'.test_bash_colors: Header color'))
+    print(color_print.blue(__name__+'.test_bash_colors: Blue color'))
+    print(color_print.green(__name__+'.test_bash_colors: Green color'))
+    print(color_print.warning(__name__+'.test_bash_colors: Warning color'))
+    print(color_print.fail(__name__+'.test_bash_colors: Fail color'))
+    print(color_print.bold(__name__+'.test_bash_colors: Bold color'))
+    print(color_print.underline(__name__+'.test_bash_colors: Underline color'))
     
 # ***************************************************************************************
