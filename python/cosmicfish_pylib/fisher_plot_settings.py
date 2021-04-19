@@ -186,6 +186,7 @@ class CosmicFish_PlotSettings():
         self.D1_main_fontsize        = 10.0                
         self.D1_secondary_fontsize   = 9.0                 
         self.D1_show_best_fit        = False               
+        self.D1_extra_vlines         = None
     
         # options for 2D plots:
         self.D2_confidence_levels    = [ 0.95, 0.68 ]      
@@ -329,6 +330,7 @@ __accepted_settings__=[
     'D1_main_fontsize',
     'D1_secondary_fontsize',
     'D1_show_best_fit',
+    'D1_extra_vlines',
     'D2_confidence_levels',
     'D2_num_points',
     'D2_line_thickness',
