@@ -21,27 +21,27 @@
 # detect the fortran compiler: if ifort is present go for it, otherwise use gfortran.
 HAS_IFORT = $(shell which ifort >/dev/null; echo $$?)
 
-ifeq "$(HAS_IFORT)" "0" 
+ifeq "$(HAS_IFORT)" "0"
 	# use ifort
     export F90C := ifort
     export F90CRLINK := -cxxlib
     # release options:
-	FFLAGS_RELEASE   := -qopenmp -mkl=parallel -O3 -W0 -WB -fpp -qopt-report=0 
+	FFLAGS_RELEASE   := -qopenmp -mkl=parallel -O3 -W0 -WB -fpp -qopt-report=0
 	# debug options:
 	FFLAGS_DEBUG     := -qopenmp -mkl=parallel -fpp -g -qopt-report=0 -fp-stack-check -O0 -traceback -check all -check bounds -check uninit -check noarg_temp_created -DDEBUG
 	# module flag:
-	MODULE_FLAG      := -module 
+	MODULE_FLAG      := -module
 	# lapack linking
-	LAPACK_LINK      := 
+	LAPACK_LINK      :=
 	LAPACK_INCLUDE   :=
-else 
+else
 	# use gfortran
     export F90C := gfortran
     export ifortErr := 1
 	# release options:
-	FFLAGS_RELEASE   := -O3 -fopenmp -ffast-math -fmax-errors=4 -ffree-line-length-none -funroll-loops -cpp -ffpe-summary=none
+	FFLAGS_RELEASE   := -O3 -fopenmp -ffast-math -fmax-errors=4 -ffree-line-length-none -funroll-loops -cpp -ffpe-summary=none -fallow-argument-mismatch
 	# debug options:
-	FFLAGS_DEBUG     := -O0 -g -fopenmp -fmax-errors=0 -ffree-line-length-none -cpp -fbounds-check -fbacktrace -ffpe-trap=invalid,overflow,zero -DDEBUG
+	FFLAGS_DEBUG     := -O0 -g -fopenmp -fmax-errors=0 -ffree-line-length-none -cpp -fbounds-check -fbacktrace -ffpe-trap=invalid,overflow,zero -DDEBUG -fallow-argument-mismatch
 	# module flag:
 	MODULE_FLAG := -J
 	# lapack linking

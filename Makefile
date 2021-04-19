@@ -64,15 +64,15 @@ MGCAMB_LIB_DIR := $(BUILD_DIR)/fisher_mgcamb/lib
 # linking instructions for camb:
 CAMB_F90_LINK=-L $(CAMB_LIB_DIR) -lcamb
 CAMB_F90_APP_LINK=-L $(CAMB_LIB_DIR) -lfisher_camb -lcamb
-CAMB_F90_INCLUDE=-I $(CAMB_INC_DIR)
+CAMB_F90_INCLUDE=-I  $(CAMB_INC_DIR)
 # linking instructions for eftcamb:
 EFTCAMB_F90_LINK=-L $(EFTCAMB_LIB_DIR) -lcamb
 EFTCAMB_F90_APP_LINK=-L $(EFTCAMB_LIB_DIR) -lfisher_eftcamb -lcamb
-EFTCAMB_F90_INCLUDE=-I $(EFTCAMB_INC_DIR)
+EFTCAMB_F90_INCLUDE=-I  $(EFTCAMB_INC_DIR)
 # linking instructions for mgcamb:
 MGCAMB_F90_LINK=-L $(MGCAMB_LIB_DIR) -lcamb
 MGCAMB_F90_APP_LINK=-L $(MGCAMB_LIB_DIR) -lfisher_mgcamb -lcamb
-MGCAMB_F90_INCLUDE=-I $(MGCAMB_INC_DIR)
+MGCAMB_F90_INCLUDE=-I  $(MGCAMB_INC_DIR)
 
 # flags for camb:
 CAMB_FFLAGS = $(FFLAGS) -DCOSMICFISH_CAMB
@@ -196,9 +196,9 @@ MGCAMB_BINS  := $(addprefix $(MGCAMB_BIN_DIR)/, $(APPS_BINS))
 
 apps: camb_apps eftcamb_apps mgcamb_apps
 
-camb_apps: fisher_camb $(CAMB_BINS) 
-eftcamb_apps: fisher_eftcamb $(EFTCAMB_BINS) 
-mgcamb_apps: fisher_mgcamb $(MGCAMB_BINS) 
+camb_apps: fisher_camb $(CAMB_BINS)
+eftcamb_apps: fisher_eftcamb $(EFTCAMB_BINS)
+mgcamb_apps: fisher_mgcamb $(MGCAMB_BINS)
 
 $(CAMB_BIN_DIR)/%.x: $(APPS_DIR)/%.f90 $(CAMB_FISHER_FILES) fisher_camb
 	$(F90C) $(FFLAGS) $(APPS_DIR)/$*.f90 $(CAMB_F90_APP_LINK) $(LAPACK_LINK) $(CAMB_F90_INCLUDE) $(LAPACK_INCLUDE) -o $(CAMB_BIN_DIR)/$*.x
@@ -234,7 +234,7 @@ mgcamb_test: fisher_mgcamb $(MGCAMB_TEST)
 python_test:
 	@rm -rf .coverage
 	@nosetests -v -s $(PROJECT_DIR)/python/cosmicfish_pylib_test --with-coverage --cover-package=cosmicfish_pylib
-	
+
 $(TEST_DIR)/test_build/camb_%.x: $(TEST_DIR)/test_source/%.f90  $(CAMB_FISHER_FILES) fisher_camb
 	$(F90C) $(CAMB_FFLAGS) $(TEST_DIR)/test_source/$*.f90 $(CAMB_F90_APP_LINK) $(LAPACK_LINK) $(CAMB_F90_INCLUDE) $(LAPACK_INCLUDE) -o $(TEST_DIR)/test_build/camb_$*.x
 
@@ -260,8 +260,8 @@ clean_test:
 
 examples: apps
 	@cd $(EXAMPLES_DIR) && make all
-	
-clean_examples:	
+
+clean_examples:
 	@cd $(EXAMPLES_DIR) && make deep_clean
 
 ############################## Directory targets ###############################
