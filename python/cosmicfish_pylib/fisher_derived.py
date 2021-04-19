@@ -17,7 +17,7 @@
 .. module:: fisher_derived
    :platform: Unix
    :synopsis: Module that contains the fisher_derived class and the operations defined on it.
-              This is meant to handle efficiently and safely Jacobian matrices transforming a 
+              This is meant to handle efficiently and safely Jacobian matrices transforming a
               Fisher matrix for some parameters to a Fisher matrix for some other parameters.
 
 .. moduleauthor:: Marco Raveri <mraveri@uchicago.edu> for the CosmicFish code.
@@ -30,7 +30,6 @@ import os
 import math
 import copy
 import numpy as np
-from . import utilities as fu
 from . import fisher_matrix as fm
 
 # ***************************************************************************************
@@ -41,7 +40,7 @@ class fisher_derived():
     contains the relevant information to reparametrize a Fisher matrix.
     Generally this is a rectangular matrix containing the Jacobian of the transformation
     from the original Fisher to the derived one.
-    
+
     :ivar derived_matrix: Numpy array containing the Jacobian of the transformation between the Fisher matrix and the derived Fisher matrix. Passed to the constructor of by file.
     :ivar path: Absolute path of the input Jacobian matrix. Computed at initialization if passing a file.
     :ivar name: Name of the input Jacobian matrix. Computed at initialization if passing a file.
@@ -54,50 +53,50 @@ class fisher_derived():
     :ivar derived_param_names: Names of the derived parameters. Used as the identifier of the parameters. Initialized, if possible, through a .paramnames file.
     :ivar derived_param_names_latex: LaTeX names of the derived parameters.
     :ivar derived_param_fiducial: Numpy array with the values of the fiducial of the derived parameters. Passed to the constructor or by file.
-              
+
     """
 
     # -----------------------------------------------------------------------------------
-    
+
     # class getters:
-    
+
     def get_derived_matrix(self):
         """ :returns: the derived Jacobian matrix. """
         return self.derived_matrix
-    
+
     def get_param_names(self):
         """ :returns: the base parameter names. """
         return self.param_names
-    
+
     def get_param_names_latex(self):
         """ :returns: the LaTeX version of the base parameter names. """
         return self.param_names_latex
-    
+
     def get_param_fiducial(self):
         """ :returns: the base parameter fiducial values. """
         return self.param_fiducial
-    
+
     def get_derived_param_names(self):
         """ :returns: the derived parameters names. """
         return self.derived_param_names
-    
+
     def get_derived_param_names_latex(self):
         """ :returns: the LaTeX version of the derived parameters names. """
         return self.derived_param_names_latex
-    
+
     def get_derived_param_fiducial(self):
         """ :returns: the derived parameter fiducial values. """
         return self.derived_param_fiducial
-    
+
     # -----------------------------------------------------------------------------------
 
-    def __init__( self, derived_matrix=None, 
-                  param_names=None, derived_param_names=None, 
-                  param_names_latex=None, derived_param_names_latex=None, 
+    def __init__( self, derived_matrix=None,
+                  param_names=None, derived_param_names=None,
+                  param_names_latex=None, derived_param_names_latex=None,
                   fiducial=None, fiducial_derived=None, file_name=None ):
         """
-        **fisher_derived class constructor**. The class constructor will read from file the 
-        Fisher derived matrix if it is initialized with the name of a file (and the file exists). 
+        **fisher_derived class constructor**. The class constructor will read from file the
+        Fisher derived matrix if it is initialized with the name of a file (and the file exists).
         Otherwise it will read the matrix and the parameter names as passed by the user.
 
         :param derived_matrix: array containing the input Jacobian matrix.
@@ -107,13 +106,13 @@ class fisher_derived():
             python it will just use some defaults names (p1, p2,...).
         :type param_names: :class:`list` of :class:`string`
         :param derived_param_names: names of the derived parameters. If initialized from file it will
-            read them if a file file_name.paramnames and expects them to have a * appened. 
+            read them if a file file_name.paramnames and expects them to have a * appened.
             If it is none when itialized from python it will just use some defaults names.
         :type derived_param_names: :class:`list` of :class:`string`
         :param param_names_latex: LaTeX names of the parameters of the Jacobian matrix also appearing
             in the Fisher matrix.
         :type param_names_latex: :class:`list` of :class:`string`
-        :param derived_param_names_latex: LaTeX names of the parameters of the Jacobian matrix that are 
+        :param derived_param_names_latex: LaTeX names of the parameters of the Jacobian matrix that are
             derived parameters.
         :type derived_param_names_latex: :class:`list` of :class:`string`
         :param fiducial: values of the fiducial parameters of the Fisher matrix. If initialized from file it will have the value found in .paramnames.
@@ -124,24 +123,24 @@ class fisher_derived():
         :type fiducial_derived: :class:`list` of :class:`float` or :class:`numpy.array`
         :param file_name: name of the file (and path) of the input Jacobian matrix.
         :type file_name: :class:`string`
-        
+
         """
         # check that the input is legal:
         if derived_matrix is None and file_name is None:
             raise ValueError('Error in initializing the Fisher Jacobian matrix: derived_matrix and file_name are both None.')
         # initialize class members:
-        self.derived_matrix            = np.array([]) 
-        self.path                      = ''           
-        self.name                      = ''           
-        self.indir                     = ''           
-        self.num_params                = 0            
-        self.num_derived               = 0            
-        self.param_names               = []           
-        self.param_names_latex         = []           
-        self.param_fiducial            = np.array([]) 
-        self.derived_param_names       = []           
-        self.derived_param_names_latex = []           
-        self.derived_param_fiducial    = np.array([]) 
+        self.derived_matrix            = np.array([])
+        self.path                      = ''
+        self.name                      = ''
+        self.indir                     = ''
+        self.num_params                = 0
+        self.num_derived               = 0
+        self.param_names               = []
+        self.param_names_latex         = []
+        self.param_fiducial            = np.array([])
+        self.derived_param_names       = []
+        self.derived_param_names_latex = []
+        self.derived_param_fiducial    = np.array([])
         # initialize the Jacobian matrix:
         if derived_matrix is None:
             # initialize from file:
@@ -168,17 +167,17 @@ class fisher_derived():
             except ValueError:
                 self.param_names               = [ 'p'+str(i+1) for i in range(self.num_params) ]
                 self.param_names_latex         = [ 'p'+str(i+1) for i in range(self.num_params) ]
-                self.param_fiducial            = np.array( [0.0 for i in self.param_names] ) 
+                self.param_fiducial            = np.array( [0.0 for i in self.param_names] )
                 self.derived_param_names       = [ 'p'+str(i+1) for i in range(self.num_params, self.num_derived+self.num_params) ]
                 self.derived_param_names_latex = [ 'p'+str(i+1) for i in range(self.num_params, self.num_derived+self.num_params) ]
-                self.derived_param_fiducial    = np.array( [0.0 for i in self.derived_param_names] ) 
+                self.derived_param_fiducial    = np.array( [0.0 for i in self.derived_param_names] )
         else:
             self.param_names                 = copy.deepcopy(param_names)
             self.param_names_latex           = copy.deepcopy(param_names)
-            self.param_fiducial              = np.array( [0.0 for i in self.param_names] ) 
+            self.param_fiducial              = np.array( [0.0 for i in self.param_names] )
             self.derived_param_names         = copy.deepcopy(derived_param_names)
             self.derived_param_names_latex   = copy.deepcopy(derived_param_names)
-            self.derived_param_fiducial      = np.array( [0.0 for i in self.derived_param_names] ) 
+            self.derived_param_fiducial      = np.array( [0.0 for i in self.derived_param_names] )
         # over write what is explicitly given:
         if param_names is not None:
             self.param_names       = copy.deepcopy( param_names )
@@ -205,9 +204,9 @@ class fisher_derived():
             raise ValueError('The input derived_param_names_latex has not '+str(self.num_derived)+' elements.')
         if len(self.derived_param_fiducial) != self.num_derived:
             raise ValueError('The input derived_param_fiducial has not '+str(self.num_derived)+' elements.')
-        
-    # -----------------------------------------------------------------------------------       
-        
+
+    # -----------------------------------------------------------------------------------
+
     def load_paramnames_from_file( self, file_name=None ):
         """
         Loads the paramnames array, of a derived Fisher matrix, from a file
@@ -215,7 +214,7 @@ class fisher_derived():
         :param file_name: (optional) file name and path of the parameter names file.
             If file_name is None this reads the file self.name+.paramnames.
         :type file_name: :class:`string`
-        
+
         """
         if file_name is None:
             name = self.indir+'/'+self.name+'.paramnames'
@@ -278,22 +277,22 @@ class fisher_derived():
                             # nothing is missing:
                             param_names_latex.append(split_line[1].strip())
                             param_fiducial.append(float(split_line[2].strip()))
-                        
+
         # check the valitidy of the result:
         if len(derived_param_names) != self.num_derived:
             raise ValueError('Wrong number of derived parameters in the .paramnames file')
-        
+
         # save the result:
         self.param_names         = param_names
         self.param_names_latex   = param_names_latex
         self.param_fiducial      = param_fiducial
-        
+
         self.derived_param_names       = derived_param_names
         self.derived_param_names_latex = derived_param_names_latex
         self.derived_param_fiducial    = derived_param_fiducial
-        
-    # -----------------------------------------------------------------------------------       
-        
+
+    # -----------------------------------------------------------------------------------
+
     def add_derived( self, fisher_matrix, preserve_input=False ):
         """
         This function computes the derived fisher_matrix given an input Fisher matrix based on the Jacobian
@@ -301,10 +300,10 @@ class fisher_derived():
 
         :param fisher_matrix: input Fisher matrix that will be used as a base for the derived Fisher matrix.
         :type fisher_matrix: :class:`cosmicfish_pylib.fisher_matrix.fisher_matrix`
-        :param preserve_input: wether to preserve input parameters in the output Fisher. 
+        :param preserve_input: wether to preserve input parameters in the output Fisher.
                 Default to false because it might lead to strage results if not used properly.
-        :type preserve_input: :class:`bool`        
-        :return: output Fisher matrix with derived parameters. 
+        :type preserve_input: :class:`bool`
+        :return: output Fisher matrix with derived parameters.
         :rtype: :class:`cosmicfish_pylib.fisher_matrix.fisher_matrix`
 
         """
@@ -377,7 +376,7 @@ class fisher_derived():
         fisher_matrix_new.indir = fisher_matrix.indir
         # return the new Fisher matrix with the derived parameters
         return fisher_matrix_new
-    
+
     # -----------------------------------------------------------------------------------
-        
-# ***************************************************************************************    
+
+# ***************************************************************************************

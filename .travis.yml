@@ -1,11 +1,11 @@
 all_branches: true
 
-language: 
+language:
   sh
   python
 
 python:
-  - "2.7"
+  - "3.7"
 
 sudo: required
 
@@ -16,16 +16,16 @@ services:
 
 notifications:
   slack: mmmr-works:jNkR9iNMpkTTNVACo5pwipEa
-    
+
 before_install:
   - docker pull mraveri/cosmicfishbowl
 
 install:
   - sudo pip install coveralls
 
-script: 
+script:
   - while true; do echo 'Travis do not sleep!'; sleep 300s; done &
-  - TIME_PID=$! 
+  - TIME_PID=$!
   - docker run -v $(pwd):$(pwd) -t mraveri/cosmicfishbowl /bin/sh -c "cd $(pwd) ; make apps"
   - docker run -v $(pwd):$(pwd) -t mraveri/cosmicfishbowl /bin/sh -c "cd $(pwd) ; make test"
   - docker run -v $(pwd):$(pwd) -t mraveri/cosmicfishbowl /bin/sh -c "cd $(pwd) ; make documentation"

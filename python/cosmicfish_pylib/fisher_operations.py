@@ -41,10 +41,10 @@ def eliminate_columns_rows( fisher_matrix, indexes ):
     :param fisher_matrix: input Fisher matrix
     :type fisher_matrix: :class:`cosmicfish_pylib.fisher_matrix.fisher_matrix`
     :param indexes: list of integers with the indexes to delete from the Fisher matrix
-    :type indexes: :class:`list` of :class:`int`        
+    :type indexes: :class:`list` of :class:`int`
     :returns: A Fisher matrix with the columns and rows deleted
     :rtype: :class:`cosmicfish_pylib.fisher_matrix.fisher_matrix`
-    
+
     """
     # check validity of the input:
     if ( not isinstance(fisher_matrix, fm.fisher_matrix) ):
@@ -61,7 +61,7 @@ def eliminate_columns_rows( fisher_matrix, indexes ):
     # write the Fisher matrix:
     fisher_temp = np.delete ( np.delete( fisher_matrix.fisher_matrix, indexes , 0 ), indexes , 1 )
     # initialize the new Fisher matrix:
-    fisher_new = fm.fisher_matrix(fisher_matrix=fisher_temp, param_names=new_param_names, param_names_latex=new_param_names_latex, fiducial=new_param_fiducial )        
+    fisher_new = fm.fisher_matrix(fisher_matrix=fisher_temp, param_names=new_param_names, param_names_latex=new_param_names_latex, fiducial=new_param_fiducial )
     fisher_new.name  = fisher_matrix.name + '_reduced'
     fisher_new.path  = fisher_matrix.path
     fisher_new.indir = fisher_matrix.indir
@@ -75,14 +75,14 @@ def eliminate_parameters( fisher_matrix, names ):
     This function eliminates the row and columns corresponding to the given parameter
     name from the Fisher matrix. It also deletes all the other informations like the names
     of the parameters.
-      
+
     :param fisher_matrix: input Fisher matrix
     :type fisher_matrix: :class:`cosmicfish_pylib.fisher_matrix.fisher_matrix`
     :param names: list of names of the parameters to delete from the Fisher matrix
-    :type names: :class:`list` of :class:`string`        
+    :type names: :class:`list` of :class:`string`
     :returns: A Fisher matrix with the parameters deleted
-    :rtype: :class:`cosmicfish_pylib.fisher_matrix.fisher_matrix`    
-    
+    :rtype: :class:`cosmicfish_pylib.fisher_matrix.fisher_matrix`
+
     """
     # check validity of the input:
     if ( not isinstance(fisher_matrix, fm.fisher_matrix) ):
@@ -100,19 +100,19 @@ def eliminate_parameters( fisher_matrix, names ):
 
 def reshuffle( fisher_matrix, names ):
     """
-    This function reshuffles a Fisher matrix. The new Fisher matrix will have the 
+    This function reshuffles a Fisher matrix. The new Fisher matrix will have the
     parameters specified in names, in the order specified by names.
-    Can be used to delete parameters, change their order or extract the Fisher 
+    Can be used to delete parameters, change their order or extract the Fisher
     for some parameters without marginalizing over the others.
-        
+
     :param fisher_matrix: input Fisher matrix
     :type fisher_matrix: :class:`cosmicfish_pylib.fisher_matrix.fisher_matrix`
-    :param names: list of names of the parameters that are desired in the output Fisher 
+    :param names: list of names of the parameters that are desired in the output Fisher
         matrix, in the desired order.
-    :type names: :class:`list` of :class:`string`        
+    :type names: :class:`list` of :class:`string`
     :returns: A Fisher matrix with the new parameters
     :rtype: :class:`cosmicfish_pylib.fisher_matrix.fisher_matrix`
-    
+
     """
     # check validity of the input:
     if ( not isinstance(fisher_matrix, fm.fisher_matrix) ):
@@ -125,12 +125,12 @@ def reshuffle( fisher_matrix, names ):
     new_param_names_latex = []
     new_param_fiducial    = []
     for i in names:
-        ind = fisher_matrix.param_names_dict[i] -1 
+        ind = fisher_matrix.param_names_dict[i] -1
         new_param_names_latex.append(fisher_matrix.param_names_latex[ind])
         new_param_fiducial.append(fisher_matrix.param_fiducial[ind])
     # initialize an empty matrix:
     num_param_new = len(names)
-    new_matrix = np.zeros([num_param_new,num_param_new])    
+    new_matrix = np.zeros([num_param_new,num_param_new])
     # fill the new matrix:
     for i in range(num_param_new):
         for j in range(num_param_new):
@@ -143,30 +143,30 @@ def reshuffle( fisher_matrix, names ):
             # get the entrance of the new matrix:
             new_matrix[i,j] = fisher_matrix.fisher_matrix[x1,y1]
     # create the new Fisher matrix:
-    fisher_new = fm.fisher_matrix(fisher_matrix=new_matrix, param_names=names, param_names_latex=new_param_names_latex, fiducial=new_param_fiducial)        
+    fisher_new = fm.fisher_matrix(fisher_matrix=new_matrix, param_names=names, param_names_latex=new_param_names_latex, fiducial=new_param_fiducial)
     fisher_new.name  = fisher_matrix.name + '_reshuffled'
     fisher_new.path  = fisher_matrix.path
-    fisher_new.indir = fisher_matrix.indir        
-    
-    return fisher_new    
-    
+    fisher_new.indir = fisher_matrix.indir
+
+    return fisher_new
+
 # ***************************************************************************************
 
 def marginalise( fisher_matrix, names ):
     """
-    This function marginalises a Fisher matrix over all parameters but the ones in names. 
+    This function marginalises a Fisher matrix over all parameters but the ones in names.
     The new Fisher matrix will have the parameters specified in names, in the order specified by names.
     The calculation is performed in the numerically stable way.
-        
+
     :param fisher_matrix: input Fisher matrix
     :type fisher_matrix: :class:`cosmicfish_pylib.fisher_matrix.fisher_matrix`
     :param names: list of names of the parameters of the output Fisher matrix,
-        in the order that will appear in the output Fisher matrix. All other parameters 
+        in the order that will appear in the output Fisher matrix. All other parameters
         will be marginalized over.
-    :type names: :class:`list` of :class:`string`        
+    :type names: :class:`list` of :class:`string`
     :returns: A Fisher matrix with the marginalized parameters
-    :rtype: :class:`cosmicfish_pylib.fisher_matrix.fisher_matrix`    
-    
+    :rtype: :class:`cosmicfish_pylib.fisher_matrix.fisher_matrix`
+
     """
     # check validity of the input:
     if ( not isinstance(fisher_matrix, fm.fisher_matrix) ):
@@ -179,12 +179,12 @@ def marginalise( fisher_matrix, names ):
     new_param_names_latex = []
     new_param_fiducial    = []
     for i in names:
-        ind = fisher_matrix.param_names_dict[i] -1 
+        ind = fisher_matrix.param_names_dict[i] -1
         new_param_names_latex.append(fisher_matrix.param_names_latex[ind])
         new_param_fiducial.append(fisher_matrix.param_fiducial[ind])
     # initialize an empty matrix:
     num_param_new = len(names)
-    new_matrix = np.zeros([num_param_new,num_param_new])    
+    new_matrix = np.zeros([num_param_new,num_param_new])
     # fill the new inverse matrix:
     for i in range(num_param_new):
         for j in range(num_param_new):
@@ -196,31 +196,31 @@ def marginalise( fisher_matrix, names ):
             y1 = fisher_matrix.param_names_dict[y]-1
             # get the entrance of the new matrix:
             new_matrix[i,j] = fisher_matrix.get_fisher_inverse()[x1,y1]
-    
+
     fisher_temp = np.linalg.inv( new_matrix )
     # create the new Fisher matrix:
-    fisher_new = fm.fisher_matrix(fisher_matrix=fisher_temp, param_names=names, param_names_latex=new_param_names_latex, fiducial=new_param_fiducial)        
+    fisher_new = fm.fisher_matrix(fisher_matrix=fisher_temp, param_names=names, param_names_latex=new_param_names_latex, fiducial=new_param_fiducial)
     fisher_new.name  = fisher_matrix.name + '_marginal'
     fisher_new.path  = fisher_matrix.path
-    fisher_new.indir = fisher_matrix.indir        
-    
-    return fisher_new     
+    fisher_new.indir = fisher_matrix.indir
+
+    return fisher_new
 
 # ***************************************************************************************
 
 def marginalise_over( fisher_matrix, names ):
     """
-    This function marginalises a Fisher matrix over the parameters in names. 
+    This function marginalises a Fisher matrix over the parameters in names.
     The new Fisher matrix will not have the parameters specified in names.
     The calculation is performed in the numerically stable way.
-        
+
     :param fisher_matrix: input Fisher matrix
     :type fisher_matrix: :class:`cosmicfish_pylib.fisher_matrix.fisher_matrix`
     :param names: list of names of the parameters over which the Fisher will be marginalised.
-    :type names: :class:`list` of :class:`string`        
+    :type names: :class:`list` of :class:`string`
     :returns: A Fisher matrix with the names parameters marginalized.
-    :rtype: :class:`cosmicfish_pylib.fisher_matrix.fisher_matrix`      
-        
+    :rtype: :class:`cosmicfish_pylib.fisher_matrix.fisher_matrix`
+
     """
     # check validity of the input:
     if ( not isinstance(fisher_matrix, fm.fisher_matrix) ):
@@ -231,7 +231,7 @@ def marginalise_over( fisher_matrix, names ):
             raise ValueError('Error, parameter '+str(i)+' is not in a parameter of fisher_matrix')
     # get the indexes:
     new_names = [ i for i in fisher_matrix.param_names if i not in names ]
-        
+
     return marginalise( fisher_matrix, new_names )
 
 # ***************************************************************************************
@@ -240,7 +240,7 @@ def information_gain( fisher_1, fisher_2, fisher_prior, units=math.log(2.0), sta
     """
     This function computes the Fisher approximation of Kullback-Leibler information gain.
     For the details of the formula we refer to the CosmicFish notes.
-        
+
     :param fisher_1: first input Fisher matrix
     :type fisher_1: :class:`cosmicfish_pylib.fisher_matrix.fisher_matrix`
     :param fisher_2: second input Fisher matrix
@@ -248,11 +248,11 @@ def information_gain( fisher_1, fisher_2, fisher_prior, units=math.log(2.0), sta
     :param fisher_prior: input Fisher matrix with the prior information.
     :type fisher_prior: :class:`cosmicfish_pylib.fisher_matrix.fisher_matrix`
     :param units: Units of information gain. Optional by default in Bits.
-    :type units: :class:`float`   
+    :type units: :class:`float`
     :param stat: wether to output the expected value and variance
-    :type stat: :class:`logical`   
+    :type stat: :class:`logical`
     :returns: a :class:`float` with the information gain.
-    :rtype: :class:`float`   
+    :rtype: :class:`float`
     """
     info_gain = 0.0
     # first computations:
@@ -270,7 +270,7 @@ def information_gain( fisher_1, fisher_2, fisher_prior, units=math.log(2.0), sta
                                     fiducial=F2p.get_param_fiducial() )
     fisher_temp = fisher_2 + fisher_temp
     # the first term:
-    info_gain = info_gain -math.log( F1p.determinant()/F2p.determinant() ) 
+    info_gain = info_gain -math.log( F1p.determinant()/F2p.determinant() )
     info_gain = info_gain -F1p.get_fisher_matrix().shape[0]
     # the second trace term:
     info_gain = info_gain + np.trace( np.dot( F2p.get_fisher_inverse() , F1p.get_fisher_matrix() ) )
@@ -288,4 +288,3 @@ def information_gain( fisher_1, fisher_2, fisher_prior, units=math.log(2.0), sta
     return info_gain
 
 # ***************************************************************************************
-    

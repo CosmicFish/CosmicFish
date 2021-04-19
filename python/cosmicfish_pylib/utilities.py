@@ -58,7 +58,7 @@ def mant_exp_to_num( mant_exp ):
     :type mant_exp: tuple
     :return: output number built as mantissa*10**exponent.
     :rtype: :class:`float`
-    
+
     """
     return mant_exp[0]*10**mant_exp[1]
 
@@ -72,11 +72,11 @@ def nice_number( num, mode=0 ):
     :param num: input number
     :type num: :class:`float` or :class:`int`
     :param mode: (optional) operation to use to build the nice number
-            
+
             | 0 -- use ceil
             | 1 -- use round
             | 2 -- use floor
-            
+
     :type mode: :class:`int`
     :return: a nice number!
     :rtype: :class:`float`
@@ -107,13 +107,13 @@ def significant_digits( num_err, mode=0 ):
     :param num_err: (number, error) input number and error in a tuple.
     :type num_err: tuple
     :param mode: (optional) operation to use to build the number
-            
+
             | 0 -- use ceil
             | 1 -- use round
             | 2 -- use floor
-            
+
     :type mode: :class:`int`
-    :return: a number with all the significant digits according to error 
+    :return: a number with all the significant digits according to error
     :rtype: :class:`float`
 
     """
@@ -121,7 +121,7 @@ def significant_digits( num_err, mode=0 ):
     error  = num_err[1]
     number_mant_exp = num_to_mant_exp(number)
     error_mant_exp  = num_to_mant_exp(error)
-    
+
     temp = mant_exp_to_num( (number_mant_exp[0], number_mant_exp[1]-error_mant_exp[1]) )
     # select the working mode
     if ( mode==0 ):
@@ -132,7 +132,7 @@ def significant_digits( num_err, mode=0 ):
         temp = np.floor( temp )
     else:
         raise ValueError('Fisher_utilities.significant_digits called with mode='+str(mode)+' legal values are 0,1,2')
-    
+
     return temp*10**(error_mant_exp[1])
 
 # ***************************************************************************************
@@ -172,7 +172,7 @@ def print_table(table):
 
 def make_list( elements ):
     """
-    Checks if elements is a list. 
+    Checks if elements is a list.
     If yes returns elements without modifying it.
     If not creates and return a list with elements inside.
 
@@ -206,12 +206,12 @@ def grouper( n, iterable, fillvalue=None ):
 
 def CosmicFish_write_header(name):
     """
-    This function prints to screen the CosmicFish header. 
+    This function prints to screen the CosmicFish header.
     To be called at the beginning of the applications.
 
     :param name: string that contains the name of the program. This will be printed
         along the CosmicFish header.
-    
+
     """
 
     print()
@@ -226,5 +226,5 @@ def CosmicFish_write_header(name):
     print(" This application was developed using the CosmicFish code.")
     print("**************************************************************")
     print()
-    
+
 # ***************************************************************************************

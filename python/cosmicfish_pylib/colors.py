@@ -28,13 +28,13 @@ def nice_colors( num ):
     This function returns a color from a colormap defined below according to the
     number entered.
 
-    :param num: input number. Can be an integer or float. Notice 
+    :param num: input number. Can be an integer or float. Notice
         that the colormap contains only a small numbers of colors. Even if the input is a float
         the output will still be one of the few colors in the colormap.
     :type num: :class:`int` or :class:`float`
     :return: tuple of :class:`float` containing the three RGB coordinates of the color.
     :rtype: tuple
-        
+
     """
     # default colormap
     colormap = { 0: (0.0, 0.75, 0.75),
@@ -62,7 +62,7 @@ class bash_colors:
     """
     This class contains the necessary definitions to print to bash screen with colors.
     Sometimes it can be useful and nice!
-    
+
     :ivar HEADER: ANSI color for light purple.
     :ivar OKBLUE: ANSI color for blue.
     :ivar OKGREEN: ANSI color for green.
@@ -71,11 +71,11 @@ class bash_colors:
     :ivar BOLD: ANSI code for bold text.
     :ivar UNDERLINE: ANSI code for underlined text.
     :ivar ENDC: ANSI code to restore the bash default.
-    
+
     """
-    
+
     # -----------------------------------------------------------------------------------
-    
+
     HEADER    = '\033[95m' #: ANSI color for light purple.
     OKBLUE    = '\033[94m' #: ANSI color for blue.
     OKGREEN   = '\033[92m' #: ANSI color for green.
@@ -84,110 +84,110 @@ class bash_colors:
     BOLD      = '\033[1m'  #: ANSI code for bold text.
     UNDERLINE = '\033[4m'  #: ANSI code for underlined text.
     ENDC      = '\033[0m'  #: ANSI code to restore the bash default.
-    
+
     # -----------------------------------------------------------------------------------
-    
+
     def __init__(self):
         pass
-    
+
     # -----------------------------------------------------------------------------------
-    
+
     def header(self, string):
-        """ 
+        """
         Function that returns a string that can be printed to bash in :class:`cosmicfish_pylib.colors.bash_colors.HEADER` color.
-        
-        :param string: input string.
-        :type string: string
-        :return: the input string with the relevant ANSI code at the beginning and at the end.
-        :rtype: string 
-           
-        """
-        return self.HEADER+str(string)+self.ENDC
-    
-    # -----------------------------------------------------------------------------------
-    
-    def blue(self,string):
-        """ 
-        Function that returns a string that can be printed to bash in :class:`cosmicfish_pylib.colors.bash_colors.OKBLUE` color.
-        
-        :param string: input string.
-        :type string: string
-        :return: the input string with the relevant ANSI code at the beginning and at the end.
-        :rtype: string 
-           
-        """
-        return self.OKBLUE+str(string)+self.ENDC
-    
-    # -----------------------------------------------------------------------------------
-    
-    def green(self,string):
-        """ 
-        Function that returns a string that can be printed to bash in :class:`cosmicfish_pylib.colors.bash_colors.OKGREEN` color.
-        
-        :param string: input string.
-        :type string: string
-        :return: the input string with the relevant ANSI code at the beginning and at the end.
-        :rtype: string 
-           
-        """
-        return self.OKGREEN+str(string)+self.ENDC
-    
-    # -----------------------------------------------------------------------------------
-    
-    def warning(self,string):
-        """ 
-        Function that returns a string that can be printed to bash in :class:`cosmicfish_pylib.colors.bash_colors.WARNING` color.
-        
-        :param string: input string.
-        :type string: string
-        :return: the input string with the relevant ANSI code at the beginning and at the end.
-        :rtype: string 
-           
-        """
-        return self.WARNING+str(string)+self.ENDC
-    
-    # -----------------------------------------------------------------------------------
-    
-    def fail(self,string):
-        """ 
-        Function that returns a string that can be printed to bash in :class:`cosmicfish_pylib.colors.bash_colors.FAIL` color.
-        
-        :param string: input string.
-        :type string: string
-        :return: the input string with the relevant ANSI code at the beginning and at the end.
-        :rtype: string 
-           
-        """
-        return self.FAIL+str(string)+self.ENDC
-    
-    # -----------------------------------------------------------------------------------
-    
-    def bold(self,string):
-        """ 
-        Function that returns a string that can be printed to bash in :class:`cosmicfish_pylib.colors.bash_colors.BOLD` color.
-        
-        :param string: input string.
-        :type string: string
-        :return: the input string with the relevant ANSI code at the beginning and at the end.
-        :rtype: string 
-           
-        """
-        return self.BOLD+str(string)+self.ENDC
-    
-    # -----------------------------------------------------------------------------------
-    
-    def underline(self,string):
-        """ 
-        Function that returns a string that can be printed to bash in :class:`cosmicfish_pylib.colors.bash_colors.UNDERLINE` color.
-        
+
         :param string: input string.
         :type string: string
         :return: the input string with the relevant ANSI code at the beginning and at the end.
         :rtype: string
-        
+
+        """
+        return self.HEADER+str(string)+self.ENDC
+
+    # -----------------------------------------------------------------------------------
+
+    def blue(self,string):
+        """
+        Function that returns a string that can be printed to bash in :class:`cosmicfish_pylib.colors.bash_colors.OKBLUE` color.
+
+        :param string: input string.
+        :type string: string
+        :return: the input string with the relevant ANSI code at the beginning and at the end.
+        :rtype: string
+
+        """
+        return self.OKBLUE+str(string)+self.ENDC
+
+    # -----------------------------------------------------------------------------------
+
+    def green(self,string):
+        """
+        Function that returns a string that can be printed to bash in :class:`cosmicfish_pylib.colors.bash_colors.OKGREEN` color.
+
+        :param string: input string.
+        :type string: string
+        :return: the input string with the relevant ANSI code at the beginning and at the end.
+        :rtype: string
+
+        """
+        return self.OKGREEN+str(string)+self.ENDC
+
+    # -----------------------------------------------------------------------------------
+
+    def warning(self,string):
+        """
+        Function that returns a string that can be printed to bash in :class:`cosmicfish_pylib.colors.bash_colors.WARNING` color.
+
+        :param string: input string.
+        :type string: string
+        :return: the input string with the relevant ANSI code at the beginning and at the end.
+        :rtype: string
+
+        """
+        return self.WARNING+str(string)+self.ENDC
+
+    # -----------------------------------------------------------------------------------
+
+    def fail(self,string):
+        """
+        Function that returns a string that can be printed to bash in :class:`cosmicfish_pylib.colors.bash_colors.FAIL` color.
+
+        :param string: input string.
+        :type string: string
+        :return: the input string with the relevant ANSI code at the beginning and at the end.
+        :rtype: string
+
+        """
+        return self.FAIL+str(string)+self.ENDC
+
+    # -----------------------------------------------------------------------------------
+
+    def bold(self,string):
+        """
+        Function that returns a string that can be printed to bash in :class:`cosmicfish_pylib.colors.bash_colors.BOLD` color.
+
+        :param string: input string.
+        :type string: string
+        :return: the input string with the relevant ANSI code at the beginning and at the end.
+        :rtype: string
+
+        """
+        return self.BOLD+str(string)+self.ENDC
+
+    # -----------------------------------------------------------------------------------
+
+    def underline(self,string):
+        """
+        Function that returns a string that can be printed to bash in :class:`cosmicfish_pylib.colors.bash_colors.UNDERLINE` color.
+
+        :param string: input string.
+        :type string: string
+        :return: the input string with the relevant ANSI code at the beginning and at the end.
+        :rtype: string
+
         """
         return self.UNDERLINE+str(string)+self.ENDC
-    
+
     # -----------------------------------------------------------------------------------
-    
+
 # ***************************************************************************************

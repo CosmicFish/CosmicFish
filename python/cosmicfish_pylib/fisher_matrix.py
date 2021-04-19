@@ -39,7 +39,7 @@ class fisher_matrix():
     """
     This class contains the relevant code to define a fisher matrix
     and basic operations on it.
-    
+
     :ivar fisher_cutoff: cutoff for the spectrum of the Fisher matrix. Parameter of the class. Starts at 10**(-9) but, if needed, is fixed during computations.
     :ivar fisher_spectrum: maximum condition number allowed for the Fisher matrix. Worse constrained modes that go above this value will be flattened to this value.
     :ivar fisher_matrix: numpy array with the fisher matrix. Passed to the constructor of by file.
@@ -54,112 +54,112 @@ class fisher_matrix():
     :ivar param_names_latex: LaTeX name of the parameters of the Fisher matrix. Passed to the constructor of by file.
     :ivar param_fiducial: numpy array with the values of the fiducial parameters. Passed to the constructor of by file.
     :ivar param_names_dict: a dictionary that maps parameter names to numbers and vice versa.
-    
+
     .. automethod:: cosmicfish_pylib.fisher_matrix.fisher_matrix.__add__
     .. automethod:: cosmicfish_pylib.fisher_matrix.fisher_matrix.__eq__
     .. automethod:: cosmicfish_pylib.fisher_matrix.fisher_matrix.__ne__
-    
+
     """
-    
+
     # -----------------------------------------------------------------------------------
-    
+
     # class getters:
-    
+
     def get_fisher_matrix(self):
         """ :returns: the fisher matrix as a numpy array. """
         return self.fisher_matrix
-    
+
     def get_fisher_eigenvalues(self):
         """ :returns: the eigenvalues of the Fisher matrix as a numpy array. """
         return self.fisher_eigenvalues
-    
+
     def get_fisher_eigenvectors(self):
         """ :returns: the eigenvectors of the Fisher matrix. """
         return self.fisher_eigenvectors
-    
+
     def get_fisher_inverse(self):
         """ :returns: the inverse of the Fisher matrix. """
         return self.fisher_matrix_inv
-    
+
     def get_param_names(self):
         """ :returns: the parameter names of the Fisher matrix. """
         return self.param_names
-    
+
     def get_param_names_latex(self):
         """ :returns: the parameter names, in LaTeX format of the Fisher matrix. """
         return self.param_names_latex
-    
+
     def get_param_fiducial(self):
         """ :returns: the fiducial values of the parameters of the Fisher matrix. """
         return self.param_fiducial
-    
+
     # -----------------------------------------------------------------------------------
-    
+
     # advanced class getters:
-    
+
     def get_param_name(self, number):
-        """ 
-        Returns the name of the parameter corresponding to the given number.  
-        
+        """
+        Returns the name of the parameter corresponding to the given number.
+
         :param number: number of the parameter or list of numbers. Notice that parameters are numbered starting from 1.
         :type number: :class:`int` or a :class:`list` of :class:`int`
         :returns: the name or a list of names of the parameters.
         :rtype: :class:`string` or a :class:`list` of :class:`string`.
-            
+
         """
         if isinstance(number, int):
             return self.param_names_dict[number]
         elif len(number)>1:
             return [ self.param_names_dict[i] for i in number ]
-        
+
     def get_param_index(self,name):
-        """ 
+        """
         Returns the index of a parameter as specified by his name. Notice that indices starts at 0.
-        
+
         :param name: input name or list of names of the parameters.
         :type name: :class:`string` or a :class:`list` of :class:`string`
         :returns: the index of the parameter or a list of numbers.
         :rtype: :class:`int` or a :class:`list` of :class:`int`
-            
+
         """
         if isinstance(name, str):
             return self.param_names_dict[name]-1
         elif len(name)>1:
             return [ self.param_names_dict[i]-1 for i in name ]
-        
+
     def get_param_number(self,name):
-        """ 
-        Returns the number of a parameter as specified by his name. 
+        """
+        Returns the number of a parameter as specified by his name.
         Notice this differs from get_param_index becasue number = index+1.
-        
+
         :param name: input name or list of names of the parameters.
         :type name: :class:`string` or a :class:`list` of :class:`string`
         :returns: the index of the parameter or a list of numbers.
         :rtype: :class:`int` or a :class:`list` of :class:`int`
-        
+
         """
         if isinstance(name, str):
             return self.param_names_dict[name]
         elif len(name)>1:
             return [ self.param_names_dict[i] for i in name ]
-        
+
     def get_param_name_latex(self, name):
-        """ 
+        """
         Returns the Latex name of the parameter called name.
-        
+
         :param name: input name or list of names of the parameters.
         :type name: :class:`string` or a :class:`list` of :class:`string`
         :returns: the Latex name or a list of Latex names corresponding to the parameter names.
         :rtype: :class:`string` or a :class:`list` of :class:`string`.
-        
+
         """
         if isinstance(name, str):
             return self.param_names_latex[self.get_param_index(name)]
         elif len(name)>1:
             return [ self.param_names_latex[i] for i in self.get_param_index(name) ]
-        
+
     def get_fiducial(self, name):
-        """ 
+        """
         Returns the fiducial of the parameter called name.
 
         :param name: input name or list of names of the parameters.
@@ -172,7 +172,7 @@ class fisher_matrix():
             return self.param_fiducial[self.get_param_index(name)]
         elif len(name)>1:
             return [ self.param_fiducial[i] for i in self.get_param_index(name) ]
-        
+
     # -----------------------------------------------------------------------------------
 
     def __init__( self, fisher_matrix=None, param_names=None, param_names_latex=None, fiducial=None, file_name=None ):
@@ -199,38 +199,38 @@ class fisher_matrix():
         :type fiducial: :class:`list` of :class:`float` or :class:`numpy.array`
         :param file_name: name of the file (and path) of the input Fisher matrix.
         :type file_name: :class:`string`
-        
+
         """
         # check that the input is legal:
         if fisher_matrix is None and file_name is None:
             raise ValueError('Error in initializing the Fisher matrix: fisher_matrix and file_name are both None.')
         # initialize all the objects:
         self.fisher_cutoff   = 10**(-9)
-        self.fisher_spectrum = 10**(10)      
+        self.fisher_spectrum = 10**(10)
         self.fisher_matrix = np.array([])
         self.path  = ''
-        self.name  = '' 
-        self.indir = '' 
+        self.name  = ''
+        self.indir = ''
         self.num_params  = 0
         self.fisher_eigenvalues  = np.array([])
-        self.fisher_eigenvectors = np.array([[]]) 
-        self.fisher_matrix_inv   = np.array([[]]) 
+        self.fisher_eigenvectors = np.array([[]])
+        self.fisher_matrix_inv   = np.array([[]])
         self.param_names         = ['']
-        self.param_names_latex   = [''] 
-        self.param_fiducial      = np.array([]) 
+        self.param_names_latex   = ['']
+        self.param_fiducial      = np.array([])
         self.param_names_dict = {}
         # initialize the Fisher matrix:
         if fisher_matrix is None:
             # initialize from file:
-            self.fisher_matrix = np.loadtxt(file_name)  
+            self.fisher_matrix = np.loadtxt(file_name)
             # get the file name and path:
-            self.path  = os.path.abspath(file_name)    
-            self.name  = os.path.splitext(os.path.basename(file_name))[0] 
-            self.indir = os.path.dirname(self.path)  
+            self.path  = os.path.abspath(file_name)
+            self.name  = os.path.splitext(os.path.basename(file_name))[0]
+            self.indir = os.path.dirname(self.path)
         else:
             # read the fisher matrix from input:
             self.fisher_matrix = np.array(fisher_matrix)
-            
+
         # protection against 1D Fisher matrices
         if np.ndim(self.fisher_matrix) == 0:
             self.fisher_matrix = np.array([[self.fisher_matrix]])
@@ -240,7 +240,7 @@ class fisher_matrix():
         if not np.allclose(self.fisher_matrix, np.transpose(self.fisher_matrix), rtol=1e-03, atol=1e-06 ):
             raise ValueError('The input Fisher matrix is not equal to its transpose')
         # get the number of parameters:
-        self.num_params = self.fisher_matrix.shape[0]  
+        self.num_params = self.fisher_matrix.shape[0]
         # load the parameter names:
         if param_names is None:
             try:
@@ -248,11 +248,11 @@ class fisher_matrix():
             except ValueError:
                 self.param_names  = [ 'p'+str(i+1) for i in range(self.num_params) ]
                 self.param_names_latex = [ 'p'+str(i+1) for i in range(self.num_params) ]
-                self.param_fiducial    = np.array( [0.0 for i in self.param_names] ) 
-        else: 
+                self.param_fiducial    = np.array( [0.0 for i in self.param_names] )
+        else:
             self.param_names = copy.deepcopy(param_names)
             self.param_names_latex = copy.deepcopy(param_names)
-            self.param_fiducial    = np.array( [0.0 for i in self.param_names] ) 
+            self.param_fiducial    = np.array( [0.0 for i in self.param_names] )
         # over write the fiducial if it is given:
         if param_names_latex is not None:
             self.param_names_latex = copy.deepcopy(param_names_latex)
@@ -286,7 +286,7 @@ class fisher_matrix():
 
         :param file_name: (optional) file name and path of the parameter names file.
             If file_name is None this reads the file self.name+.paramnames.
-            
+
         """
         if file_name is None:
             name = self.indir+'/'+self.name+'.paramnames'
@@ -327,7 +327,7 @@ class fisher_matrix():
         # check the validity of the param names:
         if len(self.param_names) != self.num_params:
             raise ValueError('Error in load_paramnames_from_file: wrong number of parameters in the .paramnames file')
-    
+
     # -----------------------------------------------------------------------------------
 
     def save_paramnames_to_file( self, file_name=None ):
@@ -336,7 +336,7 @@ class fisher_matrix():
 
         :param file_name: (optional) file name and path of the parameter names file.
             If file_name is None this saves the file self.name+.paramnames.
-            
+
         """
         if file_name is None:
             name = self.indir+'/'+self.name+'.paramnames'
@@ -355,9 +355,9 @@ class fisher_matrix():
                             str(self.get_param_name_latex( param_name ))+'    '+ \
                             str(self.get_fiducial( param_name ))+'\n'
                             )
-        # close the output file: 
+        # close the output file:
         out_file.close()
-    
+
     # -----------------------------------------------------------------------------------
 
     def save_to_file( self, file_name ):
@@ -367,13 +367,13 @@ class fisher_matrix():
 
         :param file_name: file name and path of the output fisher matrix.
         The file extension gets automatically added as is not needed.
-            
+
         """
         # save the param name file:
         self.save_paramnames_to_file( file_name=file_name+'.paramnames' )
         # open the output file:
         out_file = open( file_name+'.dat', 'w' )
-        # write the header:        
+        # write the header:
         out_file.write( '#\n' )
         out_file.write( '# This file contains a Fisher matrix created with the CosmicFish code.\n' )
         out_file.write( '#\n' )
@@ -394,16 +394,16 @@ class fisher_matrix():
             for j in range( self.num_params ):
                 out_file.write( str( format(fisher_matrix[i,j],'.16E') )+'     ' )
             out_file.write( '\n' )
-        
- 
-        # close the output file: 
+
+
+        # close the output file:
         out_file.close()
-        
+
     # -----------------------------------------------------------------------------------
 
     def __add__(self, other):
         """
-        Addition operator (+). Safeguarded agains adding Fisher matrices with different parameters 
+        Addition operator (+). Safeguarded agains adding Fisher matrices with different parameters
         and different fiducials.
         The addition will add parameters with the same name and append parameters with different names.
         Notice that if a parameter is in one of the two Fisher matrices but not in the other it will be
@@ -449,7 +449,7 @@ class fisher_matrix():
                     y1 = other.param_names_dict[y]-1
                     fact_2 = other.fisher_matrix[x1,y1]
                 except:
-                    fact_2 = 0.0    
+                    fact_2 = 0.0
                 # write the entrance of the new matrix:
                 new_matrix[i,j] = fact_1 + fact_2
         # create the new Fisher matrix:
@@ -457,15 +457,15 @@ class fisher_matrix():
         fisher_new.name  = self.name + '_' + other.name
         fisher_new.path  = self.path
         fisher_new.indir = self.indir
-        
+
         return fisher_new
 
     # -----------------------------------------------------------------------------------
 
     def __eq__(self, other):
-        """ 
+        """
         Equality check operator (==). Ensures equality in all properties of the Fisher matrix.
-        Notice that also name, path and indir are checked. 
+        Notice that also name, path and indir are checked.
         """
         try:
             return_value = isinstance( other, fisher_matrix ) and \
@@ -481,26 +481,26 @@ class fisher_matrix():
                            self.param_names == other.param_names and \
                            self.param_names_latex == other.param_names_latex and \
                            np.allclose( self.param_fiducial, other.param_fiducial ) and \
-                           self.param_names_dict == other.param_names_dict 
+                           self.param_names_dict == other.param_names_dict
         except:
             return_value = False
-            
+
         return return_value
-    
+
     # -----------------------------------------------------------------------------------
-    
+
     def __ne__(self, other):
-        """ 
+        """
         Non-equality operator (!=). Simply implemented as the inverse of the equality operator.
         """
         return not self.__eq__(other)
-    
+
     # -----------------------------------------------------------------------------------
 
     def inverse_fisher_matrix(self):
         """
         Invert the Fisher matrix.
-        
+
         :returns: a matrix containing the inverse of the Fisher matrix.
         :rtype: :class:`numpy.array`
 
@@ -513,10 +513,10 @@ class fisher_matrix():
         """
         This function performs the principal component analysis of the Fisher matrix returning its eigenvalues and its eigenvectors.
         As of now it just works just as a wrapper for numpy.
-        
+
         :returns: a :class:`list` with (eigenvalues, eigenvectors) as :class:`numpy.array`.
         :rtype: :class:`list` of :class:`numpy.array`
-        
+
         """
         w, v = np.linalg.eigh( self.fisher_matrix )
         return ( w, v )
@@ -538,12 +538,12 @@ class fisher_matrix():
         """
         Protects the Fisher matrix against degeneracies. Modifies the spectrum to ensure that
         the absolute value of the eigenvalues is bounded. This will make the Fisher matrix
-        strictly positive definite. It will modify the magnitude of the worst constrained 
+        strictly positive definite. It will modify the magnitude of the worst constrained
         parameter combinations without modifying the degeneracies directions.
-        
+
         :param cache: (optional) wether to use cached results or compute everything again
         :type cache: bool
-        
+
         """
         # check cache:
         if not cache:
@@ -551,22 +551,22 @@ class fisher_matrix():
         # get the eigenvalues and eigenvactors:
         fisher_eigenvectors    = self.fisher_eigenvectors
         fisher_eigenvectors_m1 = np.transpose( np.array( self.fisher_eigenvectors ) )
-        # 
+        #
         redo_PCA = False
         # sometime the cutoff has to be adjusted if the condition number is too large:
         minimum_spectrum = np.amin( np.abs( self.fisher_eigenvalues ) )
         maximum_spectrum = np.amax( np.abs( self.fisher_eigenvalues ) )
-        
+
         if np.isclose( minimum_spectrum, 0.0 ):
             condition_number = maximum_spectrum/self.fisher_cutoff
         else:
             condition_number = maximum_spectrum/minimum_spectrum
-            
+
         if np.abs(condition_number) > self.fisher_spectrum:
             self.fisher_cutoff = maximum_spectrum/self.fisher_spectrum
         # cycle through the eigenvalues
         for i in range( len(self.fisher_eigenvalues) ):
-            # detect very small eigenvalues            
+            # detect very small eigenvalues
             if self.fisher_eigenvalues[i] < self.fisher_cutoff:
                 # tell the code to redo PCA:
                 redo_PCA = True
@@ -583,7 +583,7 @@ class fisher_matrix():
             self.fisher_matrix = np.dot( np.dot( fisher_eigenvectors, temp ), fisher_eigenvectors_m1 )
             # redo PCA:
             (self.fisher_eigenvalues,self.fisher_eigenvectors) = self.PCA()
-                    
+
     # -----------------------------------------------------------------------------------
 
     def get_confidence_bounds(self, confidence_level=0.68, cache=False ):
@@ -591,7 +591,7 @@ class fisher_matrix():
         Computes the marginal 1D confidence bounds on the Fisher parameters
 
         :param confidence_level: (optional) C.L. of the bounds. Default 68%.
-        :type confidence_level: :class:`float` in [0,1] 
+        :type confidence_level: :class:`float` in [0,1]
         :param cache: (optional) wether to use cached results or compute everything again
         :type cache: bool
 
@@ -610,18 +610,18 @@ class fisher_matrix():
         return coefficient*np.sqrt( np.diagonal( fisher_matrix_inv_temp ) )
 
     # -----------------------------------------------------------------------------------
-        
+
     # class setters:
-    
+
     def set_fisher_matrix(self, fisher_matrix):
         """
-        Function sets a new fisher matrix substituting the old one. Notice that 
+        Function sets a new fisher matrix substituting the old one. Notice that
         this will reset parameter names, latex parameter names and fiducial values.
 
         :param fisher_matrix: :class:`numpy.array` containing the input Fisher matrix.
         :type fisher_matrix: :class:`numpy.array`
-        
-        """ 
+
+        """
         # initialize the Fisher matrix:
         temp_fisher_matrix = np.array(fisher_matrix)
         # protection against 1D Fisher matrices
@@ -635,11 +635,11 @@ class fisher_matrix():
         # accept the fisher matrix and start doing computations:
         self.fisher_matrix = np.array(temp_fisher_matrix)
         # get the number of parameters:
-        self.num_params = self.fisher_matrix.shape[0]  
+        self.num_params = self.fisher_matrix.shape[0]
         # load the parameter names:
         self.param_names       = [ 'p'+str(i+1) for i in range(self.num_params) ]
         self.param_names_latex = [ 'p'+str(i+1) for i in range(self.num_params) ]
-        self.param_fiducial    = np.array( [0.0 for i in self.param_names] ) 
+        self.param_fiducial    = np.array( [0.0 for i in self.param_names] )
         # re-create a dictionary of param names:
         self.param_names_dict = {}
         for i in range(len(self.param_names)):
@@ -651,16 +651,16 @@ class fisher_matrix():
         self.protect_degenerate( )
         # invert the Fisher matrix and store the result:
         self.fisher_matrix_inv = self.inverse_fisher_matrix()
-    
+
     def set_param_names(self, param_names):
         """
-        Function sets a new list of param names substituting the old one. Notice that 
+        Function sets a new list of param names substituting the old one. Notice that
         latex parameter names will be reset.
 
         :param param_names: list containing the new parameter names.
         :type param_names: :class:`list` of :class:`string`
-        
-        """ 
+
+        """
         # check the input:
         if len(param_names) != self.num_params:
             raise ValueError('set_param_names: the input param_names has not '+str(self.num_params)+' elements.')
@@ -673,35 +673,35 @@ class fisher_matrix():
         for i in range(len(self.param_names)):
             self.param_names_dict[i+1] = self.param_names[i]
             self.param_names_dict[self.param_names[i]] = i+1
-    
+
     def set_param_names_latex(self, param_names_latex):
         """
         Function sets a new list of LaTeX param names substituting the old one.
 
         :param param_names_latex: list containing the new LaTeX parameter names.
         :type param_names: :class:`list` of :class:`string`
-        
-        """ 
+
+        """
         # check the input:
         if len(param_names_latex) != self.num_params:
             raise ValueError('set_param_names_latex: the input param_names_latex has not '+str(self.num_params)+' elements.')
         # accept input:
         self.param_names_latex = copy.deepcopy(param_names_latex)
-    
+
     def set_fiducial(self, fiducial):
         """
         Function sets a new fiducial substituting the old one.
 
         :param fiducial: list containing the new fiducial.
         :type param_names: :class:`list` of :class:`float`
-        
-        """ 
+
+        """
         # check the input:
         if len(fiducial) != self.num_params:
             raise ValueError('set_fiducial: the input fiducial has not '+str(self.num_params)+' elements.')
         # accept input:
         self.param_fiducial = np.array( fiducial )
-        
+
     # -----------------------------------------------------------------------------------
-    
+
 # ***************************************************************************************
