@@ -81,7 +81,7 @@ class CosmicFish_PlotSettings():
     :ivar D1_norm_prob_label: y axis label to use when P is normalized. Default: u'$P$'  
     :ivar D1_main_fontsize: main fontsize for the 1D plot. Default: 10.0   
     :ivar D1_secondary_fontsize: secondary fontsize for the 1D plot. Default:
-    :ivar D1_show_best_fit: show a vertical line on the fiducial. NOT YET IMPLEMENTED. Default: False
+    :ivar D1_show_best_fit: show a vertical line on the fiducial. Default: False
 
     :ivar D2_confidence_levels: list with confidence levels for the 2D plot. Default: [ 0.95, 0.68 ]      
     :ivar D2_num_points: number of points per line in the plot. Default: 100 
@@ -105,7 +105,7 @@ class CosmicFish_PlotSettings():
     :ivar D2_y_label_rotation: rotation of the y axis label. Default: 90 
     :ivar D2_main_fontsize: main fontsize. Default: 10.0
     :ivar D2_secondary_fontsize: secondary fontsize. Default: 9.0
-    :ivar D2_show_best_fit: show a vertical line on the fiducial. NOT YET IMPLEMENTED. Default: False
+    :ivar D2_show_best_fit: show an intersecting line on the fiducial. Default: False
         
     :ivar num_plots_per_line: number of plots per line. Used in all plots but triangulars. Default: 3
     :ivar figure_width: width of the image in cm. Default: paper_width
